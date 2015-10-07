@@ -1,0 +1,120 @@
+* 
+{
+	font-family: "Segoe UI", "Open Sans", sans-serif, serif;	
+}
+
+html,
+body
+{
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	background: #fff;
+}
+
+.container
+{
+	position: relative;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.container > #logo a
+{
+	display: block;
+	width: 500px;
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 20px;
+	outline: none !important;
+    text-decoration: none;
+}
+    
+.container > #logo a img
+{
+	display: block;
+	margin: 0 auto;
+}
+
+.container > .tabs-container
+{
+	width: 500px;
+	height: auto;
+	padding: 0;
+	margin: 0 auto;
+    border: 1px solid #d8e3e7;
+}
+
+.container > .tabs-container > .tabs
+{
+    background: #FFFFFF;
+    transition: box-shadow 0.2s ease-in-out;
+    -webkit-transition: box-shadow 0.2s ease-in-out;
+    -moz-transition: box-shadow 0.2s ease-in-out;
+    -o-transition: box-shadow 0.2s ease-in-out;
+    border: none;
+}
+
+.container > .tabs-container > .tabs > li 
+{
+	width: 50%;
+    display: inline-block;
+    float: left;
+    padding: 0;
+    border: none;
+}
+
+.container > .tabs-container > .tabs > li a
+{
+	background: #f1f6f8;
+    text-align: center;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+    width: 100%;
+    padding: 20px 0;
+    color: #afb6ba;
+    border: none;
+    border-radius: 0;
+    transition: all 0.2s ease 0s;
+    -webkit-transition: all 0.2s ease 0s;
+    -moz-transition: all 0.2s ease 0s;
+    -o-transition: all 0.2s ease 0s;
+    box-shadow: inset 0 -3px 7px rgba(0,0,0,0.02);
+}
+
+.container > .tabs-container > .tabs > li.active a
+{
+    background: #fff;
+    color: #5f6a6d;
+    font-weight: bold;
+    box-shadow: none;
+}
+
+.login > .input-group
+{
+	border: none;
+    width: 100%;
+    margin-top: 30px;
+    padding-left: 40px;
+    padding-right: 40px;
+    background: none;
+    box-shadow: none;
+}
+
+.login > .actions
+{
+	margin-top: 30px;
+	margin-bottom: 40px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.login > .actions > .btn
+{
+	width: 100%;
+}
