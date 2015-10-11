@@ -51,7 +51,7 @@ define(['jquery'], function($) {
 	};
 	
 	return {
-		baseUrl: 'http://localhost:8080/IdeaWorks-core',
+		baseUrl: 'http://localhost:8888/IdeaWorks',
 		loadcss: loadcss,
 		resolveUrlParams: resolveUrlParams,
 		attrIsValid: attrIsValid
