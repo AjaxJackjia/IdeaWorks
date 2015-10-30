@@ -4,7 +4,8 @@
 			'jquery': '../../lib/jquery/dist/jquery.min',
 			'backbone': '../../lib/backbone/backbone-min',
 			'underscore': '../../lib/underscore/underscore-min',
-			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min'  
+			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
+			'css': '../../lib/require-css/css.min'
 		},
 		
 		shim: {
@@ -25,9 +26,13 @@
 		}  
 	});
 	
-	require(['backbone', 'bootstrap', '../common/util', './view/SigninView', './view/SignupView' ], function(Backbone, bootstrap, util, SigninView, SignupView) {
-		//load css file
-		util.loadcss('res/css/login/main.css');
+	require(['backbone', 
+	         'bootstrap', 
+	         'css!../../res/css/login/main.css',
+	         '../common/util', 
+	         './view/SigninView',
+	         './view/SignupView' 
+	        ], function(Backbone, bootstrap, css, util, SigninView, SignupView) {
 		
 		var Entry = Backbone.View.extend({
 			el: 'div.container',

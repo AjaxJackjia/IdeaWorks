@@ -16,11 +16,9 @@ Bower manages common front-end libraries and their dependency tree in an easy ma
 
 #### Portal page:
 
-* News view;
+* ~~News List view~~;
 * Projects view;
-* Concrete show view (news or projects);
-
-#### Portal page:
+* Concrete show view (~~news~~ or projects);
 
 #### login page:
 

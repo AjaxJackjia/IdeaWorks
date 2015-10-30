@@ -1,0 +1,276 @@
+* 
+{
+	font-family: "Open Sans", sans-serif, serif;
+}
+
+body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p
+{ 
+	font-family: "Open Sans", "Microsoft YaHei", sans-serif, serif;
+	-webkit-font-smoothing: antialiased;
+}
+
+html,
+body
+{
+	position: absolute;
+	padding: 0;
+	margin: 0;
+	width: 100%;
+	min-width: 1300px;
+	height: 100%;
+	background: #fff;
+}
+
+/* left-panel begin */
+.left-panel
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 120px;
+	
+	padding: 0;
+	margin: 0;
+	
+	color: #8e909a;
+	font-size: 15px;
+	background-color: #2b2f3e;
+	box-shadow: inset -5px 0px 8px rgba(0,0,0,0.3);
+}
+
+.left-panel > .profile
+{
+	margin-top: 20px;
+	margin-bottom: 12px;
+	text-align: center;
+}
+
+.left-panel > .profile > .avatar
+{
+	display: block;
+	margin: 0 auto;
+	padding: 0;
+	width: 70px;
+	height: 70px;
+}
+
+.left-panel > .profile > .avatar > img
+{
+	width: 70px;
+	height: 70px;
+}
+
+.left-panel > .profile > .username
+{
+	font-size: 18px;
+	line-height: 18px;
+	color: #96A1B5;
+	text-align: center;
+	text-decoration: none;
+	transition: all 0.2s ease 0s;
+	-webkit-transition: all 0.2s ease 0s;
+	-moz-transition: all 0.2s ease 0s;
+	-o-transition: all 0.2s ease 0s;
+}
+
+.left-panel > .navigation > ul
+{
+	margin-top: 20px;
+	list-style: none;
+}
+
+.left-panel > .navigation > ul > li
+{
+	width: 100%;
+	height: 80px;
+	text-align: center;
+}
+
+.left-panel > .navigation > ul > li.active
+{
+	text-decoration: none;
+	color: #fff;
+	background-color: #222A34;
+	border-left: 4px solid #23a8f5;
+	border-bottom: 1px solid #222A34;
+	border-top: 1px solid #222A34;
+}
+
+.left-panel > .navigation > ul > li.active > a > .nav-icon,
+.left-panel > .navigation > ul > li.active > a > .nav-label
+{
+	color: #fff; 
+}
+
+.left-panel > .navigation > ul > li > a
+{
+	display: block;
+	width: 100%;
+	height: 80px;
+	
+	font-size: 14px;
+	line-height: 18px;
+	font-weight: 600;
+	color: #96A1B5;
+	text-decoration: none;
+}
+
+.left-panel > .navigation > ul > li > a:hover
+{
+	color: #fff;
+}
+
+.left-panel > .navigation > ul > li > a > .nav-icon
+{
+	width: 100%;
+	height: 50px;
+	padding-top: 20px;
+	font-size: 25px;
+}
+
+.left-panel > .navigation > ul > li > a > .nav-label
+{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+}
+
+/* left-panel end */
+
+/* top-panel begin */
+.top-panel
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 120px;
+	height: 60px;
+	
+	padding: 0;
+	margin: 0;
+	
+	background-color: #f2f2f4;
+	border-bottom: 1px solid #ececee;
+}
+
+.top-panel > .search-box
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 300px;
+	height: 60px;
+}
+
+.top-panel > .search-box > .search-btn
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	margin-top: 8px;
+	margin-left: 20px;
+	font-size: 17px;
+	border-radius: 50%;
+}
+
+.top-panel > .search-box > .search-btn > i
+{
+	display: block;
+	width: 17px;
+	height: 17px;
+	margin-top: 4px;
+}
+
+.top-panel > .search-box > .search-input
+{
+	float: left;
+	margin-top: 8px;
+	margin-left: 15px;
+}
+
+.top-panel > .search-box > .search-input > input
+{
+	height: 40px;
+	background-color: #ffffff;
+	color: #7c8589;
+	border: 1px solid #d8e3e7;
+	border-radius: 40px !important;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	font-size: 15px;
+}
+
+.top-panel > .tool-box
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 300px;
+	height: 60px;
+}
+
+.top-panel > .tool-box > .msg-btn,
+.top-panel > .tool-box > .signout-btn
+{
+	float: right;
+	width: 40px;
+	height: 40px;
+	margin-top: 8px;
+	margin-right: 20px;
+	font-size: 17px;
+	border-radius: 50%;
+}
+
+.top-panel > .tool-box > .msg-btn > i
+{
+	display: block;
+	width: 17px;
+	height: 17px;
+	margin-top: 4px;
+	margin-left: -1px;
+}
+
+.top-panel > .tool-box > .signout-btn > i
+{
+	display: block;
+	width: 17px;
+	height: 17px;
+	margin-top: 5px;
+}
+
+/* top-panel end */
+
+/* content-panel begin */
+body > .content-panel
+{
+	position: absolute;
+	top: 60px;
+	bottom: 0;
+	left: 120px;
+	right: 0;
+	
+	padding: 0;
+	margin: 0;
+}
+
+/* content-panel end */
+
+/* scroll bar style begin */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    background-color: #6c6e71;
+}
+
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+/* scroll bar style end */

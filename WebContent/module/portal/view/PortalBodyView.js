@@ -22,7 +22,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			   '	  <div class="carousel-fg">														   ' +
 			   '		<div class="carousel-title">Welcome to IdeaWorks!</div>  					   ' + 
 			   '		<div class="carousel-content">The Discovery-enriched Curriculum (DEC) has the goal of giving all students the opportunity to make an original discovery while at City University of Hong Kong. The DEC has been set as the academic blueprint in CityU Academic Development Proposal 2012-15 that was endorsed by the UGC.</div>' + 
-			   '		<div class="carousel-link"><a class="btn" href="index.html#introduction" target="_blank">Read More >></a></div>  					   ' + 
+			   '		<div class="carousel-link"><a class="btn" href="index.html#introduction" target="_blank">Read More <i class="fa fa-angle-right"></i></a></div>  					   ' + 
 			   '	  </div>							 										       ' +
 			   '      <img src="'+ util.baseUrl +'/res/images/portal/portal1.png" alt="First slide">   ' + 
 			   '   </div>																			   ' + 

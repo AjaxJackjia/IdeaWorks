@@ -12,7 +12,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$viewTitle.append('<h1>Online Help</h1>');
 	        
 			var $registerTitle = $('<div class="col-md-12 sub-title">');
-			$registerTitle.append('<h2 class="line"> <span> <i class="fa fa-group"></i> How to register </span> </h2>');
+			$registerTitle.append('<h2 class="line"> <span> <i class="fa fa-sign-in"></i> How to register </span> </h2>');
 			
 			var $registerContent = $('<div class="col-md-12 content">');
 			var _register = 
@@ -24,7 +24,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$registerContent.append('<p>' + _register + '</p>');
 			
 			var $joinProjectTitle = $('<div class="col-md-12 sub-title">');
-			$joinProjectTitle.append('<h2 class="line"> <span> <i class="fa fa-history"></i> How to join a project </span> </h2>');
+			$joinProjectTitle.append('<h2 class="line"> <span> <i class="fa fa-map"></i> How to join a project </span> </h2>');
 			
 			var $joinProjectContent = $('<div class="col-md-12 content">');
 			var _joinProject = 
@@ -35,7 +35,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$joinProjectContent.append('<p>' + _joinProject + '</p>');
 			
 			var $joinGroupTitle = $('<div class="col-md-12 sub-title">');
-			$joinGroupTitle.append('<h2 class="line"> <span> <i class="fa fa-paper-plane"></i> How to join an interest group </span> </h2>');
+			$joinGroupTitle.append('<h2 class="line"> <span> <i class="fa fa-users"></i> How to join an interest group </span> </h2>');
 			
 			var $joinGroupContent = $('<div class="col-md-12 content">');
 			var _joinGroup = 
