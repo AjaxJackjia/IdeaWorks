@@ -325,6 +325,39 @@
 	line-height: 31px;
 }
 
+.project-detail-members-view .member-action
+{
+	display: inline-block;
+	cursor: pointer;
+	background-color: #ffffff;
+	border: 1px solid #D8E3E7;
+	border-radius: 50%;
+	box-shadow: 0px 1px 2px 0px rgba(95,105,109,0.09);
+	margin: 8px 12px;
+	height: 68px;
+	width: 68px;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.project-detail-members-view .member-action > a
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+}
+
+.project-detail-members-view .member-action > a > i
+{
+	display: block;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto;
+	margin-top: 20px;
+	text-align: center;  
+}
+
 /* project-detail-milestones-view */
 .project-detail-milestone-view
 {

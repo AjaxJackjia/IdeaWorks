@@ -51,7 +51,7 @@ define([
 			'	<div class="footer">' + 
 			'		<a class="filename truncate">test</a>' + 
 			'		<div class="user">' + 
-		    '			<img class="img-circle" src="https://recruitee.com/uploads/candidates/98148/thumb_photo_1445852651.png">' +
+		    '			<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kendall.png">' +
 		    '			<div class="name truncate">John Doe</div>' +
 		    '		</div>' + 
 			'	</div>' + 

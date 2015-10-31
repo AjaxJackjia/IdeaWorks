@@ -31,9 +31,9 @@ define([
 		'  </div> ' +
 		'  <div class="content"> ' +
 		'	<div class="heading"> ' +
-		'		<img class="img-circle" src="https://recruitee.com/uploads/candidates/98148/thumb_photo_1445852651.png"> ' +
+		'		<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/darryl.png"> ' +
 		'		<span class="time">2 days ago</span> ' + 
-		'		<div class="user">Annette Bartoletti</div> ' +
+		'		<div class="user">Darryl</div> ' +
 		'	</div>' +
 		'	<div class="body"> ' + 
 		'		Sent an email to candidate. ' +

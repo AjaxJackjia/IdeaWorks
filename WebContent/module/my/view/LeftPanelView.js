@@ -32,7 +32,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			var $user = $('<div class="profile">');
 			var user_tpl = 
 				'<a class="avatar" href="#"> ' + 
-				'	<img src="'+ util.baseUrl +'/res/images/my/avatar.jpg" class="img-circle" alt="..."> ' +
+				'	<img src="'+ util.baseUrl +'/res/images/my/avatar.png" class="img-circle" alt="..."> ' +
 				'</a> ' +
 				'<a class="username" href="#"> ' + 
 	            '	<h4>Jack Jia</h4> ' +

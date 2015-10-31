@@ -11,37 +11,52 @@ define([
 		},
 		
 		render: function(){
+			var icon_base = 'http://localhost:8888/IdeaWorks/res/images/my/user/';
+			var users = [
+			             	'darryl', 'dorthy', 'harry', 'jackjia', 
+			             	'kendall', 'kylee', 'lila', 'stacy', 'stefan'
+			            ];
+			
 			var $advisor = $('<div class="advisor well">');
 			var $advisorTitle = $('<div class="advisor-title">Advisor</div>');
 			var $advisorContent = $('<div class="advisor-content"></div>');
-			$advisorContent.append(memberItem({ }));
+			$advisorContent.append(memberItem({
+				icon: icon_base + 'jackjia' + '.png',
+				name: 'jackjia'
+			}));
 			$advisor.append($advisorTitle);
 			$advisor.append($advisorContent);
 			
 			var $members = $('<div class="members well">');
 			var $membersTitle = $('<div class="members-title">Members</div>');
 			var $membersContent = $('<div class="members-content"></div>');
-			for(var index = 0;index< 20;index++) {
-				$membersContent.append(memberItem({ }));
+			for(var index = 0;index<users.length;index++) {
+				$membersContent.append(memberItem({
+					icon: icon_base + users[index] + '.png',
+					name: users[index]
+				}));
 			}
 			$members.append($membersTitle);
 			$members.append($membersContent);
 			
-			var $actions = $('<div class="action">');
-			$actions.append('<a class="add btn btn-sm btn-success" href="javascript:;">add member</a>');
+			//advisor actions
+			var $action_delegate = $('<div class="member-action">');
+			$action_delegate.append('<a class="btn btn-default" href="javascript:;"><i class="fa fa-apple"></i></a>');
+			$advisorContent.append($action_delegate);
+			
+			//member actions
+			var $action_add = $('<div class="member-action">');
+			$action_add.append('<a class="btn btn-default" href="javascript:;"><i class="fa fa-plus"></i></a>');
+			$membersContent.append($action_add);
 			
 			$(this.el).append($advisor);
 			$(this.el).append($members);
-			$(this.el).append($actions);
 			
 		    return this;
 		}
 	});
 	
 	var memberItem = function(member) {
-		member.icon = 'https://recruitee.com/uploads/candidates/98152/thumb_photo_1445852652.png';
-		member.name = 'Jerry Thompson';
-		
 		var $tpl = 
 			'<a class="member"> ' + 
         	'	<div class="member-photo"> ' +

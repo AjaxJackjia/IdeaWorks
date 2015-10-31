@@ -91,7 +91,7 @@ define([
 		'  <div class="content"> ' +
 		'	<div class="heading"> ' +
 		'		<span class="modify-time">2 days ago</span> ' + 
-		'		<img class="operator img-circle" src="https://recruitee.com/uploads/candidates/98148/thumb_photo_1445852651.png"> ' +
+		'		<img class="operator img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kylee.png"> ' +
 		'		<div class="title">User state exploring</div> ' +
 		'	</div>' +
 		'	<div class="body"> ' + 

@@ -3,7 +3,9 @@
 	font-family: "Open Sans", sans-serif, serif;
 }
 
-body, button, input, select, textarea, h1, h2, h3, h4, h5, h6, p
+body, button, input, select, textarea, 
+h1, h2, h3, h4, h5, h6, 
+p, div, span, a, li
 { 
 	font-family: "Open Sans", "Microsoft YaHei", sans-serif, serif;
 	-webkit-font-smoothing: antialiased;
