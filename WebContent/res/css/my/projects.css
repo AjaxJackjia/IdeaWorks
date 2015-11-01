@@ -132,6 +132,27 @@
 	padding: 0;
 }
 
+.project-detail-view > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-view > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
 .project-detail-view > .project-header
 {
 	position: absolute;
@@ -228,15 +249,11 @@
 
 .project-detail-abstract-view > .abstract-container
 {
-	background-color: #fff;
-}
-
-.project-detail-abstract-view > .abstract-container > p
-{
-	color: #5f6a6d;
 	margin: 0px 0px 6px 0px;
 	min-height: 200px;
-  	line-height: 20px;
+  	line-height: 30px;
+	color: #5f6a6d;
+	background-color: #fff;
   	word-wrap: break-word;
 }
 
@@ -248,11 +265,14 @@
 	margin-bottom: 30px;
 }
 
-.action > a
+.action > .edit-btn
 {
 	float: right;
+	width: 40px;
+	height: 40px;
 	margin-right: 20px;
-	border-radius: 30px;
+	font-size: 17px;
+	border-radius: 50%;
 }
 
 .project-detail-members-view > .advisor,
@@ -345,6 +365,7 @@
 	display: block;
 	width: 100%;
 	height: 100%;
+	font-size: 20px;
 	border-radius: 50%;
 }
 
@@ -354,7 +375,7 @@
 	width: 40px;
 	height: 40px;
 	margin: 0 auto;
-	margin-top: 20px;
+	margin-top: 15px;
 	text-align: center;  
 }
 
@@ -392,6 +413,21 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
+.project-detail-milestone-view > .milestones > .milestone > .content > .add-milestone-title
+{
+	margin-top: 5px;
+	margin-left: 0;
+	margin-right: 60px;
+	margin-bottom: 25px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	cursor: pointer;
+}
+
 .project-detail-milestone-view > .milestones > .milestone > .content > .heading
 {
 	margin-top: 5px;
@@ -400,22 +436,14 @@
 	cursor: pointer;
 }
 
-.project-detail-milestone-view > .milestones > .milestone > .content > .heading > .modify-time
+.project-detail-milestone-view > .milestones > .milestone > .content > .heading > .expand-icon
 {
 	float: right;
 	margin-left: 10px;
 	height: 40px;
 	line-height: 40px;
-	font-size: 12px;
+	font-size: 20px;
 	color: #afb6ba;
-}
-
-.project-detail-milestone-view > .milestones > .milestone > .content > .heading > .operator
-{
-	float: right;
-	margin-top: 8px;
-	width: 24px;
-	height: 24px;
 }
 
 .project-detail-milestone-view > .milestones > .milestone > .content > .heading > .title
@@ -441,16 +469,10 @@
 	word-wrap: break-word;
 }
 
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .duration
-{
-	height: 30px;
-	padding: 6px;
-	font-size: 15px;
-}
-
 .project-detail-milestone-view > .milestones > .milestone > .content > .body > .description
 {
 	padding: 6px;
+	margin-top: 10px;
 	font-size: 15px;
 }
 
@@ -459,11 +481,234 @@
 	
 }
 
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info
+{
+	height: 30px;
+	padding: 6px;
+	font-size: 15px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-time,
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-time
+{
+	float: left;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator,
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-operator
+{
+	float: left;
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-title,
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-title
+{
+	float: left;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-title 
+{
+	margin-left: 30px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container
+{
+	margin-top: 20px;
+	background-color: #fff;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container > .heading
+{
+	margin: 5px 0px 15px 0px;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container > .description-content
+{
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
 /* project-detail-forum-view */
 .project-detail-forum-view
 {
 	
 }
+
+.project-detail-forum-view > .topics
+{
+	background: url(http://localhost:8888/IdeaWorks/res/images/my/timeline.png) repeat-y 45px 0px;
+}
+
+.project-detail-forum-view > .topics > .topic > .timeline-icon
+{
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 40px;
+	height: 40px;
+	line-height: 38px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.project-detail-forum-view > .topics > .topic > .content
+{
+	padding: 5px;
+	margin-left: 52px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .add-topic-title
+{
+	margin-top: 5px;
+	margin-left: 0;
+	margin-right: 60px;
+	margin-bottom: 25px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading
+{
+	margin-top: 5px;
+	width: 100%;
+	height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .expand-icon
+{
+	float: right;
+	margin-left: 10px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 20px;
+	color: #afb6ba;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .create-operator
+{
+	float: right;
+	margin-right: 10px;
+  	margin-top: 5px;
+	width: 30px;
+	height: 30px;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .create-time
+{
+	float: right;
+	margin-left: 10px;
+	margin-right: 15px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 13px;
+	color: #afb6ba;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .title
+{
+	margin-left: 0;
+	margin-right: 60px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	max-width: 500px;
+	height: 40px;
+	line-height: 40px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	word-wrap: break-word;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .participants
+{
+	padding: 6px;
+	margin-top: 2px;
+	width: 400px;
+	font-size: 15px;
+	overflow:hidden
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .participants > .participant
+{
+	display: inline-block;
+	margin: 5px;
+	
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .participants > .participant > img
+{
+	width: 30px;
+	height: 30px;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .description
+{
+	padding: 6px;
+	margin-top: 10px;
+	font-size: 15px;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail
+{
+	
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container,
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container
+{
+	margin-top: 10px;
+	background-color: #fff;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container > .heading,
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container > .heading
+{
+	margin: 5px 0px 15px 0px;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.project-detail-forum-view > .milestones > .milestone > .content > .body > .detail > .description-container > .description-content,
+.project-detail-forum-view > .milestones > .milestone > .content > .body > .detail > .discussion-container > .discussion-content
+{
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
 
 /* project-detail-files-view */
 .project-detail-files-view > .action
@@ -586,12 +831,11 @@
 {
 	text-align: center;
 	margin-top: 50px;
-  	margin-left: -25px;
 }
 
 .project-detail-files-view > .files-container > .attachment > .footer
 {
-	height: 90px;
+	height: 120px;
 	padding: 10px 20px;
 	background-color: #ffffff;
 	border-bottom-left-radius: 4px;
@@ -600,6 +844,15 @@
 }
 
 .project-detail-files-view > .files-container > .attachment > .footer > .filename
+{
+	display: block;
+	color: #484c52;
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer > .filedescription
 {
 	display: block;
 	color: #484c52;

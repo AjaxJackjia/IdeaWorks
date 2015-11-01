@@ -49,7 +49,8 @@ define([
 			'		</div>' +
 			'	</div>' +
 			'	<div class="footer">' + 
-			'		<a class="filename truncate">test</a>' + 
+			'		<a class="filename truncate">test.pdf</a>' + 
+			'		<a class="filedescription truncate">This is file description.</a>' + 
 			'		<div class="user">' + 
 		    '			<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kendall.png">' +
 		    '			<div class="name truncate">John Doe</div>' +

@@ -34,7 +34,9 @@ define([
 			var project = this.model;
 				
 			if(project.get('isEmpty') == true) {
-				$(this.el).html('<h2>暂无项目详情...</h2>');
+				var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
+				$emtpy_placeholder.append('<h4>No project selected...</h4>');
+				$(this.el).html($emtpy_placeholder);
 			}else{
 				//清空
 				$(this.el).html('');

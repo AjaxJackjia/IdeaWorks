@@ -16,6 +16,7 @@ define([
 			 * */
 			var $milestones = $('<div class="milestones well">');
 			
+			$milestones.append(mileStoneAdd()); // milestone add button
 			for(var index = 0; index<20; index++) {
 				$milestones.append(milestone({ 
 					id: index
@@ -23,6 +24,13 @@ define([
 			}
 			
 			$(this.el).append($milestones);
+			
+			/*
+			 * milestone add new event
+			 * */
+			$milestones.find('.add-milestone-title').click(function() {
+				alert('add new milestone!');
+			});
 			
 			/*
 			 * milestone expand event
@@ -40,6 +48,9 @@ define([
 				var $unClickedMilestones = $milestones.children('[milestoneid!='+ milestoneId +']');
 				
 				if(!isExpanded) {
+					//change icon state
+					$('.expand-icon  > i').removeClass('fa-angle-down').addClass('fa-angle-up');
+					
 					//store scroll Y
 					scrollY = $('.project-content').scrollTop();
 					
@@ -47,7 +58,6 @@ define([
 					$unClickedMilestones.fadeOut();
 					
 					//隐藏milestone相关属性
-					$currentMilestone.find('.duration').hide();
 					$currentMilestone.find('.description').hide();
 					
 					//显示milestone细节
@@ -60,11 +70,13 @@ define([
 					//重置状态
 					isExpanded = true;
 				}else{
+					//change icon state
+					$('.expand-icon  > i').removeClass('fa-angle-up').addClass('fa-angle-down');
+					
 					//显示非click的milestone元素
 					$unClickedMilestones.fadeIn();
 					
 					//显示milestone相关属性
-					$currentMilestone.find('.duration').show();
 					$currentMilestone.find('.description').show();
 					
 					//隐藏milestone细节
@@ -82,79 +94,53 @@ define([
 		}
 	});
 	
+	var mileStoneAdd = function() {
+		var $tpl = 
+			'<div class="milestone"> ' +
+			'  <div class="timeline-icon"> ' +
+			'    <i class="fa fa-plus"></i> ' +
+			'  </div> ' +
+			'  <div class="content"> ' +
+			'	 <div class="add-milestone-title">Add New Milestone</div> ' +
+			'  </div> ' +
+			'</div>';
+			return $tpl;
+	};
+	
 	var milestone = function(data) {
 		var $tpl = 
-		'<div class="milestone" milestoneid="'+ data.id +'"> ' +
-		'  <div class="timeline-icon"> ' +
-		'    <i class="fa fa-arrow-right"></i> ' +
-		'  </div> ' +
-		'  <div class="content"> ' +
-		'	<div class="heading"> ' +
-		'		<span class="modify-time">2 days ago</span> ' + 
-		'		<img class="operator img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kylee.png"> ' +
-		'		<div class="title">User state exploring</div> ' +
-		'	</div>' +
-		'	<div class="body"> ' + 
-		'		<div class="duration">From 2013-08-01 to 2013-10-31</div> ' +
-		'		<div class="description">Brief description!</div> ' +
-		'	</div> ' +
-		'  </div> ' +
-		'</div>';
+			'<div class="milestone" milestoneid="'+ data.id +'"> ' +
+			'  <div class="timeline-icon"> ' +
+			'    <i class="fa fa-flag"></i> ' +
+			'  </div> ' +
+			'  <div class="content"> ' +
+			'	<div class="heading"> ' +
+			'		<div class="expand-icon" title="show milestone detail"><i class="fa fa-angle-down"></i></div>' + 
+			'		<div class="title">User state exploring (2015-11-01)</div> ' +
+			'	</div>' +
+			'	<div class="body"> ' + 
+			'		<div class="description">Brief description!</div> ' +
+			'	</div> ' +
+			'  </div> ' +
+			'</div>';
 		return $tpl;
 	};
 	
 	var generateMilestoneDetailDiv = function(data) {
 		var tpl = 
 			'<div class="detail">' +
-			'	<h3 class="detail">Events:</h3>' +
-			'	<ul class="list-group">' +
-			'	  <li class="list-group-item"><i class="fa fa-plus"></i></li>' +
-			'	  <li class="list-group-item">Cras justo odio</li>' +
-			'	  <li class="list-group-item">Dapibus ac facilisis in</li>' +
-			'	  <li class="list-group-item">Morbi leo risus</li>' +
-			'	  <li class="list-group-item">Porta ac consectetur ac</li>' +
-			'	  <li class="list-group-item">Vestibulum at eros</li>' +
-			'	</ul>' +
-			'<div class="container-fluid">' +  //bootstrap-collapsible
-		    ' <div class="accordion" id="accordion2">' +
-		    '        <div class="accordion-group">' +
-		    '          <div class="accordion-heading">' +
-		    '            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">' +
-		    '              Click me to exapand. Click me again to collapse. Part I.' +
-		    '            </a>' +
-		    '          </div>' +
-		    '          <div id="collapseOne" class="accordion-body collapse" style="height: 0px; ">' +
-		    '            <div class="accordion-inner">' +
-		    '              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' +
-		    '            </div>' +
-		    '          </div>' +
-		    '        </div>' +
-		    '        <div class="accordion-group">' +
-		    '          <div class="accordion-heading">' +
-		    '            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">' +
-		    '             Click me to exapand. Click me again to collapse. Part II.' +
-		    '            </a>' +
-		    '          </div>' +
-		    '          <div id="collapseTwo" class="accordion-body collapse">' +
-		    '            <div class="accordion-inner">' +
-		    '              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' +
-		    '            </div>' +
-		    '          </div>' +
-		    '        </div>' +
-		    '        <div class="accordion-group">' +
-		    '          <div class="accordion-heading">' +
-		    '            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">' +
-		    '              Click me to exapand. Click me again to collapse. Part III.' +
-		    '            </a>' +
-		    '          </div>' +
-		    '          <div id="collapseThree" class="accordion-body collapse">' +
-		    '            <div class="accordion-inner">' +
-		    '              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.' +
-		    '            </div>' +
-		    '          </div>' +
-		    '        </div>' +
-		    '      </div>' +
-		    '</div>' +
+			'	<div class="meta-info"> ' + 
+			'		<span class="create-title">create: </span>' + 
+			'		<img class="create-operator img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kylee.png"> ' +
+			'		<span class="create-time">2 days ago</span> ' + 
+			'		<span class="modify-title">modify: </span>' + 
+			'		<img class="modify-operator img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kylee.png"> ' +
+			'		<span class="modify-time">2 days ago</span> ' + 
+			'	</div>' + 
+			'	<div class="description-container well">' + 
+	        '		<h4 class="heading">Description</h4>' + 
+	        '		<div class="description-content">The goal of this project is to contribute to the development of a human-computer interaction environment in which the computer detects and tracks the user\'s emotional, motivational, cognitive and task states, and initiates communications based on this knowledge, rather than simply responding to user commands.</div>' + 
+	        '	</div>' + 
 			'</div>';
 		return tpl;
 	};

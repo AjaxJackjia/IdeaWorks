@@ -39,14 +39,9 @@ define([
 			$members.append($membersTitle);
 			$members.append($membersContent);
 			
-			//advisor actions
-			var $action_delegate = $('<div class="member-action">');
-			$action_delegate.append('<a class="btn btn-default" href="javascript:;"><i class="fa fa-apple"></i></a>');
-			$advisorContent.append($action_delegate);
-			
 			//member actions
 			var $action_add = $('<div class="member-action">');
-			$action_add.append('<a class="btn btn-default" href="javascript:;"><i class="fa fa-plus"></i></a>');
+			$action_add.append('<a class="btn btn-default" href="javascript:;"><i class="fa fa-user-plus"></i></a>');
 			$membersContent.append($action_add);
 			
 			$(this.el).append($advisor);
