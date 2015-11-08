@@ -17,7 +17,7 @@ define([
 			$abstract.append('<p>' + abstractContent + '</p>');
 			
 			var $actions = $('<div class="action">');
-			$actions.append('<div class="edit-btn btn btn-default"><i class="fa fa-pencil"></i></div>');
+			$actions.append('<div class="edit-btn btn btn-default"><i class="fa fa-pencil"></i>     Edit Abstract</div>');
 			
 			$(this.el).append($abstract);
 			$(this.el).append($actions);

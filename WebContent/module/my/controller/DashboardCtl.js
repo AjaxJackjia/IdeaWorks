@@ -9,11 +9,11 @@ define([
 		console.log("This is dashborad controller module!");
 		
 		//model
-		var briefModel = new BriefModel();
-		briefModel.set('projectNo', 10);
-		briefModel.set('activityNo', 112);
-		briefModel.set('relatedMemberNo', 37);
-		briefModel.set('forumParticipationNo', 452);
+//		var briefModel = new BriefModel();
+//		briefModel.set('projectNo', 10);
+//		briefModel.set('activityNo', 112);
+//		briefModel.set('relatedMemberNo', 37);
+//		briefModel.set('forumParticipationNo', 452);
 		
 		//view
 		var $dashboardViewContainer = $('<div class="dashboard-container">');

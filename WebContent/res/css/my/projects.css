@@ -177,7 +177,15 @@
 	float: right;
 	width: 100px;
 	height: 80px;
-	background: grey;
+	line-height: 80px;
+}
+
+.project-detail-view > .project-header > .actions > .btn.btn-default
+{
+	border-radius: 40px;
+  	line-height: 24px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
 }
 
 .project-detail-view > .project-menu
@@ -248,22 +256,22 @@
   	word-wrap: break-word;
 }
 
-.action
+.project-detail-abstract-view > .action
 {
 	width: 100%;
-	height: 50px;
-	line-height: 50px;
-	margin-bottom: 30px;
+	height: 100px;
+	line-height: 100px;
 }
 
-.action > .edit-btn
+.project-detail-abstract-view > .action > .edit-btn
 {
 	float: right;
-	width: 40px;
 	height: 40px;
+	line-height: 24px;
+	margin-top: 20px;
 	margin-right: 20px;
-	font-size: 17px;
-	border-radius: 50%;
+	color: #7c8589;
+	border-radius: 40px;
 }
 
 .project-detail-members-view > .advisor,

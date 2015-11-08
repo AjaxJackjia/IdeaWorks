@@ -44,7 +44,11 @@ define([
 				//project detail header
 				var project_header = 
 					'<div class="project-header">' + 
-					'	<div class="actions"></div>' + 
+					'	<div class="actions">' + 
+					'		<a class="btn btn-default"> ' + 
+					'			<i class="fa fa-pencil"></i> Edit' +
+					'		</a>' + 
+					'	</div>' + 
 					'	<div class="content">' + 
 					'		<img src="'+ util.baseUrl +'/res/images/my/project_pic_placeholder.jpg" alt="project image" class="img-rounded" />' +
 					'		<div class="info"> ' + 
