@@ -25,11 +25,6 @@ define([ 'backbone', './view/LeftPanelView', './view/TopPanelView' ], function (
     router.on('route', function (route, params) {
         require([route], function (controller) {
             if(router.currentController && router.currentController !== controller){
-            	//clear current container
-            	if(typeof router.currentController.clear === 'function') {
-            		router.currentController.clear();
-            	}
-            	
                 router.currentController.onRouteChange && router.currentController.onRouteChange();
             }
             router.currentController = controller;

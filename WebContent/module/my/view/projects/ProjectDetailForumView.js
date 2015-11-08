@@ -28,22 +28,20 @@ define([
 				             	'darryl', 'dorthy', 'harry', 'jackjia', 
 				             	'kendall', 'kylee', 'lila', 'stacy', 'stefan'
 				            ];
-				$.each(users, function(index, user) {
-					$topic.find('.participants').append(participant({
-						name: user
-					}));
-				});
 				
-				//discussion
-				var messages = [
-				                {from: 'darryl', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'},
-				                {from: 'jackjia', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'},
-				                {from: 'stefan', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'},
-				                {from: 'dorthy', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'}
-				               ]
-				$.each(messages, function(index, msg) {
-					console.log(msg);
-					$topic.find('discussion-container  > .discussion-content').append(message(msg));
+				var max_shown_user_index = Math.floor( Math.random()*10 );
+				$.each(users, function(index, user) {
+					if(index < max_shown_user_index) {
+						$topic.find('.participants').append(participant({
+							name: user
+						}));
+					}else if(index == max_shown_user_index) {
+						var placeholder = 
+							'<div class="participant">' +
+							'	<i class="fa fa-ellipsis-h"></i>' + 
+							'</div>';
+						$topic.find('.participants').append(placeholder);
+					};
 				});
 			}
 			
@@ -88,6 +86,18 @@ define([
 					$currentTopic.find('.body').append(generateTopicDetailDiv({
 						id: topicId
 					}));
+					
+					//设置 discussion 信息
+					var messages = [
+					                {from: 'darryl', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'},
+					                {from: 'jackjia', msg: 'This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!This is an easy question!', time: '2015-11-01 12:22:00'},
+					                {from: 'stefan', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'},
+					                {from: 'dorthy', msg: 'This is an easy question!', time: '2015-11-01 12:22:00'}
+					               ]
+					$.each(messages, function(index, msg) {
+						$currentTopic.find('.discussion-container  > .discussion-content').append(message(msg));
+					});
+					
 					//设置scroll状态
 					$('.project-content').scrollTop(0);
 					
@@ -184,10 +194,13 @@ define([
 			tpl = '<div class="message other">';
 		}
 		tpl += 
-			'	<img class="other img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/'+ data.from +'.png">' + 
+			'	<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/'+ data.from +'.png">' + 
 			'	<div class="message-body"> ' +
-			'		<span class="message-time">'+ data.time +'</span>' + 
-			'		<span class="message-body">'+ data.msg +'</span>' + 
+			'		<div class="message-title"> ' + 
+			'			<span class="message-from">'+ data.from +'</span>' + 
+			'			<span class="message-time">'+ data.time +'</span>' + 
+			'		</div> ' + 
+			'		<div class="message-text">'+ data.msg +'</div>' + 
 			'	</div>' +
 			'</div>';
 		

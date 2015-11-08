@@ -7,7 +7,7 @@ define([
 		className: 'project-list-view',
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'addProject');
+			_.bindAll(this, 'render', 'addProject', 'emtpyList');
 			
 			this.render();
 		},
@@ -16,19 +16,16 @@ define([
 			var me = this;
 			var listModel = this.model;
 			
-			//project list title
-			var project_list_title = 
-				'<div class="project-list-title">' + 
-				'	<div class="project-list-title-content">Project List</div>' + 
-				'	<div class="project-create-icon glyphicon glyphicon-plus"></div>'
-				'</div>'; 
-			$(this.el).append(project_list_title);
-			
 			//project list content
 			$(this.el).append('<ul class="project-list-content">');
-			_.each(listModel.models, function(project){
-				me.addProject(project);
-			});
+			//根据列表内容是否为空来分别填充
+			if(listModel.length > 0) {
+				_.each(listModel.models, function(project){
+					me.addProject(project);
+				});
+			}else{
+				me.emtpyList();
+			}
 			
 		    return this;
 		},
@@ -39,6 +36,13 @@ define([
 				model: project
 			});
 			$(this.el).find('ul').append($(porjectItem.el));
+		},
+		
+		//method: list 为空时的占位符
+		emtpyList: function() {
+			var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
+			$emtpy_placeholder.append('<h4>Please create new project...</h4>');
+			$(this.el).find('ul').html($emtpy_placeholder);
 		}
 	});
 	

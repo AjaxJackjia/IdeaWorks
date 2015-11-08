@@ -22,7 +22,7 @@ define([
 			_.bindAll(this, 'render', 'show');
 			
 			//注册全局事件
-			Backbone.on('ShowProjectDetail', this.show, this);
+			Backbone.off('ShowProjectDetail').on('ShowProjectDetail', this.show, this);
 			
 			//model监听事件
 			this.model.bind('change', this.render);
@@ -106,11 +106,6 @@ define([
 				$(this.el).find('#forum').append(forumView.render().el);
 				$(this.el).find('#files').append(filesView.render().el);
 				$(this.el).find('#activity').append(activityView.render().el);
-				
-				//add menu click event
-				$('#myTabs a').click(function (e) {
-					$(this).tab('show');
-				})
 			}
 			
 		    return this;

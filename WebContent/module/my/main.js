@@ -5,6 +5,7 @@
 			'backbone': '../../lib/backbone/backbone-min',
 			'underscore': '../../lib/underscore/underscore-min',
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
+			'Switch' : '../../lib/bootstrap-switch/dist/js/bootstrap-switch.min',
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
 			'util': '../common/util',

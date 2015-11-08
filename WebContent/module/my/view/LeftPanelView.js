@@ -18,8 +18,8 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			};
 			
 			this.navIcon = {
-				Dashboard: 'briefcase',
-				Projects : 'archive',
+				Dashboard: 'line-chart',
+				Projects : 'suitcase',
 				Settings : 'cog'
 			};
 		},
@@ -29,47 +29,21 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			/*
 			 * user profile
 			 * */
-			var $user = $('<div class="profile">');
-			var user_tpl = 
-				'<a class="avatar" href="#"> ' + 
-				'	<img src="'+ util.baseUrl +'/res/images/my/avatar.png" class="img-circle" alt="..."> ' +
-				'</a> ' +
-				'<a class="username" href="#"> ' + 
-	            '	<h4>Jack Jia</h4> ' +
-	            '</a>';
-			$user.html(user_tpl);
+			var $user = userProfile({ });
 			
 			/*
 			 * navigation list
 			 * */
-			var navIcons = this.navIcon;
-			var $nav = $('<nav class="navigation">');
-			var nav_tpl = '<ul class="list-unstyled">';
+			var $nav = navList(this.nav, this.navIcon);
 			
-			_.each(this.nav, function(value, key) {
-				if(key == 'Projects') {
-					nav_tpl += 
-						'<li>' + 
-		            	'	<a href="'+ value +'">' +
-		            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
-		            	'		<div class="nav-label">' + key + '</div>' +
-		            	'	</a>' +
-						'</li>';
-				}else{
-					nav_tpl += 
-						'<li>' + 
-		            	'	<a href="'+ value +'">' +
-		            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
-		            	'		<div class="nav-label">' + key + '</div>' +
-		            	'	</a>' +
-						'</li>';
-				}
-			});
-			nav_tpl += '</ul>';
-			$nav.html(nav_tpl);
+			/*
+			 * new something
+			 * */
+			var $create = createBtn();
 
 			$(this.el).append($user);
 			$(this.el).append($nav);
+			$(this.el).append($create);
 			
 			return this;
 		},
@@ -79,6 +53,63 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$(e.target).closest('li').addClass('active');
 		}
 	});
+	
+	var userProfile = function(user) {
+		//user.avatar
+		//user.name
+		var $user = $('<div class="profile">');
+		var user_tpl = 
+			'<a class="avatar" href="#settings"> ' + 
+			'	<img src="'+ util.baseUrl +'/res/images/my/avatar.png" class="img-circle" alt="..."> ' +
+			'</a> ' +
+			'<a class="username" href="#settings"> ' + 
+            '	<h4>Jack Jia</h4> ' +
+            '</a>';
+		$user.html(user_tpl);
+		
+		return $user;
+	};
+	
+	var navList = function(nav, navIcons) {
+		var $nav = $('<nav class="navigation">');
+		var nav_tpl = '<ul class="list-unstyled">';
+		
+		_.each(nav, function(value, key) {
+			if(key == 'Projects') {
+				nav_tpl += 
+					'<li>' + 
+	            	'	<a href="'+ value +'">' +
+	            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
+	            	'		<div class="nav-label">' + key + '</div>' +
+	            	'	</a>' +
+					'</li>';
+			}else{
+				nav_tpl += 
+					'<li>' + 
+	            	'	<a href="'+ value +'">' +
+	            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
+	            	'		<div class="nav-label">' + key + '</div>' +
+	            	'	</a>' +
+					'</li>';
+			}
+		});
+		nav_tpl += '</ul>';
+		$nav.html(nav_tpl);
+		
+		return $nav;
+	};
+	
+	var createBtn = function() {
+		var $create = $('<div class="create">');
+		var create_tpl = 
+			'<a href="javascript:;">' + 
+			'	<div class="nav-icon fa fa-plus-circle"></div>' + 
+			'	<div class="create-title">New</div>' + 
+			'</a>';
+		$create.html(create_tpl);
+		
+		return $create;
+	};
 	
 	return LeftPanelView;
 });

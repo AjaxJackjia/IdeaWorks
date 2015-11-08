@@ -10,54 +10,40 @@
 	padding: 0;
 }
 
-.project-list-view > .project-list-title
-{
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 350px;
-	height: 50px;
-
-	margin: 0;
-	padding: 0;
-	
-	color: #333;
-	border-bottom: 1px solid #d8e3e7;
-	text-align: center;
-}
-
-.project-list-view > .project-list-title > .project-list-title-content
-{
-	display: inline-block;
-	width: 200px;
-	height: 50px;
-	line-height: 50px;
-	font-size: 18px;
-}
-
-.project-list-view > .project-list-title > .project-create-icon
-{
-	display: inline-block;
-	float: right;
-	width: 30px;
-	height: 50px;
-	font-size: 18px;
-	line-height: 50px;
-	cursor: pointer;
-}
-
 .project-list-view > .project-list-content
 {
 	position: absolute;
 	left: 0;
-	top: 50px;
+	top: 0;
 	bottom: 0;
 	width: 350px;
 
 	margin: 0;
 	padding: 0;
+	border-right: 1px solid #dedede;
 	list-style: none;
 	overflow: auto;
+}
+
+.project-list-view > .project-list-content > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-list-view > .project-list-content > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
 }
 
 .project-list-view > .project-list-content > .project-list-item-view
@@ -92,7 +78,7 @@
 	line-height: 18px;
 	margin: 5px 0px 3px 0px;
 	padding: 0px;
-	color: #2a333d;
+	color: #7b898d;
 	white-space: nowrap;
 	text-overflow: ellipsis;
 }
@@ -118,6 +104,11 @@
 	border-left: 4px solid #23a8f5;
 	padding-left: 11px;
 	background-color: #f8fafb;
+	
+	transition: all 0.2s ease 0s;
+	-webkit-transition: all 0.2s ease 0s;
+	-moz-transition: all 0.2s ease 0s;
+	-o-transition: all 0.2s ease 0s;
 }
 
 .project-detail-view
@@ -702,13 +693,89 @@
 	text-transform: uppercase;
 }
 
-.project-detail-forum-view > .milestones > .milestone > .content > .body > .detail > .description-container > .description-content,
-.project-detail-forum-view > .milestones > .milestone > .content > .body > .detail > .discussion-container > .discussion-content
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container > .description-content,
+.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container > .discussion-content
 {
 	color: #5f6a6d;
 	line-height: 30px;
 }
 
+.project-detail-forum-view .discussion-content > .message
+{
+	position: relative;
+	width: 100%;
+	margin: 20px 5px;
+	
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.project-detail-forum-view .discussion-content > .message.other > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.project-detail-forum-view .discussion-content > .message.self > img
+{
+	float: right;
+	width: 50px;
+	height: 50px;
+}
+
+.project-detail-forum-view .discussion-content > .message.other > .message-body
+{
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-left: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-view .discussion-content > .message.self > .message-body
+{
+	position: relative;
+	float: right;
+	display: inline-block;
+	margin-right: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-view .discussion-content > .message > .message-body > .message-title 
+{
+	display: inline-block;
+}
+
+.project-detail-forum-view .discussion-content > .message > .message-body > .message-title > .message-from
+{
+	color: #23a8f5;
+	font-size: 14px;
+}
+
+.project-detail-forum-view .discussion-content > .message > .message-body > .message-title > .message-time
+{
+	color: #afb6ba;
+	font-size: 14px;
+}
+
+.project-detail-forum-view .discussion-content > .message > .message-body > .message-text
+{
+	display: block;
+	padding: 5px 10px 5px 5px;
+	max-width: 500px;
+	min-height: 1em;
+	vertical-align: top;
+	text-align: left;
+	font-size: 14px;
+	white-space: pre-wrap;
+	background-color: #eeeeee;
+	
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
 
 /* project-detail-files-view */
 .project-detail-files-view > .action

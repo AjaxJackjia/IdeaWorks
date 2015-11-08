@@ -16,6 +16,7 @@ define([
 			var project = new ProjectModel();
 			project.set('projectId', index);
 			project.set('isEmpty', false);
+			
 			listModel.add(project);
 		}
 		
@@ -37,7 +38,7 @@ define([
 		//初始化侧边栏状态
 		$($('.navigation > .list-unstyled > li')[1]).click();
 		
-		ProjectsController.clear = function() {
+		ProjectsController.onRouteChange = function() {
 			listView.remove();
 			detailView.remove();
 		};

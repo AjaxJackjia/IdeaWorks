@@ -23,6 +23,7 @@
     "metro": "~3.0.12",
     "text": "requirejs-text#~2.0.14",
     "require-css": "~0.1.8",
-    "headroom.js": "~0.7.0"
+    "headroom.js": "~0.7.0",
+    "bootstrap-switch": "~3.3.2"
   }
 }

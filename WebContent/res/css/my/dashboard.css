@@ -1,7 +1,287 @@
-* 
+/* dashboard common css begin */
+.dashboard-container 
 {
-	font-family: "Open Sans", sans-serif, serif;
+	position: relative;
+	width: 100%;
+	height: 100%;
+	
+	overflow: auto;
 }
 
+.dashboard-container .well h4.heading {
+	margin: 5px 0px 15px 0px;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+/* dashboard common css end */
+
+/* brief view begin */
+.dashboard-container > .brief-view
+{
+	position: relative;
+	padding: 10px 15px;
+	width: 100%;
+	
+	/* clear float */
+	overflow: hidden;
+	zoom: 1;
+}
+
+.dashboard-container > .brief-view > .stats
+{
+	display: block;
+	float: left;
+	width: 25.0%;
+}
+
+.dashboard-container > .brief-view > .stats > .well
+{
+	padding: 0px;
+	margin: 0px 10px;
+	overflow: hidden;
+	text-align: center;well
+	
+	background-color: #ffffff;
+	background: #FFFFFF;
+	border: 1px solid #E3E7ED;
+	box-shadow: 0px 0px 2px 0px rgba(186,198,215,0.62),0px 1px 2px 0px rgba(186,198,215,0.9);
+	border: none;
+}
+
+.dashboard-container > .brief-view > .stats > .well > i.fa
+{
+	float: left;
+	width: 60px;
+	height: 66px;
+	text-align: center;
+	line-height: 66px;
+	background-color: #23a8f5;
+	color: #ffffff;
+	font-size: 20px;
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+	transition: all 0.2s ease 0s;
+	-webkit-transition: all 0.2s ease 0s;
+	-moz-transition: all 0.2s ease 0s;
+	-o-transition: all 0.2s ease 0s;
+}
+
+.dashboard-container > .brief-view > .stats > .well > .darker-text-color 
+{
+  color: #484c52;
+}
+
+.dashboard-container > .brief-view > .stats > .well > .text-color 
+{
+  color: #7b898d;
+}
+
+.dashboard-container > .brief-view > .stats > .well > h3
+{
+  margin: 10px 0px 0px 0px;
+  font-weight: 500;
+}
+
+.dashboard-container > .brief-view > .stats > .well > p
+{
+	padding: 0;
+	margin: 0;
+	text-transform: uppercase;
+	font-size: 13px;
+}
+
+/* brief view end */
+
+/* recent-activity-view begin */
+.dashboard-container > .recent-activity-view
+{
+	display: inline-block;
+	position: relative;
+	padding: 10px 15px;
+	width: 50%;
+	height: 400px;
+}
+
+.dashboard-container > .recent-activity-view .well
+{
+	background-color: #fff;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 360px;
+	padding: 10px 5px;
+	overflow: auto;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity
+{
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading
+{
+	width: 100%;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading > img
+{
+	width: 40px;
+	float: left;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading > .user,
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading > .project
+{
+	display: inline-block;
+	margin-left: 10px;
+	margin-top: 12px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading > div.project
+{
+	color: #7b898d;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .heading > .time
+{
+	font-size: 12px;
+	float: right;
+	line-height: 18px;
+	margin-top: 12px;
+	color: #afb6ba;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activity > .content
+{
+	width: 100%;
+	margin: 10px 0px;
+	word-wrap: break-word;
+}
+/* recent-activity-view end */
+
+/* popular-forum-view begin */
+.dashboard-container > .popular-forum-view
+{
+	display: inline-block;
+	position: relative;
+	padding: 10px 15px;
+	width: 50%;
+	height: 400px;
+}
+
+.dashboard-container > .popular-forum-view .well
+{
+	background-color: #fff;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 360px;
+	padding: 10px 5px;
+	overflow: auto;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum
+{
+	display: block;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading
+{
+	width: 100%;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .forum-icon
+{
+	float: left;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .topic
+{
+	display: inline-block;
+	margin-left: 10px;
+	margin-top: 12px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .time
+{
+	font-size: 12px;
+	float: right;
+	line-height: 18px;
+	margin-top: 12px;
+	color: #afb6ba;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .content
+{
+	width: 100%;
+	margin: 10px 0px;
+	word-wrap: break-word;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .project,
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .participant,
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .message
+{
+	display: inline-block;
+	margin-right: 10px;
+	
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > div.project
+{
+	color: #7b898d;
+}
+
+/* popular-forum-view end */
 
 

@@ -138,6 +138,50 @@ body
 	line-height: 30px;
 }
 
+.left-panel > .create 
+{	
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	margin-bottom: 20px;
+	width: 100%;
+	height: 80px;
+	text-align: center;
+}
+
+.left-panel > .create > a 
+{
+	display: block;
+	width: 100%;
+	height: 80px;
+	
+	font-size: 14px;
+	line-height: 18px;
+	font-weight: 600;
+	color: #96A1B5;
+	text-decoration: none;
+}
+
+.left-panel > .create > a:hover
+{
+	color: #fff;
+}
+
+.left-panel > .create > a > .nav-icon
+{
+	width: 100%;
+	height: 50px;
+	padding-top: 20px;
+	font-size: 25px;
+}
+
+.left-panel > .create > a > .create-title
+{
+	width: 100%;
+	height: 30px;
+	line-height: 30px;
+}
+
 /* left-panel end */
 
 /* top-panel begin */
