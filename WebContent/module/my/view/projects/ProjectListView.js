@@ -21,6 +21,10 @@ define([
 			//根据列表内容是否为空来分别填充
 			if(listModel.length > 0) {
 				_.each(listModel.models, function(project){
+					if(project.get('id') !== '') {
+						project.set('isEmpty', false);
+					}
+					
 					me.addProject(project);
 				});
 			}else{

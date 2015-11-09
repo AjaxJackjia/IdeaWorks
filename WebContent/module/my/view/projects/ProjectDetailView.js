@@ -25,14 +25,14 @@ define([
 			Backbone.off('ShowProjectDetail').on('ShowProjectDetail', this.show, this);
 			
 			//model监听事件
-			this.model.bind('change', this.render);
+			this.model.bind('change:id', this.render);
 			
 			this.render();
 		},
 		
 		render: function(){
 			var project = this.model;
-				
+			
 			if(project.get('isEmpty') == true) {
 				var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
 				$emtpy_placeholder.append('<h4>No project selected...</h4>');
@@ -50,10 +50,11 @@ define([
 					'		</a>' + 
 					'	</div>' + 
 					'	<div class="content">' + 
-					'		<img src="'+ util.baseUrl +'/res/images/my/project_pic_placeholder.jpg" alt="project image" class="img-rounded" />' +
+					'		<img src="'+ util.baseUrl + project.get('logo') + '" alt="'+ project.get('title') +'" class="img-rounded" />' +
 					'		<div class="info"> ' + 
 					'			<h4 class="project-title">'+ project.get('title') +'</h4>' + 
 					'			<p class="project-advisor">Advisor: '+ project.get('advisor') +'</p>' + 
+					'			<p class="project-createtime">Create time: ' + util.timeformat(new Date(project.get('createtime')), 'smart') + '</p>' + 
 					'		</div>' +
 					'	</div>' + 
 					'</div>';
@@ -97,7 +98,9 @@ define([
 					'</div>'; 
 				$(this.el).append(project_content);
 				
-				var abstractView = new ProjectDetailAbstractView();
+				var abstractView = new ProjectDetailAbstractView({
+					model: project
+				});
 				var membersView = new ProjectDetailMembersView();
 				var milestoneView = new ProjectDetailMilestoneView();
 				var forumView = new ProjectDetailForumView();
@@ -116,7 +119,12 @@ define([
 		},
 		
 		show: function(project) {
-			this.model.set(project);
+			for(var index in project.attributes) {
+				if(index == "id") continue; 
+				this.model.set(index, project.attributes[index]);
+			}
+			this.model.set('id', project.attributes['id']);
+			
 			console.log("show project detail!");
 		}
 	});

@@ -73,14 +73,17 @@
 
 .project-list-view > .project-list-content > .project-list-item-view > .info > .project-title
 {
+	display: block;
 	font-size: 14px;
 	font-weight: 600;
 	line-height: 18px;
+	width: 190px;
 	margin: 5px 0px 3px 0px;
 	padding: 0px;
 	color: #7b898d;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .project-list-view > .project-list-content > .project-list-item-view > .info > .project-advisor
@@ -170,6 +173,27 @@
 {
 	margin-left: 90px;
 	color: #7b898d;
+}
+
+.project-detail-view > .project-header > .content > .info > .project-title
+{
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 18px;
+	max-width: 600px;
+	color: #23a8f5;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-view > .project-header > .content > .info > .project-advisor, 
+.project-detail-view > .project-header > .content > .info > .project-createtime
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .project-detail-view > .project-header > .actions

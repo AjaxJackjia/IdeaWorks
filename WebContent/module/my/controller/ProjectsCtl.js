@@ -10,28 +10,29 @@ define([
 	var ProjectsController = function() {
 		console.log("This is projects controller module!");
 		
-		//model
+		//list model
 		var listModel = new ProjectListModel();
-		for(var index = 0;index<10;index++) {
-			var project = new ProjectModel();
-			project.set('projectId', index);
-			project.set('isEmpty', false);
-			
-			listModel.add(project);
-		}
+		var listView = null;
+		listModel.fetch({
+			success: function() {
+				//list view
+				listView = new ProjectListView({
+					model: listModel
+				});
+				
+				//添加视图
+				$('body > .content-panel').append($(listView.el));
+			}
+		}); 
 		
-		//view
-		var listView = new ProjectListView({
-			model: listModel
-		});
-		
+		//detail model
 		var empty = new ProjectModel();
+		
+		//detail view
 		var detailView = new ProjectDetailView({
 			model: empty
 		});
 		
-		//添加视图
-		$('body > .content-panel').append($(listView.el));
 		$('body > .content-panel').append($(detailView.el));
 		$('body > .content-panel').animate({scrollTop:0},0);
 		

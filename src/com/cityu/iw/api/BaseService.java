@@ -15,4 +15,8 @@ public class BaseService
         }
         return builder.build();
     }
+    
+    public String validateToken() {
+    	return "";
+    }
 }

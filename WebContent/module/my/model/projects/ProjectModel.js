@@ -1,13 +1,17 @@
 define([ 'backbone' ], function(Backbone) {
 	var Project = Backbone.Model.extend({
 		defaults: {
-			'projectId': 0,
-			'title': 'project Test Title',
-			'advisor': 'martin',
-			'status': 'ongoing',
-			'abstract': 'This is project abstract',
-			'members': [],
-			'milestone': [],
+			'id': 0,
+			'title': '',
+			'creator': '',
+			'advisor': '',
+			'abstractContent': '',
+			'status': '',
+			'security': '',
+			'logo': '',
+			'createtime': '',
+			'modifytime': '',
+			'isDeleted': '',
 			'isEmpty': true
 		}
 	});
