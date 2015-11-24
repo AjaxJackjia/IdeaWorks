@@ -13,7 +13,11 @@ define([
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'select');
+			_.bindAll(this, 'render', 'unrender', 'select');
+			
+			//监听model变化
+			this.model.bind('change', this.render);	
+			this.model.bind('destroy', this.unrender);
 			
 			this.render();
 		},
@@ -21,50 +25,50 @@ define([
 		render: function(){
 			var project = this.model;
 			
-			//project status
-			var project_status = genProjectStatus(project.get('status'));
-			$(this.el).append(project_status);
+			//cid
+			$(this.el).attr('cid', this.model.cid);
 			
-			//project image
-			var project_img = genProjectLogo(project.get('title'), project.get('logo'));
-			$(this.el).append(project_img);
-			
-			//project info
-			var project_info = genProjectInfo(project.get('title'), project.get('advisor'));
-			$(this.el).append(project_info);
+			//根据模板生成dom
+			var projectItem_tpl = ProjectItem_template(project);
+			$(this.el).html(projectItem_tpl);
 			
 		    return this;
+		},
+		
+		unrender: function(){
+			$(this.el).remove();
 		},
 		
 		select: function() {
 			$('li.project-list-item-view').removeClass('active');
 			$(this.el).addClass('active');
 		
-			var project = this.model;
-			Backbone.trigger('ShowProjectDetail', project);
+			Backbone.trigger('ProjectDetailView:showProjectDetail', this.model);
 		}
 	});
 	
-	var genProjectStatus = function(status) {
-		var content = '';
-		switch(status) {
-			case 0: content = 'ongoing';break;
-			case 1: content = 'completed';break;
-			default: content = 'unclear';
+	var ProjectItem_template = function(project) {
+		//status view dom
+		var status_tpl = '',
+			status_content = '';
+		switch(project.get('status')) {
+			case 0: status_content = 'ongoing';break;
+			case 1: status_content = 'completed';break;
+			default: status_content = 'unclear'; break;
 		}
+		status_tpl = '<div class="project-status">'+ status_content +'</div>';
 		
-		return '<div class="project-status">'+ content +'</div>';
-	};
+		//logo view dom
+		var logo_tpl = '<img src="'+ util.baseUrl + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';
 	
-	var genProjectLogo = function(title, logo) {
-		return '<img src="'+ util.baseUrl + logo + '" title="'+ title +'" alt="project image" class="img-rounded" />';
-	};
-	
-	var genProjectInfo = function(title, advisor) {
-		return '<div class="info"> ' + 
-				'	<h4 class="project-title" title="' + title + '">'+ title +'</h4>' + 
-				'	<p class="project-advisor">' + advisor + '</p>' + 
-				'</div>';
+		//info view dom
+		var advisor = project.get('advisor');
+		var info_tpl =  '<div class="info"> ' + 
+						'	<h4 class="project-title" title="' + project.get('title') + '">'+ project.get('title') +'</h4>' + 
+						'	<p class="project-advisor">' + advisor.nickname + '</p>' + 
+						'</div>';
+		
+		return status_tpl + logo_tpl + info_tpl;
 	};
 	
 	return ProjectListItemView;

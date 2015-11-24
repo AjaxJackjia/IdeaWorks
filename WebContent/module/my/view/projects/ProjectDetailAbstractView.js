@@ -14,7 +14,11 @@ define([
 			var project = this.model;
 			
 			var $abstract = $('<div class="abstract-container well">');
-			$abstract.append('<p>' + project.get('abstractContent') + '</p>');
+			if(project.get('abstractContent') == "") {
+				$abstract.append('<div class="placeholder"><h4>No abstract...</h4></div>');
+			}else{
+				$abstract.append('<p>' + project.get('abstractContent') + '</p>');
+			}
 			
 			var $actions = $('<div class="action">');
 			$actions.append('<div class="edit-btn btn btn-default"><i class="fa fa-pencil"></i>     Edit Abstract</div>');

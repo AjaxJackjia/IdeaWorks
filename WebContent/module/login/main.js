@@ -2,9 +2,11 @@
 	require.config({
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
+			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
 			'backbone': '../../lib/backbone/backbone-min',
 			'underscore': '../../lib/underscore/underscore-min',
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
+			'util': '../common/util',
 			'css': '../../lib/require-css/css.min'
 		},
 		
@@ -29,9 +31,9 @@
 	require(['backbone', 
 	         'bootstrap', 
 	         'css!../../res/css/login/main.css',
-	         '../common/util', 
+	         'util',
 	         './view/SigninView',
-	         './view/SignupView' 
+	         './view/SignupView'
 	        ], function(Backbone, bootstrap, css, util, SigninView, SignupView) {
 		
 		var Entry = Backbone.View.extend({
@@ -76,14 +78,14 @@
 			},
 			
 			switchOption: function(e) {
-				$(e.target).tab('show');
-				
-				//modify page title
-				if($(e.target).html() === 'Sign In') {
-					$('title').html('Sign in :: IdeaWorks');
-				}else{
-					$('title').html('Sign up :: IdeaWorks');
-				}
+//				$(e.target).tab('show');
+//				
+//				//modify page title
+//				if($(e.target).html() === 'Sign In') {
+//					$('title').html('Sign in :: IdeaWorks');
+//				}else{
+//					$('title').html('Sign up :: IdeaWorks');
+//				}
 			}
 		});
 		

@@ -3,8 +3,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		
 		className: 'top-panel',
 		
+		events: {
+			'click .signout-btn': 'logout'
+		},
+		
 		initialize: function(){
-			
+			_.bindAll(this, 'render', 'logout');
 		},
 		
 		render: function(){
@@ -38,6 +42,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$(this.el).append($tool);
 			
 			return this;
+		},
+		
+		logout: function() {
+			if(confirm("Are you sure to logout?")) {
+				util.logout();
+			}
 		}
 	});
 	

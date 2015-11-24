@@ -1,47 +1,37 @@
 define([ 
 		'backbone', 
-		'util', 
+		'util',
+		'css!../../../res/css/my/projects.css',
+		//view
 		'view/projects/ProjectListView', 
 		'view/projects/ProjectDetailView',
-		'model/projects/ProjectListModel',
-		'model/projects/ProjectModel',
-		'css!../../../res/css/my/projects.css' 
-       ], function(Backbone, util, ProjectListView, ProjectDetailView, ProjectListModel, ProjectModel, css) {
+		//model
+		'model/project/ProjectCollection'
+       ], function(Backbone, util, css, ProjectListView, ProjectDetailView, ProjectCollection) {
 	var ProjectsController = function() {
 		console.log("This is projects controller module!");
-		
-		//list model
-		var listModel = new ProjectListModel();
-		var listView = null;
-		listModel.fetch({
-			success: function() {
-				//list view
-				listView = new ProjectListView({
-					model: listModel
-				});
-				
-				//添加视图
-				$('body > .content-panel').append($(listView.el));
-			}
-		}); 
-		
-		//detail model
-		var empty = new ProjectModel();
-		
-		//detail view
-		var detailView = new ProjectDetailView({
-			model: empty
-		});
-		
-		$('body > .content-panel').append($(detailView.el));
-		$('body > .content-panel').animate({scrollTop:0},0);
 		
 		//初始化侧边栏状态
 		$($('.navigation > .list-unstyled > li')[1]).click();
 		
+		//model
+		var listModel = new ProjectCollection();
+		listModel.fetch();		
+		
+		//view
+		var projectListView = new ProjectListView({
+			model: listModel
+		});
+		var projectDetailView = new ProjectDetailView();
+		
+		//添加视图
+		$('body > .content-panel').append($(projectListView.el));
+		$('body > .content-panel').append($(projectDetailView.el));
+		$('body > .content-panel').animate({scrollTop:0},0);
+		
 		ProjectsController.onRouteChange = function() {
-			listView.remove();
-			detailView.remove();
+			projectListView.remove();
+			projectDetailView.remove();
 		};
 	};
 	

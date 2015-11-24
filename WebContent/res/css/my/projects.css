@@ -199,17 +199,35 @@
 .project-detail-view > .project-header > .actions
 {
 	float: right;
-	width: 100px;
 	height: 80px;
 	line-height: 80px;
 }
 
 .project-detail-view > .project-header > .actions > .btn.btn-default
 {
+	display: inline-block;
+	margin-top: 15px;
 	border-radius: 40px;
   	line-height: 24px;
   	color: #7c8589;
 	border-color: #d8e3e7;
+}
+
+.project-detail-view > .project-header > .actions > .modify-project:hover,
+.project-detail-view > .project-header > .actions > .logo-project:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-view > .project-header > .actions > .delete-project:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
 }
 
 .project-detail-view > .project-menu
@@ -278,6 +296,27 @@
 	color: #5f6a6d;
 	background-color: #fff;
   	word-wrap: break-word;
+}
+
+.project-detail-abstract-view > .abstract-container > .placeholder
+{
+	position: absolute;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+}
+
+.project-detail-abstract-view > .abstract-container > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
 }
 
 .project-detail-abstract-view > .action
@@ -358,7 +397,7 @@
 	margin: 0px 0px 3px 0px;
 	padding: 0;
 	color: #5f6a6d;
-	font-weight: 500;
+	font-weight: 600;
 	overflow: hidden;
 }
 
@@ -366,6 +405,19 @@
 {
 	height: 31px;
 	line-height: 31px;
+}
+
+.project-detail-members-view .member > .info > .signature
+{
+	margin: 0;
+	padding: 0;
+	margin-top: -7px;
+	height: 31px;
+	width: 130px;
+	line-height: 31px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
 }
 
 .project-detail-members-view .member-action
@@ -410,7 +462,7 @@
 
 .project-detail-milestone-view > .milestones
 {
-	background: url(http://localhost:8888/IdeaWorks/res/images/my/timeline.png) repeat-y 45px 0px;
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
 }
 
 .project-detail-milestone-view > .milestones > .milestone > .timeline-icon
@@ -441,7 +493,7 @@
 	margin-top: 5px;
 	margin-left: 0;
 	margin-right: 60px;
-	margin-bottom: 25px;
+	margin-bottom: 15px;
 	
 	color: #23a8f5;
 	font-weight: 500;
@@ -492,11 +544,37 @@
 	word-wrap: break-word;
 }
 
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta
+{
+	width: 100%;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta > .creator
+{
+	position: relative;
+	display: inline-block;
+	width: 25px;
+	cursor: pointer;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta > .time
+{
+	display: inline-block;
+	margin-left: 5px;
+	color: #7b898d;
+}
+
 .project-detail-milestone-view > .milestones > .milestone > .content > .body > .description
 {
-	padding: 6px;
 	margin-top: 10px;
+	margin-right: 50px;
 	font-size: 15px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail
@@ -511,8 +589,7 @@
 	font-size: 15px;
 }
 
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-time,
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-time
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-time
 {
 	float: left;
 	color: #afb6ba;
@@ -521,8 +598,7 @@
 	margin-left: 10px;
 }
 
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator,
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-operator
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator
 {
 	float: left;
 	width: 30px;
@@ -530,18 +606,22 @@
 	margin-left: 10px;
 }
 
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-title,
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-title
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator-nickname
 {
 	float: left;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 2px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-title
+{
+	float: left;
+	margin-left: 10px;
 	color: #afb6ba;
 	font-size: 14px;
 	padding-top: 6px;
-}
-
-.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .modify-title 
-{
-	margin-left: 30px;
 }
 
 .project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container
@@ -572,7 +652,7 @@
 
 .project-detail-forum-view > .topics
 {
-	background: url(http://localhost:8888/IdeaWorks/res/images/my/timeline.png) repeat-y 45px 0px;
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
 }
 
 .project-detail-forum-view > .topics > .topic > .timeline-icon
@@ -603,7 +683,7 @@
 	margin-top: 5px;
 	margin-left: 0;
 	margin-right: 60px;
-	margin-bottom: 25px;
+	margin-bottom: 15px;
 	
 	color: #23a8f5;
 	font-weight: 500;
@@ -634,7 +714,7 @@
 .project-detail-forum-view > .topics > .topic > .content > .heading > .create-operator
 {
 	float: right;
-	margin-right: 10px;
+	margin-right: 5px;
   	margin-top: 5px;
 	width: 30px;
 	height: 30px;
@@ -643,8 +723,9 @@
 .project-detail-forum-view > .topics > .topic > .content > .heading > .create-time
 {
 	float: right;
-	margin-left: 10px;
-	margin-right: 15px;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 110px;
 	height: 40px;
 	line-height: 40px;
 	font-size: 13px;
@@ -667,6 +748,12 @@
 	overflow: hidden;
 }
 
+.project-detail-forum-view > .topics > .topic > .content > .heading > .title.expanded
+{
+	margin-right: 30px;
+	max-width: initial;
+}
+
 .project-detail-forum-view > .topics > .topic > .content > .body
 {
 	margin: 0;
@@ -675,49 +762,17 @@
 	word-wrap: break-word;
 }
 
-.project-detail-forum-view > .topics > .topic > .content > .body > .participants
+.project-detail-forum-view > .topics > .topic > .content > .body > .short-description
 {
-	padding: 6px;
-	margin-top: 2px;
-	width: 400px;
+	margin: 10px 50px 10px 0;
 	font-size: 15px;
-	overflow:hidden
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
-.project-detail-forum-view > .topics > .topic > .content > .body > .participants > .participant
-{
-	display: inline-block;
-	margin: 5px;
-	
-}
-
-.project-detail-forum-view > .topics > .topic > .content > .body > .participants > .participant > img
-{
-	width: 30px;
-	height: 30px;
-}
-
-.project-detail-forum-view > .topics > .topic > .content > .body > .description
-{
-	padding: 6px;
-	margin-top: 10px;
-	font-size: 15px;
-}
-
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail
-{
-	
-}
-
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container,
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container
-{
-	margin-top: 10px;
-	background-color: #fff;
-}
-
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container > .heading,
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container > .heading
+/* project-detail-forum-topic-view */
+.project-detail-forum-topic-view h4.heading
 {
 	margin: 5px 0px 15px 0px;
 	font-size: 13px;
@@ -725,14 +780,74 @@
 	text-transform: uppercase;
 }
 
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .description-container > .description-content,
-.project-detail-forum-view > .topics > .topic > .content > .body > .detail > .discussion-container > .discussion-content
+.project-detail-forum-topic-view > .meta-container
 {
+	padding: 6px 0;
+	font-size: 15px;
+}
+
+.project-detail-forum-topic-view > .meta-container > .creator
+{
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.project-detail-forum-topic-view > .meta-container > .creator-nickname
+{
+	display: inline-block;
+	margin-left: 10px;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-forum-topic-view > .meta-container > .create-title
+{
+	display: inline-block;
+	margin-left: 2px;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-forum-topic-view > .meta-container > .time
+{
+	display: inline-block;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-forum-topic-view > .description-container,
+.project-detail-forum-topic-view > .discussion-container
+{
+	margin-top: 20px;
+	background-color: #fff;
 	color: #5f6a6d;
 	line-height: 30px;
 }
 
-.project-detail-forum-view .discussion-content > .message
+.project-detail-forum-topic-view > .discussion-container > .discussion-content > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-forum-topic-view > .discussion-container > .discussion-content > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message
 {
 	position: relative;
 	width: 100%;
@@ -743,21 +858,21 @@
 	zoom:1;
 }
 
-.project-detail-forum-view .discussion-content > .message.other > img
+.project-detail-forum-topic-view .discussion-content > .message.other > img
 {
 	float: left;
 	width: 50px;
 	height: 50px;
 }
 
-.project-detail-forum-view .discussion-content > .message.self > img
+.project-detail-forum-topic-view .discussion-content > .message.self > img
 {
 	float: right;
 	width: 50px;
 	height: 50px;
 }
 
-.project-detail-forum-view .discussion-content > .message.other > .message-body
+.project-detail-forum-topic-view .discussion-content > .message.other > .message-body
 {
 	position: relative;
 	float: left;
@@ -766,7 +881,7 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
-.project-detail-forum-view .discussion-content > .message.self > .message-body
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body
 {
 	position: relative;
 	float: right;
@@ -775,24 +890,29 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
-.project-detail-forum-view .discussion-content > .message > .message-body > .message-title 
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title 
 {
 	display: inline-block;
 }
 
-.project-detail-forum-view .discussion-content > .message > .message-body > .message-title > .message-from
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-title 
+{
+	float: right;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title > .message-from
 {
 	color: #23a8f5;
 	font-size: 14px;
 }
 
-.project-detail-forum-view .discussion-content > .message > .message-body > .message-title > .message-time
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title > .message-time
 {
 	color: #afb6ba;
 	font-size: 14px;
 }
 
-.project-detail-forum-view .discussion-content > .message > .message-body > .message-text
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text
 {
 	display: block;
 	padding: 5px 10px 5px 5px;
@@ -807,6 +927,11 @@
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-text
+{
+	clear: both;
 }
 
 /* project-detail-files-view */
@@ -846,6 +971,28 @@
 .project-detail-files-view > .files-container
 {
 	float: left;
+	width: 100%;
+	min-height: 200px;
+}
+
+.project-detail-files-view > .files-container > .placeholder
+{
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 200px;
+	height: 100px;
+}
+
+.project-detail-files-view > .files-container > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 200px;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
 }
 
 .project-detail-files-view > .files-container > .attachment
@@ -949,6 +1096,7 @@
 	margin-bottom: 10px;
 	font-size: 14px;
 	font-weight: 600;
+	text-decoration: none;
 }
 
 .project-detail-files-view > .files-container > .attachment > .footer > .filedescription
@@ -957,6 +1105,7 @@
 	color: #484c52;
 	margin-bottom: 10px;
 	font-size: 14px;
+	text-decoration: none;
 }
 
 .truncate
@@ -983,7 +1132,27 @@
 /* project-detail-activity-view */
 .project-detail-activity-view > .activities
 {
-	background: url(http://localhost:8888/IdeaWorks/res/images/my/timeline.png) repeat-y 45px 0px;
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
+}
+
+.project-detail-activity-view > .activities > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 50px;
+}
+
+.project-detail-activity-view > .activities > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	color: #afb6ba;
+	text-align: center;
 }
 
 .project-detail-activity-view > .activities > .activity > .timeline-icon
@@ -1051,5 +1220,67 @@
 	margin: 6px 0px 0px 0px;
 	width: 500px;
 	word-wrap: break-word;
+}
+
+/* project-detail-modify-view  */
+.project-detail-modify-view 
+{
+	
+}
+
+/* project modal dialog common */
+.modal .modal-header,
+.modal .modal-footer
+{
+	border: none;	
+}
+
+.modal .modal-header .modal-title
+{
+	margin-top: 12px;
+  	line-height: 1.8;
+  	color: #23a8f5;
+  	text-align: center;
+}
+
+.modal .modal-header .close
+{
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	z-index: 100;
+}
+
+.modal .modal-header .close > span
+{
+	font-size: 40px;
+}
+
+.modal .modal-content
+{
+	padding: 15px;	
+}
+
+.modal .modal-footer > .btn
+{
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.modal .modal-footer > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.modal .modal-footer > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
 }
 

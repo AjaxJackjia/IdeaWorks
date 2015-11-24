@@ -7,9 +7,11 @@ define([ 'backbone',
 	var SettingsController = function() {
 		console.log("This is settings controller module!");
 		
+		//初始化侧边栏状态
+		$($('.navigation > .list-unstyled > li')[2]).click();
+		
 		//view
 		var listView = new SettingListView();
-		
 		var detailView = new SettingDetailView();
 		
 		//添加视图
@@ -17,8 +19,7 @@ define([ 'backbone',
 		$('body > .content-panel').append($(detailView.el));
 		$('body > .content-panel').animate({scrollTop:0},0);
 		
-		//初始化侧边栏状态
-		$($('.navigation > .list-unstyled > li')[2]).click();
+		//默认选中第一个设置
 		$($('.setting-list-view > .setting')[0]).click();
 		
 		SettingsController.onRouteChange = function() {

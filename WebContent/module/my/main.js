@@ -2,10 +2,13 @@
 	require.config({
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
-			'backbone': '../../lib/backbone/backbone-min',
+			'backbone': '../../lib/backbone/backbone',
 			'underscore': '../../lib/underscore/underscore-min',
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
 			'Switch' : '../../lib/bootstrap-switch/dist/js/bootstrap-switch.min',
+			'Editor' : '../../lib/bootstrap-wysiwyg/bootstrap-wysiwyg',
+			'Validator' : '../../lib/bootstrapvalidator/dist/js/bootstrapValidator.min',
+			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
 			'util': '../common/util',
@@ -27,6 +30,10 @@
 	            deps : [ 'jquery' ],  
 	            exports : 'bootstrap'
 	       },
+	       'Validator': {  
+	            deps : [ 'jquery' ],  
+	            exports : 'Validator'
+	       },
 	       'jxExt': {
 	    	   exports: 'jxExt'
 	       }
@@ -36,15 +43,12 @@
 	var portalDependencies = [
 	        'backbone', 
 	        'bootstrap',
-	        'util',
 	        'router',
 	        'css!../../res/css/my/main.css'
 		];
 
-	require(portalDependencies, function(Backbone, bootstrap, util, router, css) {
-		
+	require(portalDependencies, function(Backbone, bootstrap, router, css) {
 		//start monitoring
 	    Backbone.history.start();
-	
 	});
 })(window);

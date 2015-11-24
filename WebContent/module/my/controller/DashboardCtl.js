@@ -1,41 +1,56 @@
 define([ 
-         'backbone', 
-         '../view/dashboard/BriefView',
-         '../view/dashboard/PopularForumView',
-         '../view/dashboard/RecentActivityView',
-         'css!../../../res/css/my/dashboard.css'
-       ], function(Backbone, BriefView, PopularForumView, RecentActivityView, css) {
+         'backbone',
+         'css!../../../res/css/my/dashboard.css',
+         //view
+         'view/dashboard/BriefView',
+         'view/dashboard/PopularTopicView',
+         'view/dashboard/RecentActivityView',
+         //model
+         'model/dashboard/BriefModel',
+         'model/dashboard/PopularTopicCollection',
+         'model/dashboard/RecentActivityCollection'
+       ], function(Backbone, css,
+    		   BriefView, PopularTopicView, RecentActivityView, 
+    		   BriefModel, PopularTopicCollection, RecentActivityCollection) {
 	var DashboardController = function() {
 		console.log("This is dashborad controller module!");
 		
+		//初始化侧边栏状态
+		$($('.navigation > .list-unstyled > li')[0]).click();
+		
+		//view container
+		var $dashboardViewContainer = $('<div class="dashboard-container">');
+		
 		//model
-//		var briefModel = new BriefModel();
-//		briefModel.set('projectNo', 10);
-//		briefModel.set('activityNo', 112);
-//		briefModel.set('relatedMemberNo', 37);
-//		briefModel.set('forumParticipationNo', 452);
+		var briefModel = new BriefModel();
+		briefModel.fetch();
+		var topics = new PopularTopicCollection();
+		topics.fetch();
+		var activities = new RecentActivityCollection();
+		activities.fetch();
 		
 		//view
-		var $dashboardViewContainer = $('<div class="dashboard-container">');
-		var briefView = new BriefView();
-		var popularForumView = new PopularForumView();
-		var recentActivityView = new RecentActivityView();
+		var briefView = new BriefView({
+			model: briefModel
+		});
+		var popularTopicView = new PopularTopicView({
+			model: topics
+		});
+		var recentActivityView = new RecentActivityView({
+			model: activities
+		});
 		
 		//添加视图
-		$dashboardViewContainer.append($(briefView.el));
-		$dashboardViewContainer.append($(popularForumView.el));
+		$dashboardViewContainer.append($(briefView.el)); 
+		$dashboardViewContainer.append($(popularTopicView.el));
 		$dashboardViewContainer.append($(recentActivityView.el));
 		
 		$('body > .content-panel').append($dashboardViewContainer);
 		$dashboardViewContainer.animate({scrollTop:0},0);
 		
-		
-		//初始化侧边栏状态
-		$($('.navigation > .list-unstyled > li')[0]).click();
-		
 		DashboardController.onRouteChange = function() {
 			briefView.remove();
-			popularForumView.remove();
+			popularTopicView.remove();
 			recentActivityView.remove();
 			
 			$dashboardViewContainer.remove();

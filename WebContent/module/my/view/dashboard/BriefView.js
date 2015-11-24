@@ -4,24 +4,45 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		className: 'brief-view',
 		
 		initialize: function(){
-			_.bindAll(this, 'render');
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'update');
+			
+			//监听model变化
+			this.model.bind('change', this.update);
 			
 			this.render();
 		},
 		
 		render: function(){
-
-			$(this.el).append(BriefItem('#projects', 'suitcase', '18', 'projects'));
-			$(this.el).append(BriefItem('#projects', 'thumbs-up', '22', 'activities'));
-			$(this.el).append(BriefItem('#projects', 'users', '51', 'related members'));
-			$(this.el).append(BriefItem('#projects', 'history', '12', 'forum participations'));
+			$(this.el).append(BriefItem('#projects', 'suitcase', this.model.get('projectNo'), 'projects'));
+			$(this.el).append(BriefItem('#projects', 'thumbs-up', this.model.get('activityNo'), 'activities'));
+			$(this.el).append(BriefItem('#projects', 'users', this.model.get('relatedMemberNo'), 'related members'));
+			$(this.el).append(BriefItem('#projects', 'history', this.model.get('forumParticipationNo'), 'forum participations'));
 			
 			return this;
+		},
+		
+		update: function() {
+			var model = this.model;
+			
+			//更新每个元素值
+			_.each($(this.el).find('.stats h3'), function(item, index) {
+				switch(index) {
+				case 0: 
+					$(item).html(model.get('projectNo'));break;
+				case 1: 
+					$(item).html(model.get('activityNo'));break;
+				case 2: 
+					$(item).html(model.get('relatedMemberNo'));break;
+				case 3: 
+					$(item).html(model.get('forumParticipationNo'));break;
+				}
+			});
 		}
 	});
 	
 	var BriefItem = function(link, icon, number_content, title_content) {
-		var $item = $('<div class="stats" href="' + link + '">');
+		var $item = $('<a class="stats" href="' + link + '">');
 		var $well = $('<div class="well">');
 		
 		$well.append('<i class="fa fa-'+ icon +'"></i>');

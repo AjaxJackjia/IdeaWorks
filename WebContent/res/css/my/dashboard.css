@@ -34,6 +34,7 @@
 	display: block;
 	float: left;
 	width: 25.0%;
+	text-decoration: none;
 }
 
 .dashboard-container > .brief-view > .stats > .well
@@ -119,6 +120,27 @@
 	overflow: auto;
 }
 
+
+.dashboard-container > .recent-activity-view .well > .activities > .activities-placeholder
+{
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.dashboard-container > .recent-activity-view .well > .activities > .activities-placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
 .dashboard-container > .recent-activity-view .well > .activities > .activity
 {
 	display: block;
@@ -179,8 +201,8 @@
 }
 /* recent-activity-view end */
 
-/* popular-forum-view begin */
-.dashboard-container > .popular-forum-view
+/* popular-topic-view begin */
+.dashboard-container > .popular-topic-view
 {
 	display: inline-block;
 	position: relative;
@@ -189,12 +211,12 @@
 	height: 400px;
 }
 
-.dashboard-container > .popular-forum-view .well
+.dashboard-container > .popular-topic-view .well
 {
 	background-color: #fff;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums
+.dashboard-container > .popular-topic-view .well > .topics
 {
 	margin: 0;
 	padding: 0;
@@ -204,7 +226,27 @@
 	overflow: auto;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum
+.dashboard-container > .popular-topic-view .well > .topics > .topics-placeholder
+{
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.dashboard-container > .popular-topic-view .well > .topics > .topics-placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.dashboard-container > .popular-topic-view .well > .topics > .topic
 {
 	display: block;
 	margin-left: 5px;
@@ -215,12 +257,12 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .heading
 {
 	width: 100%;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .forum-icon
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .heading > .topic-icon
 {
 	float: left;
 	width: 40px;
@@ -234,7 +276,7 @@
 	border-radius: 50%;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .topic
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .heading > .topic-title
 {
 	display: inline-block;
 	margin-left: 10px;
@@ -249,7 +291,7 @@
 	overflow: hidden;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .heading > .time
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .heading > .time
 {
 	font-size: 12px;
 	float: right;
@@ -258,16 +300,16 @@
 	color: #afb6ba;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .content
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .content
 {
 	width: 100%;
 	margin: 10px 0px;
 	word-wrap: break-word;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .project,
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .participant,
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > .message
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .content > .project,
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .content > .participant,
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .content > .message
 {
 	display: inline-block;
 	margin-right: 10px;
@@ -277,11 +319,11 @@
 	overflow: hidden;
 }
 
-.dashboard-container > .popular-forum-view .well > .forums > .forum > .content > div.project
+.dashboard-container > .popular-topic-view .well > .topics > .topic > .content > div.project
 {
 	color: #7b898d;
 }
 
-/* popular-forum-view end */
+/* popular-topic-view end */
 
 

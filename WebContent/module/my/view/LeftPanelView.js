@@ -1,14 +1,15 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function(Backbone, util, ProjectDetailModifyView) {
 	var LeftPanelView = Backbone.View.extend({
 		
 		className: 'left-panel',
 		
 		events: {
-			'click .navigation > .list-unstyled > li': 'select'
+			'click .navigation > .list-unstyled > li': 'select',
+			'click .create > a': 'createProject'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'select');
+			_.bindAll(this, 'render', 'select', 'createProject');
 			
 			//navigation
 			this.nav = {
@@ -37,7 +38,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			var $nav = navList(this.nav, this.navIcon);
 			
 			/*
-			 * new something
+			 * new project
 			 * */
 			var $create = createBtn();
 
@@ -51,6 +52,26 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		select: function(e) {
 			$('.navigation > .list-unstyled > li').removeClass('active');
 			$(e.target).closest('li').addClass('active');
+		},
+		
+		createProject: function() {
+			//跳转视图到project
+			$($('.navigation > .list-unstyled > li > a')[1]).click();
+			window.location.href = 'my.html#projects';
+			
+			//将旧的modal view移除,新的modal view添加到内容区域
+			var projectDetailModify = new ProjectDetailModifyView({
+				model: null
+			});
+			
+			var $modifyView = $('#project_detail_modify_view');
+			if($modifyView.length > 0) {
+				$('#project_detail_modify_view').remove();
+			}
+			$('.content-panel').append($(projectDetailModify.render().el));
+			
+			//显示view
+			$('#project_detail_modify_view').modal('toggle');
 		}
 	});
 	
@@ -60,10 +81,10 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		var $user = $('<div class="profile">');
 		var user_tpl = 
 			'<a class="avatar" href="#settings"> ' + 
-			'	<img src="'+ util.baseUrl +'/res/images/my/avatar.png" class="img-circle" alt="..."> ' +
+			'	<img src="'+ util.baseUrl + $.cookie('userlogo') + '" class="img-circle" alt="' + $.cookie('nickname') + '"> ' +
 			'</a> ' +
 			'<a class="username" href="#settings"> ' + 
-            '	<h4>Jack Jia</h4> ' +
+            '	<h4>' + $.cookie('nickname') + '</h4> ' +
             '</a>';
 		$user.html(user_tpl);
 		

@@ -7,7 +7,11 @@ define([
 		className: 'project-detail-files-view',
 		
 		initialize: function(){
-			_.bindAll(this, 'render');
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'addFile');
+			
+			//监听model变化
+			this.model.bind('add', this.addFile);
 		},
 		
 		render: function(){
@@ -22,38 +26,49 @@ define([
 		  
 			
 			var $files = $('<div class="files-container">');
-			for(var index = 0;index<10;index++) {
-				$files.append(fileItem({ }));
-			}
+			$files.append('<div class="placeholder"><h4>No files...</h4></div>');
 			
 			$(this.el).append($action);
 			$(this.el).append($files);
 			
 		    return this;
+		},
+		
+		/*
+		 * 向files集合中添加file所触发的事件
+		 * */
+		addFile: function(file) {
+			var $filesContainer = $(this.el).find('.files-container');
+			var $placeholder = $filesContainer.find('.placeholder');
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			$filesContainer.append(FileItem(file));
 		}
 	});
 	
-	var fileItem = function(file) {
+	var FileItem = function(file) {
+		var creator = file.get('creator');
 		var file_tpl = 
 			'<div class="attachment well">' + 
 			'	<div class="preview">' + 
 			'		<div class="extension"></div>' +
 			'		<div class="overlay">' + 
 			'			<div class="top">' +
-			'				<span class="time">a few seconds ago</span>' + 
+			'				<span class="time">' + util.timeformat(new Date(file.get('createtime')), "smart") + '</span>' + 
 			'				<a class="delete"><i class="fa fa-trash-o"></i></a>'+	
 			'			</div>' +
 			'			<div class="action">' +
-			'				<a class="btn btn-default btn-long">Download file</a>' + 
+			'				<a class="btn btn-default btn-long" href="' + util.baseUrl + file.get('url') + '" target="_blank">Download file</a>' + 
 			'			</div>' +
 			'		</div>' +
 			'	</div>' +
 			'	<div class="footer">' + 
-			'		<a class="filename truncate">test.pdf</a>' + 
-			'		<a class="filedescription truncate">This is file description.</a>' + 
+			'		<a class="filename truncate" title="' + file.get('filename') + '">' + file.get('filename') + '</a>' + 
+			'		<a class="filedescription truncate" title="' + file.get('description') + '">' + file.get('description') + '</a>' + 
 			'		<div class="user">' + 
-		    '			<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/kendall.png">' +
-		    '			<div class="name truncate">John Doe</div>' +
+		    '			<img class="img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '">' +
+		    '			<div class="name truncate">' + creator.nickname + '</div>' +
 		    '		</div>' + 
 			'	</div>' + 
 			'</div>';

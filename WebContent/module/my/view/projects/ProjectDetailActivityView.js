@@ -7,39 +7,47 @@ define([
 		className: 'project-detail-activity-view',
 		
 		initialize: function(){
-			_.bindAll(this, 'render');
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'addActivity');
+			
+			//监听model变化
+			this.model.bind('add', this.addActivity);
 		},
 		
 		render: function(){
 			var $activities = $('<div class="activities well">');
-			
-			for(var index = 0; index<20; index++) {
-				$activities.append(activity(1, { }));
-			}
-			
+			$activities.append('<div class="placeholder"><h4>No activity...</h4></div>');
 			$(this.el).append($activities);
 			
 		    return this;
+		},
+		
+		addActivity: function(activity) {	
+			var $content = $(this.el).find('.activities');
+			var $placeholder = $content.find('.placeholder');
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			$content.append(ActivityItem(activity));
 		}
 	});
 	
-	var activity = function(type, data) {
+	var ActivityItem = function(activity) {
+		var operator = activity.get('operator');
 		var $tpl = 
-		'<div class="activity"> ' +
-		'  <div class="timeline-icon"> ' +
-		'    <i class="fa fa-arrow-right"></i> ' +
-		'  </div> ' +
-		'  <div class="content"> ' +
-		'	<div class="heading"> ' +
-		'		<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/darryl.png"> ' +
-		'		<span class="time">2 days ago</span> ' + 
-		'		<div class="user">Darryl</div> ' +
-		'	</div>' +
-		'	<div class="body"> ' + 
-		'		Sent an email to candidate. ' +
-		'	</div> ' +
-		'  </div> ' +
-		'</div>';
+			'<div class="activity"> ' +
+			'  <div class="timeline-icon"> ' +
+			'    <i class="fa fa-arrow-right"></i> ' +
+			'  </div> ' +
+			'  <div class="content"> ' +
+			'	<div class="heading"> ' +
+			'		<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '"> ' +
+			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span> ' + 
+			'		<div class="user">' + operator.nickname + '</div> ' +
+			'	</div>' +
+			'	<div class="body">'+ activity.get('title') +'</div> ' +
+			'  </div> ' +
+			'</div>';
 		return $tpl;
 	};
 	

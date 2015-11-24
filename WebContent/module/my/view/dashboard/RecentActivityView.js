@@ -4,7 +4,11 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		className: 'recent-activity-view',
 		
 		initialize: function(){
-			_.bindAll(this, 'render');
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'update');
+			
+			//监听model变化
+			this.model.bind('add', this.update);
 			
 			this.render();
 		},
@@ -18,10 +22,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			
 			//content
 			var $content = $('<div class="activities">');
-			for(var index = 0;index < 10; index++) {
-				$content.append(Activity({ }));
-			}
-			
+			$content.append('<div class="activities-placeholder"><h4>No recent activities...</h4></div>');
 			
 			//add to container and view
 			$container.append($title);
@@ -29,21 +30,31 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$(this.el).append($container);
 			
 			return this;
+		},
+		
+		update: function(activity) {
+			var $activitiesContainer = $(this.el).find('.activities');
+			var $placeholder = $activitiesContainer.find('.activities-placeholder');
+
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			
+			$activitiesContainer.append(Activity(activity));
+			
 		}
 	});
 	
-	var Activity = function(data) {
+	var Activity = function(activity) {
 		var tpl = 
 			'<div class="activity">' + 
 			'	<div class="heading">' + 
 			'		<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/darryl.png"> ' + 
-			'		<div class="user">Darryl</div> ' +
-			'		<div class="project"> [Test Project] </div> ' +
+			'		<div class="user">' + activity.get('operator') + '</div> ' +
+			'		<div class="project"> [ project id: ' + activity.get('projectId') + '] </div> ' +
 			'		<span class="time">2 days ago</span>' +
 			'	</div>' + 
-			'	<div class="content">' + 
-			'		This is recent activity test message! ' + 
-			'	</div>' + 
+			'	<div class="content">' + activity.get('title') + '</div>' + 
 			'</div>';
 		
 		return tpl;

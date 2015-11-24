@@ -1,4 +1,6 @@
-define(['jquery'], function($) {
+define(['jquery', 'cookie' ], function($, cookie) {
+	
+	var baseUrl = 'http://localhost:8888/IdeaWorks';
 	
     var resolveUrlParams = function() {
     	var hash = location.hash || location.search;
@@ -11,6 +13,26 @@ define(['jquery'], function($) {
     	}
     	
     	return {};
+    };
+    
+    var currentUser = function() {
+    	if(isLogin()) {
+    		return $.cookie('userid');
+    	}else{
+    		logout();
+    	}
+    };
+    
+    var isLogin = function() {
+    	return !$.cookie('userid') ? false : true;
+    };
+    
+    var logout = function() {
+    	$.cookie('userid', null);
+    	$.cookie('userlogo', null);
+    	$.cookie('nickname', null);
+    	
+    	window.location.href = baseUrl + '/login.html';
     };
     
     var attrIsValid = function(options, attr) {
@@ -384,8 +406,11 @@ define(['jquery'], function($) {
 	};
 	
 	return {
-		baseUrl: 'http://localhost:8888/IdeaWorks',
+		baseUrl: baseUrl,
 		resolveUrlParams: resolveUrlParams,
+		currentUser: currentUser,
+		isLogin: isLogin,
+		logout: logout,
 		attrIsValid: attrIsValid,
 		timeformat: Date.format
 	}

@@ -1,12 +1,34 @@
-define([ 'backbone', './view/LeftPanelView', './view/TopPanelView' ], function (Backbone, LeftPanelView, TopPanelView) {
+define([ 'backbone', 'util', 
+         'cookie',
+         'view/LeftPanelView', 
+         'view/TopPanelView',
+         'model/settings/UserModel'
+       ], function (Backbone, util, cookie, LeftPanelView, TopPanelView, UserModel) {
 	
-	//create header and footer of portal page
-	var leftPanel = new LeftPanelView();
-	$('body > .content-panel').before(leftPanel.render().el);
+	//check login status
+	if(util.isLogin()) {
+		//get current user info
+		var userModel = new UserModel({ 
+			id: $.cookie('userid')
+		});
+		userModel.fetch({
+			success: function() {
+				console.log('fetch!');
+				$.cookie('userlogo', userModel.get('logo'));
+				$.cookie('nickname', userModel.get('nickname'));
+				
+				//create header and footer of portal page
+				var leftPanel = new LeftPanelView();
+				$('body > .content-panel').before(leftPanel.render().el);
+				
+				var topPanel = new TopPanelView();
+				$('body > .content-panel').before(topPanel.render().el);
+			}
+		});
+	}else{
+		window.location.href = util.baseUrl + '/login.html';
+	}
 	
-	var topPanel = new TopPanelView();
-	$('body > .content-panel').before(topPanel.render().el);
-    
 	// router basic settings
 	var routesMap = {
     	"": './controller/IndexCtl',

@@ -125,6 +125,11 @@ body > .container
 	width: 100%;
 }
 
+.login > .actions > .login-check
+{
+	text-align: center;
+}
+
 .signup > .input-group
 {
 	border: none;
