@@ -23,8 +23,16 @@ collation-server=utf8_unicode_ci
 ```
 然后重启mysql服务, ``sudo service mysql restart``. 
 
+
 # backbone model save时总是发送到POST请求
 
 原因是model在fetch的时候没有设置id, 当model没有id的时候, save触发的是create操作, 所以是发到post请求那边. 为了避免这种情况, 我们在fetch或者save的时候利用parse函数, 将model的id提前设置.
+
+
+# backbone collection更新多个model怎么办?
+
+找到的方案是为collection增加一个save方法, 里面重写Backbone的sync方法, 自己设定参数(create, update, delete等), 然后调用重写sync方法来作用. 本质上其实是增加一个wrapper, 将collection里面要操作的model写到一个model里面(BulkModel), 然后对BulkModel设定url与toJSON方法, 最后作用的是BulkModel.
+
+
 
 

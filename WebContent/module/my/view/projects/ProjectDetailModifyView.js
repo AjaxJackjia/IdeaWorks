@@ -4,7 +4,7 @@ define([
  		'model/project/ProjectModel',
  		'model/project/MemberCollection'
        ], 
-    function(Backbone, util, Validator, ProjectModel, MemeberCollection) {
+    function(Backbone, util, Validator, ProjectModel, MemberCollection) {
 	var ProjectDetailModifyView = Backbone.View.extend({
 		
 		id: 'project_detail_modify_view',
@@ -19,7 +19,7 @@ define([
 			_.bindAll(this, 'render', 'addCandidate');
 			
 			//加载advisor candidates
-			this.advisorCandidates = new MemeberCollection();
+			this.advisorCandidates = new MemberCollection();
 			if(this.model == null) {
 				this.advisorCandidates.url = '/IdeaWorks/api/users';
 			}else{
@@ -124,8 +124,6 @@ define([
 			$('#projectAttribute').data('bootstrapValidator').validateField('project_title');
 			$('#projectAttribute').data('bootstrapValidator').validateField('project_advisor');
 			if(!$('#projectAttribute').data('bootstrapValidator').isValid()) return;
-			
-			
 			
 			if(this.model == null) {
 				//创建project

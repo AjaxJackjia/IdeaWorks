@@ -25,7 +25,7 @@ define([
 		
 		render: function(){
 			var $milestones = $('<div class="milestones well">');
-			$milestones.append(mileStoneAdd()); // milestone add button
+			$milestones.append(MileStoneAddBtn()); // milestone add button
 			$(this.el).append($milestones);
 			
 		    return this;
@@ -35,8 +35,9 @@ define([
 		 * 向milestone集合中添加milestone所触发的事件
 		 * */
 		addMilestone: function(milestone) {
-			var $milestones = $(this.el).find('.milestones');
-			$milestones.append(MilestoneItem(milestone));
+			var $milestoneAddBtn = $(this.el).find('.milestone.add-milestone');
+			var milestoneItem = MilestoneItem(milestone);
+			$(milestoneItem).insertAfter($milestoneAddBtn);
 		},
 		
 		/*
@@ -104,9 +105,9 @@ define([
 		}
 	});
 	
-	var mileStoneAdd = function() {
+	var MileStoneAddBtn = function() {
 		var $tpl = 
-			'<div class="milestone"> ' +
+			'<div class="milestone add-milestone"> ' +
 			'  <div class="timeline-icon"> ' +
 			'    <i class="fa fa-plus"></i> ' +
 			'  </div> ' +
@@ -158,6 +159,142 @@ define([
 			'</div>';
 		return tpl;
 	};
+	
+	/***********************************************************************************/
+	/*
+	 * subview - milestone sub view
+	 * */
+	var MilestoneSubView = Backbone.View.extend({
+		
+		id: 'milestone_sub_view',
+		
+		className: 'milestone-sub-view modal fade',
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'create', 'save');
+			
+			//view type, 'create' view or 'modify' view, default is 'create'.
+			this.type = 'create';
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = Header();
+			$modalDialogContent.append(header);
+			
+			var body = Body();
+			$modalDialogContent.append(body);
+			
+			var footer = Footer();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//设置标题
+			var milestones = this.model;
+			if(this.type == 'create') {
+				$('.modal-title', this.el).html('Create Milestone');
+				$('.modal-footer > .confirm', this.el).html('Create');
+			}else{
+				$('.modal-title', this.el).html('Modify Milestone');
+				$('.modal-footer > .confirm', this.el).html('Save');
+				
+				$('.milestone-title').val(this.model.get());
+				$('.milestone-description').val();
+			}
+			
+			//confirm self body
+			var self = this;
+			
+			//save操作
+			$('.confirm', $modalDialogContent).on('click', function() {
+				if(self.type == 'create') {
+					self.create();
+				}else{
+					self.save();
+				}
+			});
+			
+			//绑定modal消失时出发的事件
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		//创建新的milestone
+		create: function() {
+			
+		},
+		
+		//修改milestone
+		save: function() {
+			var milestones = this.model;
+			var title = $('.milestone-title').val();
+			var content = $('.milestone-description').val();
+			if(title == "" || content == "") {
+				alert("Please wirte something about your milestone...");
+				return;
+			}
+			
+			if(project.get('abstractContent') != content) {
+				project.set({'abstractContent': content});
+				project.save({
+					wait: true,
+					error: function() {
+						project.previous("abstractContent");
+						alert("Update project abstract error! Please try again later...");
+					}
+				});
+			}
+			$('#milestone_sub_view').modal('toggle');
+		}
+	});
+	
+	var Header = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title"></h3> ' + 
+			'</div>';
+		return tpl;
+	}
+	
+	var Footer = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="confirm btn btn-primary"></a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var Body = function() {
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="milestoneAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="milestone_title" class="control-label">Title:</label> ' + 
+			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="milestone title"> ' + 
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="milestone_description" class="control-label">Advisor:</label> ' + 
+			'			<textarea class="form-control" id="milestone_description" name="milestone_title"> ' + 
+			'			</textarea> ' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
 	
 	return ProjectDetailMilestoneView;
 });
