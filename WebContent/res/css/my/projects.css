@@ -624,6 +624,36 @@
 	padding-top: 6px;
 }
 
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action
+{
+	float: right;
+	margin-right: 25px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .modify-milestone:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .delete-milestone:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
 .project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container
 {
 	margin-top: 20px;

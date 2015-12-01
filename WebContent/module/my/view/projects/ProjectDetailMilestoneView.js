@@ -1,26 +1,34 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'Validator',
+         //view
+         'view/projects/ProjectDetailMilestoneItemView',
+         //model
+         'model/project/MilestoneModel'
        ], 
-    function(Backbone, util) {
+    function(Backbone, util, Validator, ProjectDetailMilestoneItemView, MilestoneModel) {
 	var ProjectDetailMilestoneView = Backbone.View.extend({
 		
 		className: 'project-detail-milestone-view',
 		
 		events: {
-			'click .add-milestone-title': 'createMilestone',
-			'click .milestone > .content > .heading': 'toggleDetail'
+			'click .add-milestone-title': 'clickToCreate'
 		},
 		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'addMilestone', 'createMilestone', 'toggleDetail');
+			_.bindAll(this, 'render', 'addMilestoneItem', 'removeMilestoneItem', 'createMilestone', 'deleteMilestone', 'clickToCreate');
+			
+			//注册全局事件
+			Backbone.
+				off('ProjectDetailMilestoneView:createMilestone').
+				on('ProjectDetailMilestoneView:createMilestone', this.createMilestone, this);
+			Backbone.
+				off('ProjectDetailMilestoneView:deleteMilestone').
+				on('ProjectDetailMilestoneView:deleteMilestone', this.deleteMilestone, this);
 			
 			//监听model变化
-			this.model.bind('add', this.addMilestone);
-			
-			//global param
-			this.isExpanded = false;
-			this.scrollY = 0;
+			this.model.bind('add', this.addMilestoneItem);
+			this.model.bind('remove', this.removeMilestoneItem);
 		},
 		
 		render: function(){
@@ -32,79 +40,89 @@ define([
 		},
 		
 		/*
-		 * 向milestone集合中添加milestone所触发的事件
+		 * 向milestone集合中添加milestone
 		 * */
-		addMilestone: function(milestone) {
+		addMilestoneItem: function(milestone) {
 			var $milestoneAddBtn = $(this.el).find('.milestone.add-milestone');
-			var milestoneItem = MilestoneItem(milestone);
-			$(milestoneItem).insertAfter($milestoneAddBtn);
+			var projectDetailMilestoneItemView = new ProjectDetailMilestoneItemView({
+				model: milestone
+			});
+			$(projectDetailMilestoneItemView.el).insertAfter($milestoneAddBtn);
+			//保持scrollY在最上
+			$('.project-content').scrollTop( 0 );
 		},
 		
 		/*
-		 * milestone add new event
+		 * 从milestone集合中删除milestone
 		 * */
-		createMilestone: function() {
-			alert('add new milestone! by click event! ');
+		removeMilestoneItem: function(milestone) {
+			_.each($('.milestone[cid]', this.el), function(element, index, list){ 
+				if($(element).attr('cid') == milestone.cid) {
+					$(element).fadeOut();
+					$(element).remove();
+				}
+			});
+			
+			//其他milestone应当在该milestone删除时展示出来
+			$('.milestone', this.el).show();
 		},
 		
 		/*
-		 * toggle milestone expand event
+		 * 点击新建milestone按钮事件
 		 * */
-		toggleDetail: function(event) {
-			//milestone model cid
-			var cid = $(event.target).closest('.heading').find('.title').attr('cid');
-			var milestoneModel = this.model.get(cid);
-			
-			//当前点击的milestone
-			var $currentMilestone = $(event.target).closest('.milestone');
-			//非点击的milestone元素
-			var $unClickedMilestones = $('.milestones').children('[milestoneid!='+ milestoneModel.get('milestoneid') +']');
-			
-			if(!this.isExpanded) {
-				//change icon state
-				$('.expand-icon  > i').removeClass('fa-angle-down').addClass('fa-angle-up');
-				
-				//store scroll Y
-				this.scrollY = $('.project-content').scrollTop();
-				
-				//隐藏非click的milestone元素
-				$unClickedMilestones.hide();
-				
-				//隐藏milestone相关属性
-				$currentMilestone.find('.meta').hide();
-				$currentMilestone.find('.description').hide();
-				
-				//显示milestone细节
-				$currentMilestone.find('.body').append(MilestoneDetailItem(milestoneModel));
-				
-				//设置scroll状态
-				$('.project-content').scrollTop(0);
-				
-				//重置状态
-				this.isExpanded = true;
-			}else{
-				//change icon state
-				$('.expand-icon  > i').removeClass('fa-angle-up').addClass('fa-angle-down');
-				
-				//显示非click的milestone元素
-				$unClickedMilestones.fadeIn();
-				
-				//显示milestone相关属性
-				$currentMilestone.find('.meta').show();
-				$currentMilestone.find('.description').show();
-				
-				//隐藏milestone细节
-				$currentMilestone.find('.body > .detail').remove();
-				
-				//restore scroll Y
-				$('.project-content').scrollTop(this.scrollY);
-				
-				//重置状态
-				this.isExpanded = false;
+		clickToCreate: function() {
+			var milestones = this.model;
+			var createMilestoneSubView = new CreateMilestoneSubView({
+				model: milestones
+			});
+			var $subView = $('#create_milestone_sub_view');
+			if($subView.length == 0) {
+				$('.content-panel').append($(createMilestoneSubView.render().el));
 			}
+			//显示view
+			$('#create_milestone_sub_view').modal('toggle');
+		},
+		
+		/*
+		 * 新建milestone
+		 * */
+		createMilestone: function(milestone) {
+			var milestones = this.model;
+			milestones.create(milestone, {
+				 wait: true, 
+				 success: function() {
+					 //添加milestone到milestone list
+					 milestones.add(milestone);
+				 }, 
+				 error: function() {
+					 alert('Create milestone failed. Please try again later!');
+				 }
+			});
+		},
+		
+		/*
+		 * 删除milestone
+		 * */
+		deleteMilestone: function(milestone) {
+			var milestones = this.model;
+			milestones.get(milestone.cid).destroy({
+				wait: true, 
+				success: function() {
+					//从list中删除milestone
+					milestones.remove(milestone);
+					
+					
+				},
+				error: function() {
+					alert('Delete milestone failed. Please try again later!');
+				}
+			});
 		}
 	});
 	
+	/*
+	 * view component html template
+	 * */
 	var MileStoneAddBtn = function() {
 		var $tpl = 
 			'<div class="milestone add-milestone"> ' +
@@ -118,64 +136,22 @@ define([
 			return $tpl;
 	};
 	
-	var MilestoneItem = function(milestone) {
-		var creator = milestone.get('creator');
-		var $tpl = 
-			'<div class="milestone" milestoneid="'+ milestone.get('milestoneid') +'"> ' +
-			'  <div class="timeline-icon"> ' +
-			'    <i class="fa fa-flag"></i> ' +
-			'  </div> ' +
-			'  <div class="content"> ' +
-			'	<div class="heading"> ' +
-			'		<div class="expand-icon" title="show milestone detail"><i class="fa fa-angle-down"></i></div>' + 
-			'		<div class="title" cid="'+ milestone.cid +'">'+ milestone.get('title') + '</div> ' +
-			'	</div>' +
-			'	<div class="body"> ' + 
-			'		<div class="meta">' + 
-			'			<img class="creator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"/> ' + 
-			'			<div class="time">' + util.timeformat(new Date(milestone.get('time')), "smart") + '</div> ' + 
-			'		</div> ' +
-			'		<div class="description" title="'+ milestone.get('description') + '">'+ milestone.get('description') + '</div> ' +
-			'	</div> ' +
-			'  </div> ' +
-			'</div>';
-		return $tpl;
-	};
-	
-	var MilestoneDetailItem= function(milestone) {
-		var creator = milestone.get('creator');
-		var tpl = 
-			'<div class="detail">' +
-			'	<div class="meta-info"> ' + 
-			'		<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"> ' +
-			'		<span class="create-operator-nickname">' + creator.nickname + '</span>' +
-			'		<span class="create-title"> create this milestone at </span>' + 
-			'		<span class="create-time">' + util.timeformat(new Date(milestone.get('time')), "smart") + '</span> ' + 
-			'	</div>' + 
-			'	<div class="description-container well">' + 
-	        '		<h4 class="heading">Description</h4>' + 
-	        '		<div class="description-content">'+ milestone.get('description') + '</div>' + 
-	        '	</div>' + 
-			'</div>';
-		return tpl;
-	};
-	
-	/***********************************************************************************/
 	/*
-	 * subview - milestone sub view
+	 * subview - create new milestone sub view
 	 * */
-	var MilestoneSubView = Backbone.View.extend({
+	var CreateMilestoneSubView = Backbone.View.extend({
 		
-		id: 'milestone_sub_view',
+		id: 'create_milestone_sub_view',
 		
-		className: 'milestone-sub-view modal fade',
+		className: 'create-milestone-sub-view modal fade',
+		
+		events: {
+			'click .create': 'create'
+		},
 		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'unrender', 'create', 'save');
-			
-			//view type, 'create' view or 'modify' view, default is 'create'.
-			this.type = 'create';
+			_.bindAll(this, 'render', 'unrender', 'create');
 		},
 		
 		render: function(){
@@ -194,32 +170,35 @@ define([
 			
 			$(this.el).append($modalDialog);
 			
-			//设置标题
-			var milestones = this.model;
-			if(this.type == 'create') {
-				$('.modal-title', this.el).html('Create Milestone');
-				$('.modal-footer > .confirm', this.el).html('Create');
-			}else{
-				$('.modal-title', this.el).html('Modify Milestone');
-				$('.modal-footer > .confirm', this.el).html('Save');
-				
-				$('.milestone-title').val(this.model.get());
-				$('.milestone-description').val();
-			}
-			
-			//confirm self body
-			var self = this;
-			
-			//save操作
-			$('.confirm', $modalDialogContent).on('click', function() {
-				if(self.type == 'create') {
-					self.create();
-				}else{
-					self.save();
-				}
-			});
+			//form validator
+			$modalDialog.find('#milestoneAttribute').bootstrapValidator({
+				live: 'enabled',
+		        message: 'This value is not valid',
+		        feedbackIcons: {
+		            valid: 'glyphicon glyphicon-ok',
+		            invalid: 'glyphicon glyphicon-remove',
+		            validating: 'glyphicon glyphicon-refresh'
+		        },
+		        fields: {
+		        	milestone_title: {
+		                validators: {
+		                    notEmpty: {
+		                        message: 'The milestone title is required'
+		                    }
+		                }
+		            },
+		            milestone_description: {
+		                validators: {
+		                    notEmpty: {
+		                        message: 'The milestone description is required'
+		                    }
+		                }
+		            }
+		        }
+		    });
 			
 			//绑定modal消失时出发的事件
+			var self = this;
 			$(this.el).on('hide.bs.modal', function (event) {
 				self.unrender();
 			});
@@ -233,30 +212,22 @@ define([
 		
 		//创建新的milestone
 		create: function() {
+			//validate
+			$('#milestoneAttribute').data('bootstrapValidator').validateField('milestone_title');
+			$('#milestoneAttribute').data('bootstrapValidator').validateField('milestone_description');
+			if(!$('#milestoneAttribute').data('bootstrapValidator').isValid()) return;
 			
-		},
-		
-		//修改milestone
-		save: function() {
-			var milestones = this.model;
-			var title = $('.milestone-title').val();
-			var content = $('.milestone-description').val();
-			if(title == "" || content == "") {
-				alert("Please wirte something about your milestone...");
-				return;
-			}
+			//创建milestone model
+			var milestone = new MilestoneModel();
+			milestone.set('title', $('#milestone_title').val());
+			milestone.set('description', $('#milestone_description').val());
+			milestone.set('creator', util.currentUserProfile());
 			
-			if(project.get('abstractContent') != content) {
-				project.set({'abstractContent': content});
-				project.save({
-					wait: true,
-					error: function() {
-						project.previous("abstractContent");
-						alert("Update project abstract error! Please try again later...");
-					}
-				});
-			}
-			$('#milestone_sub_view').modal('toggle');
+			//触发全局事件
+			Backbone.trigger('ProjectDetailMilestoneView:createMilestone', milestone);
+			
+			//隐藏窗口
+			$('#create_milestone_sub_view').modal('toggle');
 		}
 	});
 	
@@ -264,7 +235,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title"></h3> ' + 
+			'	<h3 class="modal-title">Create Milestone</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -273,7 +244,7 @@ define([
 		var tpl = 
 			'<div class="modal-footer"> ' + 
 			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="confirm btn btn-primary"></a> ' + 
+			'	<a type="submit" class="create btn btn-primary">Create</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -284,12 +255,11 @@ define([
 			'	<form id="milestoneAttribute"> ' + 
 			'		<div class="form-group"> ' + 
 			'			<label for="milestone_title" class="control-label">Title:</label> ' + 
-			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="milestone title"> ' + 
+			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="milestone title..."> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="milestone_description" class="control-label">Advisor:</label> ' + 
-			'			<textarea class="form-control" id="milestone_description" name="milestone_title"> ' + 
-			'			</textarea> ' + 
+			'			<label for="milestone_description" class="control-label">Description:</label> ' + 
+			'			<textarea class="form-control" id="milestone_description" name="milestone_description" placeholder="milestone description..."></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

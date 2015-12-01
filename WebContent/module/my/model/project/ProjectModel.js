@@ -1,7 +1,5 @@
 define([ 'backbone', 'util' ], function(Backbone, util) {
 	var Project = Backbone.Model.extend({
-		url: '/IdeaWorks/api/users/' + util.currentUser() + '/projects',
-		
 		defaults: {
 			'projectid': 0,
 			'title': '',
@@ -20,7 +18,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		parse: function(response) {
 			response.id = response.projectid ? response.projectid : "";
 		    return response;
-		},
+		}
 	});
 	
 	return Project;

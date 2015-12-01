@@ -295,11 +295,11 @@ public class ProjectService extends BaseService {
 	}
 	
 	@PUT
-	@Path("")
+	@Path("/{projectid}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONObject updateUserProjects(
 			@PathParam("userid") String p_userid,
-			@FormParam("projectid") int p_projectid,
+			@PathParam("projectid") int p_projectid,
 			@FormParam("title") String p_title, 
 			@FormParam("abstractContent") String p_abstract, 
 			@FormParam("advisor[userid]") String p_advisor) throws Exception
@@ -386,7 +386,6 @@ public class ProjectService extends BaseService {
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
-		System.out.println(p_projectid);
 		//设置标志位, 删除project
 		String sql = "update " +
 					 "	ideaworks.project " + 

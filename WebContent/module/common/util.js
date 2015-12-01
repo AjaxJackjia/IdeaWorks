@@ -23,6 +23,18 @@ define(['jquery', 'cookie' ], function($, cookie) {
     	}
     };
     
+    var currentUserProfile = function() {
+    	if(isLogin()) {
+    		var profile = {};
+    		profile.userid = $.cookie('userid');
+    		profile.nickname = $.cookie('nickname');
+    		profile.userlogo = $.cookie('userlogo');
+    		return profile;
+    	}else{
+    		logout();
+    	}
+    };
+    
     var isLogin = function() {
     	return !$.cookie('userid') ? false : true;
     };
@@ -409,6 +421,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 		baseUrl: baseUrl,
 		resolveUrlParams: resolveUrlParams,
 		currentUser: currentUser,
+		currentUserProfile: currentUserProfile,
 		isLogin: isLogin,
 		logout: logout,
 		attrIsValid: attrIsValid,
