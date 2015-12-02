@@ -164,7 +164,7 @@ define([
 	};
 	
 	/*
-	 * subview - modify new milestone sub view
+	 * subview - modify milestone sub view
 	 * */
 	var ModifyMilestoneSubView = Backbone.View.extend({
 		
@@ -280,10 +280,10 @@ define([
 	
 	var Footer = function() {
 		var tpl = 
-			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">save</a> ' + 
-			'</div> ';
+				'<div class="modal-footer"> ' + 
+				'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+				'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+				'</div> ';
 		return tpl;
 	}
 	

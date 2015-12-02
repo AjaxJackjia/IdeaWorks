@@ -110,8 +110,6 @@ define([
 				success: function() {
 					//从list中删除milestone
 					milestones.remove(milestone);
-					
-					
 				},
 				error: function() {
 					alert('Delete milestone failed. Please try again later!');

@@ -810,20 +810,20 @@
 	text-transform: uppercase;
 }
 
-.project-detail-forum-topic-view > .meta-container
+.project-detail-forum-topic-view .meta-container
 {
 	padding: 6px 0;
 	font-size: 15px;
 }
 
-.project-detail-forum-topic-view > .meta-container > .creator
+.project-detail-forum-topic-view .meta-container > .creator
 {
 	width: 30px;
 	height: 30px;
 	margin-left: 10px;
 }
 
-.project-detail-forum-topic-view > .meta-container > .creator-nickname
+.project-detail-forum-topic-view .meta-container > .creator-nickname
 {
 	display: inline-block;
 	margin-left: 10px;
@@ -831,7 +831,7 @@
 	padding-top: 6px;
 }
 
-.project-detail-forum-topic-view > .meta-container > .create-title
+.project-detail-forum-topic-view .meta-container > .create-title
 {
 	display: inline-block;
 	margin-left: 2px;
@@ -840,7 +840,7 @@
 	padding-top: 6px;
 }
 
-.project-detail-forum-topic-view > .meta-container > .time
+.project-detail-forum-topic-view .meta-container > .time
 {
 	display: inline-block;
 	color: #afb6ba;
@@ -848,8 +848,39 @@
 	padding-top: 6px;
 }
 
-.project-detail-forum-topic-view > .description-container,
-.project-detail-forum-topic-view > .discussion-container
+
+.project-detail-forum-topic-view .meta-container > .topic-action
+{
+	float: right;
+	margin-right: 25px;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .modify-topic:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .delete-topic:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .description-container,
+.project-detail-forum-topic-view .discussion-container
 {
 	margin-top: 20px;
 	background-color: #fff;
@@ -857,7 +888,36 @@
 	line-height: 30px;
 }
 
-.project-detail-forum-topic-view > .discussion-container > .discussion-content > .placeholder
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action
+{
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action > .refresh-topic:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .discussion-container > .discussion-content
+{
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;	
+}
+
+.project-detail-forum-topic-view .discussion-container > .discussion-content > .placeholder
 {
 	margin: 0 auto;
 	margin-top: 20px;
@@ -866,7 +926,7 @@
 	height: 100px;
 }
 
-.project-detail-forum-topic-view > .discussion-container > .discussion-content > .placeholder > h4
+.project-detail-forum-topic-view .discussion-container > .discussion-content > .placeholder > h4
 {
 	margin: 0 auto;
 	padding: 0;
@@ -962,6 +1022,46 @@
 .project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-text
 {
 	clear: both;
+}
+
+.project-detail-forum-topic-view .discussion-sender
+{
+	padding-top: 20px;
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+	border-top: 1px solid #dedede;
+}
+
+.project-detail-forum-topic-view .discussion-sender > #send_content
+{
+	height: 150px;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action > .btn.btn-primary
+{
+	display: inline-block;
+	border-radius: 40px;
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action
+{
+	display: block;
+	width: 100%;
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action > .send
+{
+	float: right;
+	margin-top: 10px;
+	margin-right: 15px;
+	width: 120px;
 }
 
 /* project-detail-files-view */

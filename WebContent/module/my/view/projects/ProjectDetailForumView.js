@@ -1,28 +1,34 @@
 define([ 
          'backbone', 'util',
+         //view
          'view/projects/ProjectDetailForumTopicView',
+         //model
+         'model/project/TopicModel'
        ], 
-    function(Backbone, util, DetailTopicView) {
+    function(Backbone, util, ProjectDetailForumTopicView, TopicModel) {
 	var ProjectDetailForumView = Backbone.View.extend({
 		
 		className: 'project-detail-forum-view',
 		
 		events: {
-			'click .add-topic-title': 'createTopic',
-			'click .topic > .content > .heading': 'toggleDetail'
+			'click .add-topic-title': 'clickToCreate'
 		},
 		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'addTopic', 'createTopic', 'toggleDetail');
+			_.bindAll(this, 'render', 'addTopicItem', 'removeTopicItem', 'createTopic', 'deleteTopic');
+			
+			//注册全局事件
+			Backbone.
+				off('ProjectDetailForumView:createTopic').
+				on('ProjectDetailForumView:createTopic', this.createTopic, this);
+			Backbone.
+				off('ProjectDetailForumView:deleteTopic').
+				on('ProjectDetailForumView:deleteTopic', this.deleteTopic, this);
 			
 			//监听model变化
-			this.model.bind('add', this.addTopic);
-			
-			//global param
-			this.isExpanded = false;
-			this.scrollY = 0;
-			this.detailTopicView = null;
+			this.model.bind('add', this.addTopicItem);
+			this.model.bind('remove', this.removeTopicItem);
 		},
 		
 		render: function(){
@@ -32,94 +38,92 @@ define([
 			
 		    return this;
 		},
-		
+			
 		/*
-		 * 向topics集合中添加topic所触发的事件
+		 * 向topic集合中添加topic
 		 * */
-		addTopic: function(topic) {
-			var $topics = $(this.el).find('.topics');
-			$topics.append(TopicItem(topic));
+		addTopicItem: function(topic) {
+			var $topicAddBtn = $(this.el).find('.topic.add-topic');
+			//set topic url
+			topic.url = this.model.url + '/' + topic.id;
+			var projectDetailForumTopicView = new ProjectDetailForumTopicView({
+				model: topic
+			});
+			$(projectDetailForumTopicView.el).insertAfter($topicAddBtn);
+			
+			//保持scrollY在最上
+			$('.project-content').scrollTop( 0 );
 		},
 		
 		/*
-		 * topic add new event
+		 * 从topic集合中删除topic
 		 * */
-		createTopic: function() {
-			alert('add new topic! by click event! ');
-		},
-		
-		/*
-		 * toggle topic expand event
-		 * */
-		toggleDetail: function(event) {
-			//topic model cid
-			var cid = $(event.target).closest('.heading').find('.title').attr('cid');
-			var topicModel = this.model.get(cid);
-			
-			//当前点击的topic
-			var $currentTopic = $(event.target).closest('.topic');
-			//非点击的topic元素
-			var $unClickedTopics = $('.topics').children('[topicid!='+ topicModel.get('topicid') +']');
-			//当前topic的detail view
-			
-			if(!this.isExpanded) {
-				//change icon state
-				$('.expand-icon  > i').removeClass('fa-angle-down').addClass('fa-angle-up');
-				
-				//store scroll Y
-				this.scrollY = $('.project-content').scrollTop();
-				
-				//隐藏非click的topic元素
-				$unClickedTopics.hide();
-				
-				//隐藏并设置topic相关属性
-				$currentTopic.find('.create-time').hide();
-				$currentTopic.find('.create-operator').hide();
-				$currentTopic.find('.short-description').hide();
-				$currentTopic.find('.title').addClass('expanded');
-				
-				//显示topic细节
-				this.detailTopicView = new DetailTopicView({
-					model: topicModel
-				});
-				$currentTopic.find('.body').append(this.detailTopicView.render().el);
-				
-				//设置scroll状态
-				$('.project-content').scrollTop(0);
-				
-				//重置状态
-				this.isExpanded = true;
-			}else{
-				//change icon state
-				$('.expand-icon  > i').removeClass('fa-angle-up').addClass('fa-angle-down');
-				
-				//显示非click的topic元素
-				$unClickedTopics.fadeIn();
-				
-				//显示并设置topic相关属性
-				$currentTopic.find('.create-time').show();
-				$currentTopic.find('.create-operator').show();
-				$currentTopic.find('.short-description').show();
-				$currentTopic.find('.title').removeClass('expanded');
-				
-				//隐藏topic细节
-				if(this.detailTopicView != null) {
-					this.detailTopicView.remove();
-					this.detailTopicView = null;
+		removeTopicItem: function(topic) {
+			_.each($('.topic[cid]', this.el), function(element, index, list){ 
+				if($(element).attr('cid') == topic.cid) {
+					$(element).fadeOut();
+					$(element).remove();
 				}
-				
-				//restore scroll Y
-				$('.project-content').scrollTop(this.scrollY);
-				
-				//重置状态
-				this.isExpanded = false;
+			});
+			
+			//其他topic应当在该topic删除时展示出来
+			$('.topic', this.el).show();
+		},
+		
+		/*
+		 * 新增topic
+		 * */
+		createTopic: function(topic) {
+			var topics = this.model;
+			topics.create(topic, {
+				 wait: true, 
+				 success: function() {
+					 //添加topic到topic list
+					 topics.add(topic);
+				 }, 
+				 error: function() {
+					 alert('Create topic failed. Please try again later!');
+				 }
+			});
+		},
+		
+		/*
+		 * 删除topic
+		 * */
+		deleteTopic: function(topic) {
+			var topics = this.model;
+			topics.get(topic.cid).destroy({
+				wait: true, 
+				success: function() {
+					//从list中删除topic
+					topics.remove(topic);
+				},
+				error: function() {
+					alert('Delete topic failed. Please try again later!');
+				}
+			});
+		},
+		
+		/*
+		 * 点击新建topic按钮事件
+		 * */
+		clickToCreate: function() {
+			var topics = this.model;
+			var createTopicSubView = new CreateTopicSubView({
+				model: topics
+			});
+			var $subView = $('#create_topic_sub_view');
+			if($subView.length == 0) {
+				$('.content-panel').append($(createTopicSubView.render().el));
 			}
+			//显示view
+			$('#create_topic_sub_view').modal('toggle');
 		}
 	});
 	
 	var TopicAddButton = function() {
 		var $tpl = 
-			'<div class="topic"> ' +
+			'<div class="topic add-topic"> ' +
 			'  <div class="timeline-icon"> ' +
 			'    <i class="fa fa-plus"></i> ' +
 			'  </div> ' +
@@ -127,31 +131,138 @@ define([
 			'	 <div class="add-topic-title">Add New Topic</div> ' +
 			'  </div> ' +
 			'</div>';
-			return $tpl;
+		return $tpl;
 	};
 	
-	var TopicItem = function(topic) {
-		var creator = topic.get('creator');
-		var tpl = 
-			'<div class="topic" topicid="'+ topic.get('topicid') +'"> ' +
-			'  <div class="timeline-icon"> ' +
-			'    <i class="fa fa-users"></i> ' +
-			'  </div> ' +
-			'  <div class="content"> ' +
-			'	<div class="heading"> ' +
-			'		<div class="expand-icon" title="show topic detail"><i class="fa fa-angle-down"></i></div>' + 
-			'		<span class="create-time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</span> ' + 
-			'		<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"> ' +
-			'		<div class="title" cid="'+ topic.cid +'" title="'+ topic.get('title') + '">'+ topic.get('title') + '</div> ' +
-			'	</div>' +
-			'	<div class="body"> ' + 
-			'		<div class="short-description" title="'+ topic.get('description') + '">'+ topic.get('description') + '</div> ' +
-			'	</div> ' +
-			'  </div> ' +
-			'</div>';
+	/*
+	 * subview - create new topic sub view
+	 * */
+	var CreateTopicSubView = Backbone.View.extend({
+		
+		id: 'create_topic_sub_view',
+		
+		className: 'create-topic-sub-view modal fade',
+		
+		events: {
+			'click .create': 'create'
+		},
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'create');
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
 			
+			var header = Header();
+			$modalDialogContent.append(header);
+			
+			var body = Body();
+			$modalDialogContent.append(body);
+			
+			var footer = Footer();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//form validator
+			$modalDialog.find('#topicAttribute').bootstrapValidator({
+				live: 'enabled',
+		        message: 'This value is not valid',
+		        feedbackIcons: {
+		            valid: 'glyphicon glyphicon-ok',
+		            invalid: 'glyphicon glyphicon-remove',
+		            validating: 'glyphicon glyphicon-refresh'
+		        },
+		        fields: {
+		        	topic_title: {
+		                validators: {
+		                    notEmpty: {
+		                        message: 'The topic title is required'
+		                    }
+		                }
+		            },
+		            topic_description: {
+		                validators: {
+		                    notEmpty: {
+		                        message: 'The topic description is required'
+		                    }
+		                }
+		            }
+		        }
+		    });
+			
+			//绑定modal消失时出发的事件
+			var self = this;
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		//创建新的topic
+		create: function() {
+			//validate
+			$('#topicAttribute').data('bootstrapValidator').validateField('topic_title');
+			$('#topicAttribute').data('bootstrapValidator').validateField('topic_description');
+			if(!$('#topicAttribute').data('bootstrapValidator').isValid()) return;
+			
+			//创建topic model
+			var topic = new TopicModel();
+			topic.set('title', $('#topic_title').val());
+			topic.set('description', $('#topic_description').val());
+			topic.set('creator', util.currentUserProfile());
+			
+			//触发全局事件
+			Backbone.trigger('ProjectDetailForumView:createTopic', topic);
+			
+			//隐藏窗口
+			$('#create_topic_sub_view').modal('toggle');
+		}
+	});
+	
+	var Header = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Create Forum Topic</h3> ' + 
+			'</div>';
 		return tpl;
-	};
+	}
+	
+	var Footer = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="create btn btn-primary">Create</a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var Body = function() {
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="topicAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="topic_title" class="control-label">Title:</label> ' + 
+			'			<input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="forum topic title..."> ' + 
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="topic_description" class="control-label">Description:</label> ' + 
+			'			<textarea class="form-control" id="topic_description" name="topic_description" placeholder="topic description..."></textarea> ' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
 	
 	return ProjectDetailForumView;
 });

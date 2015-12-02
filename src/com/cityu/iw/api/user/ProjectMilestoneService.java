@@ -102,7 +102,8 @@ public class ProjectMilestoneService extends BaseService {
 					 "	ideaworks.milestone T1, " + 
 					 "	ideaworks.user T2 " + 
 					 "where " + 
-					 "	T1.id = ? ";
+					 "	T1.id = ? and " + 
+					 "	T1.creator = T2.id ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_milestoneid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
