@@ -2,6 +2,7 @@ package com.cityu.iw.api.user;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,19 +27,67 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 
-
 @Path("/users/{userid}/projects/{projectid}/activities")
 public class ProjectActivityService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectActivityService.class);
 	
+	public static enum Action {
+		CREATE, 	//创建 
+		UPDATE, 	//修改
+		READ,		//查询
+		DELETE,		//删除
+		ADD,		//加入
+		REMOVE,		//移除
+		LEAV,		//离开
+		UPLOAD		//上传
+	};
+	
+	public static enum Entity {
+		PROJECT,			//项目
+		ADVISOR_ABSTRACT,	//负责人和摘要
+		MEMEBER,			//成员
+		MILESTONE,			//里程碑
+		TOPIC,				//forum下的话题
+		DISCUSSION,		//forum话题的discussion
+		FILE				//文件
+	};
+	
+	/*
+	 * 记录activity的function
+	 * */
+	public static void recordActivity(int projectid, String operator, String title, Action action, Entity entity) {
+		String sql = "insert into " +
+					 "	ideaworks.activity (" + 
+					 "		projectid, " + 
+					 "		operator, " + 
+					 "		action, " + 
+					 "		entity, " +
+					 "		title, " + 
+					 "		time " + 
+					 "	) values ( ?, ?, ?, ?, ?, ? )";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
+										projectid, operator, action.ordinal(), entity.ordinal(), title, new Date());
+		try {
+			stmt.execute();
+		} catch (SQLException e) {
+			LOGGER.info(e.toString());
+		}
+		
+		DBUtil.getInstance().closeStatementResource(stmt);
+	}
+	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectActivities(@PathParam("userid") String p_userid, @PathParam("projectid") int p_projectid) throws Exception
+	public JSONArray getUserProjectActivities(
+			@PathParam("userid") String p_userid, 
+			@PathParam("projectid") int p_projectid) throws Exception
 	{
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.projectid, " + 
+					 "	T1.action, " + 
+					 "	T1.entity, " + 
 					 "	T1.title, " + 
 					 "	T1.operator, " + 
 					 "	T1.time, " + 
@@ -51,7 +100,7 @@ public class ProjectActivityService extends BaseService {
 					 "	T1.projectid = ? and " + 
 					 "	T1.operator = T2.id " + 
 					 "order by " + 
-					 "	time desc";
+					 "	time asc";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
@@ -62,6 +111,8 @@ public class ProjectActivityService extends BaseService {
 			JSONObject activity = new JSONObject();
 			activity.put("activityid", rs_stmt.getInt("id"));
 			activity.put("projectid", rs_stmt.getInt("projectid"));
+			activity.put("action", rs_stmt.getInt("action"));
+			activity.put("entity", rs_stmt.getInt("entity"));
 			activity.put("title", rs_stmt.getString("title"));
 			JSONObject operator = new JSONObject();
 			operator.put("userid", rs_stmt.getString("operator"));

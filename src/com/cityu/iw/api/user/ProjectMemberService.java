@@ -117,19 +117,20 @@ public class ProjectMemberService extends BaseService {
 		
 		//更新project_member表
 		String sql = "insert into " +
-				 "	ideaworks.project_member (" + 
-				 "		projectid, " + 
-				 "		userid, " + 
-				 "		jointime " + 
-				 "	) values ( ?, ?, ?)";
+					 "	ideaworks.project_member (" + 
+					 "		projectid, " + 
+					 "		userid, " + 
+					 "		jointime " + 
+					 "	) values ( ?, ?, ?)";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql);
 		
 		Iterator<String> ite = form.keySet().iterator();
 		ArrayList<String> newMembers = new ArrayList<String>();
 		while(ite.hasNext()) {
+			String wrapper = "'";
 			String key = (String) ite.next();
 			String userid = form.getFirst(key);
-			newMembers.add(userid);
+			newMembers.add(wrapper + userid + wrapper);
 			
 			stmt.setObject(1, p_projectid);
 			stmt.setObject(2, userid);
@@ -152,8 +153,8 @@ public class ProjectMemberService extends BaseService {
 			 "where " + 
 			 "	T1.projectid = ? and " + 
 			 "	T1.userid = T2.id and " + 
-			 "	T2.id in (?) ";
-		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid, StringUtils.join(newMembers.toArray()));
+			 "	T1.userid in (" + StringUtils.join(newMembers, ",") + ") ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
 			JSONObject member = new JSONObject();
@@ -165,13 +166,23 @@ public class ProjectMemberService extends BaseService {
 			member.put("jointime", rs_stmt.getTimestamp("jointime").getTime());
 			member.put("advisor", false);
 			member.put("creator", false);
-			member.put("creator", false);
-			member.put("advisor", false);
 			
 			members.put(member);
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		ArrayList<String> nicknames = new ArrayList<String>();
+		for(int index = 0;index<members.length();index++) {
+			JSONObject member = (JSONObject) members.get(index);
+			nicknames.add((String) member.get("nickname"));
+		}
+		String msg = StringUtils.join(nicknames, ", ");
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.ADD, 
+				ProjectActivityService.Entity.MEMEBER);
+				
 		return members;
 	}
 }

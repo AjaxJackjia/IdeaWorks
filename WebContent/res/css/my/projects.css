@@ -1005,7 +1005,7 @@
 .project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text
 {
 	display: block;
-	padding: 5px 10px 5px 5px;
+	padding: 5px 10px 20px 10px;
 	max-width: 500px;
 	min-height: 1em;
 	vertical-align: top;
@@ -1017,6 +1017,18 @@
 	border-radius: 3px;
 	-moz-border-radius: 3px;
 	-webkit-border-radius: 3px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message,
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .remove-message
+{
+	float: right;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
 }
 
 .project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-text
@@ -1502,3 +1514,120 @@
 	line-height: 25px;
 }
 
+/* reply-message-sub-view */
+.reply-message-sub-view .message-origin,
+.reply-message-sub-view .reply-message
+{
+	position: relative;
+	width: 100%;
+	margin: 10px 5px;
+	color: #5f6a6d;
+	line-height: 30px;
+	
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.reply-message-sub-view .message-origin > img,
+.reply-message-sub-view .reply-message > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.reply-message-sub-view .message-origin > .message-body,
+.reply-message-sub-view .reply-message > .message-body
+{
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-left: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title,
+.reply-message-sub-view .reply-message > .message-body > .message-title 
+{
+	display: inline-block;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title > .message-from,
+.reply-message-sub-view .reply-message > .message-body > .message-title > .message-from
+{
+	color: #23a8f5;
+	font-size: 14px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title > .message-time,
+.reply-message-sub-view .reply-message > .message-body > .message-title > .message-time
+{
+	color: #afb6ba;
+	font-size: 14px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-text,
+.reply-message-sub-view .reply-message > .message-body > .message-text
+{
+	display: block;
+	padding: 10px;
+	max-width: 470px;
+	min-height: 1em;
+	vertical-align: top;
+	text-align: left;
+	font-size: 14px;
+	white-space: pre-wrap;
+	background-color: #eeeeee;
+	
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-text > .message-action > .reply-message-action,
+.reply-message-sub-view .message-origin > .message-body > .message-text > .message-action > .remove-message-action,
+.reply-message-sub-view .reply-message > .message-body > .message-text > .message-action > .reply-message-action,
+.reply-message-sub-view .reply-message > .message-body > .message-text > .message-action > .remove-message-action
+{
+	float: right;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: -17px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.reply-message-sub-view .reply-msg-container
+{
+	padding-top: 20px;
+    background-color: #fff;
+    color: #5f6a6d;
+    line-height: 30px;
+    border-top: 1px solid #dedede;
+}
+
+.reply-message-sub-view .reply-messages > .placeholder
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+}
+
+.reply-message-sub-view .reply-messages > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+.reply-message-sub-view #reply_msg
+{
+	height: 100px;
+}

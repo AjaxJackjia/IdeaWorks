@@ -28,12 +28,13 @@ define([
 			if($placeholder.length > 0) {
 				$placeholder.remove();
 			}
-			$content.append(ActivityItem(activity));
+			$content.prepend(ActivityItem(activity));
 		}
 	});
 	
 	var ActivityItem = function(activity) {
 		var operator = activity.get('operator');
+		var msg = activity.get('action') + ' ' + activity.get('entity') + ' ' + activity.get('title');
 		var $tpl = 
 			'<div class="activity"> ' +
 			'  <div class="timeline-icon"> ' +
@@ -45,7 +46,7 @@ define([
 			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span> ' + 
 			'		<div class="user">' + operator.nickname + '</div> ' +
 			'	</div>' +
-			'	<div class="body">'+ activity.get('title') +'</div> ' +
+			'	<div class="body">'+ msg +'</div> ' +
 			'  </div> ' +
 			'</div>';
 		return $tpl;

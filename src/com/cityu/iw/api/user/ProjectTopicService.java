@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -18,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -212,6 +214,13 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.CREATE, 
+				ProjectActivityService.Entity.TOPIC);
+		
 		return topic;
 	}
 	
@@ -285,6 +294,13 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.UPDATE, 
+				ProjectActivityService.Entity.TOPIC);
+				
 		return topic;
 	}
 	
@@ -302,16 +318,37 @@ public class ProjectTopicService extends BaseService {
 		   (p_userid == null || p_userid.equals("")) ) {
 			return null;
 		}
-				
-		//设置标志位, 删除topic
-		String sql = "delete from " +
-					 "	ideaworks.topic " + 
-					 "where " + 
-					 "	id = ? ";
+		
+		//查询topic
+		String msg = "";
+		String sql = 
+				 "select " + 
+				 " * " + 
+				 "from " +
+				 "	ideaworks.topic " + 
+				 "where " + 
+				 "	id = ? ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			msg = rs_stmt.getString("title");
+		}
+		
+		//设置标志位, 删除topic
+		sql = "delete from " +
+			 "	ideaworks.topic " + 
+			 "where " + 
+			 "	id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.DELETE, 
+				ProjectActivityService.Entity.TOPIC);
+				
 		return null;
 	}
 	
@@ -329,7 +366,8 @@ public class ProjectTopicService extends BaseService {
 		   (p_userid == null || p_userid.equals("")) ) {
 			return null;
 		}
-				
+		
+		//Step 1. get all topic first level message
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.pid, " + 
@@ -352,12 +390,16 @@ public class ProjectTopicService extends BaseService {
 					 "		ideaworks.user T3 " + 
 					 "	  on T1.touser = T3.id " + 
 					 "where " + 
-					 "	T1.topicid = ? " + 
+					 "	T1.topicid = ? and " +
+					 "	T1.pid = 0 " + //只过滤一级消息
 					 "order by " + 
 					 "	T1.time asc";
 		
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
 		ResultSet rs_stmt = stmt.executeQuery();
+		
+		//filter messages
+		ArrayList<Integer> filterMsgs = new ArrayList<Integer>();
 		
 		//result
 		JSONArray messages = new JSONArray();
@@ -386,8 +428,38 @@ public class ProjectTopicService extends BaseService {
 			message.put("to", touser);
 			
 			messages.put(message);
+			
+			//add filtered message
+			filterMsgs.add(rs_stmt.getInt("id"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 2. collect first level message replies number
+		sql = "select " + 
+			 "	pid, " + 
+			 "	count(pid) as count " + 
+			 "from " +
+			 "	ideaworks.topic_discussion " + 
+			 "where " + 
+			 "	topicid = ? and " +
+			 "	pid in (select id from ideaworks.topic_discussion where topicid = ? and pid = 0) " + //过滤二级消息（父消息以一级消息为基准）
+			 "group by " + 
+			 "	pid ";
+	
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid, p_topicid);
+		rs_stmt = stmt.executeQuery();
+		HashMap<Integer, Integer> pid_sub_msg_count = new HashMap<Integer, Integer>();
+		while(rs_stmt.next()) {
+			pid_sub_msg_count.put(rs_stmt.getInt("pid"), rs_stmt.getInt("count"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 3. manage return result
+		for(int index = 0;index<messages.length();index++) {
+			JSONObject message = messages.getJSONObject(index);
+			int messageid = Integer.parseInt(message.get("messageid").toString());
+			message.put("replyCount", (pid_sub_msg_count.get(messageid)==null) ? 0 : pid_sub_msg_count.get(messageid));
+		}
 		
 		return messages;
 	}
@@ -409,6 +481,7 @@ public class ProjectTopicService extends BaseService {
 			return null;
 		}
 		
+		// Step 1. retrieve message detail info
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.pid, " + 
@@ -464,7 +537,108 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		// Step 2. get message reply list
+		sql = "select " + 
+			 "	count(id) as count " + 
+			 "from " +
+			 "	ideaworks.topic_discussion " + 
+			 "where " + 
+			 "	pid = ? and " + 
+			 "	topicid = ? " +
+			 "group by pid";
+	
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_messageid, p_topicid);
+		rs_stmt = stmt.executeQuery();
+		
+		//result
+		while(rs_stmt.next()) {
+			message.put("replyCount", rs_stmt.getInt("count"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		if(!message.has("replyCount")) {
+			message.put("replyCount", 0);
+		}
+		
 		return message;
+	}
+	
+	@GET
+	@Path("/{topicid}/messages/{messageid}/replylist")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONArray getUserProjectTopicsMessagesReplyListById(
+			@PathParam("userid") String p_userid, 
+			@PathParam("projectid") int p_projectid,
+			@PathParam("topicid") int p_topicid,
+			@PathParam("messageid") int p_messageid ) throws Exception
+	{
+		//check param
+		if((p_projectid == 0) && 
+		   (p_topicid == 0) && 
+		   (p_messageid == 0) && 
+		   (p_userid == null || p_userid.equals("")) ) {
+			return null;
+		}
+		
+		String sql = "select " + 
+			 "	T1.id, " + 
+			 "	T1.pid, " + 
+			 "	T1.topicid, " + 
+			 "	T1.msg, " + 
+			 "	T1.fromuser, " + 
+			 "	T1.touser, " + 
+			 "	T1.time, " + 
+			 "	T2.nickname as fromuserNickname, " + 
+			 "	T2.logo as fromuserLogo, " + 
+			 "	T3.nickname as touserNickname, " + 
+			 "	T3.logo as touserLogo " + 
+			 "from " +
+			 "	( " + 
+			 "		ideaworks.user as T2 " +
+			 "	 		right join " + 
+			 "		ideaworks.topic_discussion T1 " + 
+			 "			on T1.fromuser = T2.id" + 
+			 "	) left join " + 
+			 "		ideaworks.user T3 " + 
+			 "	  on T1.touser = T3.id " + 
+			 "where " + 
+			 "	T1.pid = ? and " + 
+			 "	T1.topicid = ? ";
+	
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_messageid, p_topicid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		
+		//result
+		JSONArray replyList = new JSONArray();
+		
+		while(rs_stmt.next()) {
+			JSONObject reply = new JSONObject();
+			reply.put("messageid", rs_stmt.getInt("id"));
+			reply.put("pmessageid", rs_stmt.getInt("pid"));
+			reply.put("topicid", rs_stmt.getInt("topicid"));
+			reply.put("projectid", p_projectid);
+			reply.put("msg", rs_stmt.getString("msg"));
+			reply.put("time", rs_stmt.getTimestamp("time").getTime());
+			
+			JSONObject fromuser = new JSONObject();
+			fromuser.put("userid", rs_stmt.getString("fromuser"));
+			fromuser.put("nickname", rs_stmt.getString("fromuserNickname"));
+			fromuser.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("fromuserLogo"));
+			reply.put("from", fromuser);
+			
+			JSONObject touser = new JSONObject();
+			touser.put("userid", rs_stmt.getString("touser"));
+			if(rs_stmt.getString("touser") != null && rs_stmt.getString("touser").length() > 0) {
+				touser.put("nickname", rs_stmt.getString("touserNickname"));
+				touser.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("touserLogo"));
+			}
+			reply.put("to", touser);
+			
+			replyList.put(reply);
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		return replyList;
 	}
 	
 	@POST

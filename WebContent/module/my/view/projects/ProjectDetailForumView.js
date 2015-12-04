@@ -78,8 +78,7 @@ define([
 			topics.create(topic, {
 				 wait: true, 
 				 success: function() {
-					 //添加topic到topic list
-					 topics.add(topic);
+					 
 				 }, 
 				 error: function() {
 					 alert('Create topic failed. Please try again later!');

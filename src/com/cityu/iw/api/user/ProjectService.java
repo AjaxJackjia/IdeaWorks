@@ -291,6 +291,13 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(projectid, p_userid, msg,
+				ProjectActivityService.Action.CREATE, 
+				ProjectActivityService.Entity.PROJECT);
+				
 		return project;
 	}
 	
@@ -376,6 +383,13 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.UPDATE, 
+				ProjectActivityService.Entity.ADVISOR_ABSTRACT);
+				
 		return project;
 	}
 	

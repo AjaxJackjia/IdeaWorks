@@ -6,6 +6,7 @@
 			'underscore': '../../lib/underscore/underscore-min',
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
 			'headroom': '../../lib/headroom.js/dist/headroom.min',
+			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
 			'util': '../common/util',

@@ -66,10 +66,7 @@ define([
 			var projectList = this.model;
 			projectList.create(project, {
 				 wait: true, 
-				 success: function() {
-					 //添加project到list
-					 projectList.add(project);
-					 
+				 success: function() {	 
 					 //默认选中最新创建的project item
 					 $($('.project-list-content > li')[0]).click();
 				 }, 

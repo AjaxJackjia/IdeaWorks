@@ -91,8 +91,7 @@ define([
 			milestones.create(milestone, {
 				 wait: true, 
 				 success: function() {
-					 //添加milestone到milestone list
-					 milestones.add(milestone);
+					 
 				 }, 
 				 error: function() {
 					 alert('Create milestone failed. Please try again later!');

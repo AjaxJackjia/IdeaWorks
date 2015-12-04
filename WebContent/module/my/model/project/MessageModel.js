@@ -8,7 +8,8 @@ define([ 'backbone' ], function(Backbone) {
 			'msg': '',
 			'from': '',
 			'to': '',
-			'time': ''
+			'time': '',
+			'replyCount': 0
 		},
 		
 		//fetch时设置id属性, 以便后续的update操作

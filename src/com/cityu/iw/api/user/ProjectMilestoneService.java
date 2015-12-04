@@ -196,6 +196,13 @@ public class ProjectMilestoneService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.CREATE, 
+				ProjectActivityService.Entity.MILESTONE);
+		
 		return milestone;
 	}
 	
@@ -265,7 +272,14 @@ public class ProjectMilestoneService extends BaseService {
 			milestone.put("description", rs_stmt.getString("description"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
-
+		
+		//record activity
+		String msg = p_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.UPDATE, 
+				ProjectActivityService.Entity.MILESTONE);
+		
 		return milestone;
 	}
 	
@@ -277,15 +291,36 @@ public class ProjectMilestoneService extends BaseService {
 			@PathParam("projectid") int p_projectid,
 			@PathParam("milestoneid") int p_milestoneid ) throws Exception
 	{
-		//设置标志位, 删除milestone
-		String sql = "delete from " +
+		//查询要删除的milestone信息
+		String msg = "";
+		String sql = 
+			     "select " + 
+				 "	* " + 
+				 "from " +
+				 "	ideaworks.milestone " + 
+				 "where " + 
+				 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_milestoneid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			msg = rs_stmt.getString("title");
+		}
+		
+		//删除milestone
+		sql = "delete from " +
 					 "	ideaworks.milestone " + 
 					 "where " + 
 					 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_milestoneid);
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_milestoneid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
+				ProjectActivityService.Action.DELETE, 
+				ProjectActivityService.Entity.MILESTONE);
+				
 		return null;
 	}
 }

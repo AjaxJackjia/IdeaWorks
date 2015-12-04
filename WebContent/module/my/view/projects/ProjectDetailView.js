@@ -141,7 +141,7 @@ define([
 					model: files
 				});
 				$(this.el).find('#files').html(filesView.render().el);
-			}else if(target == 'Activity' && $('#activity').html() == "") {
+			}else if(target == 'Activity') {//每次点击activity tab的时候都刷新
 				//activity model
 				var activities = new ActivityCollection();
 				activities.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/activities';
