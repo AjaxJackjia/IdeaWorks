@@ -34,5 +34,3 @@ collation-server=utf8_unicode_ci
 找到的方案是为collection增加一个save方法, 里面重写Backbone的sync方法, 自己设定参数(create, update, delete等), 然后调用重写sync方法来作用. 本质上其实是增加一个wrapper, 将collection里面要操作的model写到一个model里面(BulkModel), 然后对BulkModel设定url与toJSON方法, 最后作用的是BulkModel.
 
 
-
-

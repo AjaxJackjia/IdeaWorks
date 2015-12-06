@@ -4,6 +4,8 @@ define([ 'backbone' ], function(Backbone) {
 			'fileid': 0,
 			'projectid': 0,
 			'filename': '',
+			'filesize': '',
+			'filetype': '',
 			'url': '',
 			'creator': '',
 			'createtime': '',

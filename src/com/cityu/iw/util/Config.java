@@ -4,4 +4,6 @@ public class Config {
 	public static final String USER_IMG_BASE_DIR = "/uploads/users/";
 	public static final String PROJECT_IMG_BASE_DIR = "/uploads/projects/";
 	public static final String PROJECT_FILE_BASE_DIR = "/uploads/files/";
+	
+	public static final String WEBCONTENT_DIR = "/home/jackjia/workspace_cityu/IdeaWorks/WebContent";
 }
