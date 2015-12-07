@@ -1,5 +1,7 @@
 package com.cityu.iw.api.user;
 
+import java.io.InputStream;
+import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -25,6 +27,10 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.FileUtil;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 
 /*
  * user center - projects view requests
@@ -299,6 +305,74 @@ public class ProjectService extends BaseService {
 				ProjectActivityService.Entity.PROJECT);
 				
 		return project;
+	}
+	
+	@POST
+	@Path("/{projectid}/logo")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)  
+	public JSONObject updateUserProjectsLogo(
+			@PathParam("userid") String p_userid,
+			@PathParam("projectid") int p_projectid,
+			FormDataMultiPart form ) throws Exception
+	{
+		/*
+		 * Step 1. 获取参数
+		 * */
+		//获取文件流  
+	    FormDataBodyPart filePart = form.getField("logo");
+	    InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+	    FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+	    String filename = formDataContentDisposition.getFileName();
+	    
+	    /*
+		 * Step 2. 校验参数
+		 * */
+		if((p_projectid == 0) && (p_userid == null || p_userid.equals(""))) {
+			return null;
+		}
+		
+		/*
+		 * Step 3. 将logo写入server,并删除之前的logo
+		 * */
+		filename = "prj_" + p_projectid + "_" + filename; //修改文件名使其更符合规范
+	    String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
+		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
+	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
+			return null;
+		}
+	    
+	    String sqlSelect = "select logo from ideaworks.project where id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sqlSelect, p_projectid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			String preLogoPath = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + rs_stmt.getString("logo");
+			FileUtil.delete(preLogoPath); //删除之前的logo
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+	    
+		/*
+		 * Step 4. 将logo更新到DB
+		 * */
+		String sqlUpdate = "update " +
+							 "	ideaworks.project " + 
+							 "set " + 
+							 "	logo = ? " + 
+							 "where " + 
+							 "	id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, filename, p_projectid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//返回修改的project logo
+		JSONObject logoObj = new JSONObject();
+		logoObj.put("logo", Config.PROJECT_IMG_BASE_DIR + filename);
+		
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, "",
+				ProjectActivityService.Action.UPDATE,
+				ProjectActivityService.Entity.LOGO);
+		
+		return logoObj;
 	}
 	
 	@PUT

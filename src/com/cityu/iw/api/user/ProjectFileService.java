@@ -3,7 +3,10 @@ package com.cityu.iw.api.user;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.net.URLDecoder;
 import java.sql.PreparedStatement;
@@ -35,7 +38,11 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
-
+import com.cityu.iw.util.FileUtil;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
+import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/users/{userid}/projects/{projectid}/files")
 public class ProjectFileService extends BaseService {
@@ -48,12 +55,12 @@ public class ProjectFileService extends BaseService {
 		SUPPORT_MIME_FILE_TYPE.put("doc", "application/msword");
 		SUPPORT_MIME_FILE_TYPE.put("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
 		SUPPORT_MIME_FILE_TYPE.put("xls", "application/vnd.ms-exce");
-		SUPPORT_MIME_FILE_TYPE.put("xls", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+		SUPPORT_MIME_FILE_TYPE.put("xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		SUPPORT_MIME_FILE_TYPE.put("ppt", "application/vnd.ms-powerpoint");
 		SUPPORT_MIME_FILE_TYPE.put("pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 		SUPPORT_MIME_FILE_TYPE.put("pdf", "application/pdf");
 		SUPPORT_MIME_FILE_TYPE.put("zip", "application/zip");
-		SUPPORT_MIME_FILE_TYPE.put("rar", "application/x-rar-compressed");
+		SUPPORT_MIME_FILE_TYPE.put("rar", "application/x-rar");
 		SUPPORT_MIME_FILE_TYPE.put("txt", "text/plain");	
 		//image type
 		SUPPORT_MIME_FILE_TYPE.put("gif", "image/gif");
@@ -239,86 +246,104 @@ public class ProjectFileService extends BaseService {
 	
 	@POST
 	@Path("")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)  
 	public JSONObject createUserProjectFiles(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
-			@FormParam("title") String p_title, 
-			@FormParam("creator[userid]") String p_creator,
-			@FormParam("description") String p_description ) throws Exception
+			FormDataMultiPart form ) throws Exception
 	{
-		//check param
-		if((p_projectid == 0) && 
-		   (p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
-		   (p_description == null || p_description.equals("")) ) {
+		/*
+		 * Step 1. 获取参数
+		 * */
+		//获取文件流  
+	    FormDataBodyPart filePart = form.getField("attachment");
+	    InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+	    FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+	    
+	    //获取表单的其他数据  
+		FormDataBodyPart filesizePart = form.getField("filesize");
+		FormDataBodyPart filetypePart = form.getField("filetype");
+		FormDataBodyPart filenamePart = form.getField("filename");
+		FormDataBodyPart creatorPart = form.getField("creator[userid]");
+	    FormDataBodyPart descriptionPart = form.getField("description");
+	    
+	    long filesize = Long.parseLong(filesizePart.getValue());
+	    String filetype = filetypePart.getValue();
+	    String filename = filenamePart.getValue();
+	    String creator = creatorPart.getValue();
+	    String description = descriptionPart.getValue();
+	    
+	    /*
+		 * Step 2. 校验参数 (description字段可为空)
+		 * */
+		if((p_projectid == 0) && (filesize == 0) && 
+		   (p_userid == null || p_userid.equals("")) &&
+		   (filetype == null || filetype.equals("")) &&
+		   (filename == null || filename.equals("")) &&
+		   (creator == null || creator.equals("")) ) {
 			return null;
 		}
 		
-		//1. create milestone
-		String sql = "insert into " +
-					 "	ideaworks.milestone (" + 
-					 "		projectid, " + 
-					 "		title, " + 
-					 "		creator, " + 
-					 "		time, " + 
-					 "		description " + 
-					 "	) values ( ?, ?, ?, ?, ? )";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-									p_projectid, p_title, p_creator, new Date(), p_description);
+		/*
+		 * Step 3. 将文件写入server
+		 * */
+	    String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
+		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
+	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
+			return null;
+		}
+	    
+		/*
+		 * Step 4. 将文件记录写入DB（若文件存在，则会强制覆盖之前的记录）
+		 * */
+	    String sqlCheck = "select * from ideaworks.file where filename = ? ";
+		String sqlInsert = "insert into " +
+							 "	ideaworks.file (" + 
+							 "		projectid, " + 
+							 "		filename, " + 
+							 "		filesize, " + 
+							 "		filetype, " + 
+							 "		creator, " + 
+							 "		description " + 
+							 "	) values ( ?, ?, ?, ?, ?, ? )";
+		String sqlUpdate = "update " +
+							 "	ideaworks.file " + 
+							 "set " + 
+							 "	projectid = ?, " + 
+							 "	filename = ?, " + 
+							 "	filesize = ?, " + 
+							 "	filetype = ?, " + 
+							 "	creator = ?, " + 
+							 "	description = ? " + 
+							 "where " + 
+							 "	id = ? ";
+		PreparedStatement stmtCheck = DBUtil.getInstance().createSqlStatement(sqlCheck, filename);
+		ResultSet rs_stmt = stmtCheck.executeQuery();
+		int fileid = -1;
+		while(rs_stmt.next()) {
+			fileid = rs_stmt.getInt("id");
+		}
+		DBUtil.getInstance().closeStatementResource(stmtCheck);
+		
+		PreparedStatement stmt = null;
+		if(fileid == -1) {
+			stmt = DBUtil.getInstance().createSqlStatement(sqlInsert, p_projectid, filename, filesize, filetype, creator, description);
+		}else{
+			stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, p_projectid, filename, filesize, filetype, creator, description, fileid);
+		}
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		//2. 返回最新的milestone
-		sql =
-			 "select " + 
-			 "	T1.id, " + 
-			 "	T1.projectid, " + 
-			 "	T1.title, " + 
-			 "	T1.creator, " + 
-			 "	T1.time, " + 
-			 "	T1.description, " + 
-			 "	T2.nickname as creatorNickname, " + 
-			 "	T2.logo as creatorLogo " + 
-			 "from " +
-			 "	ideaworks.milestone T1, " + 
-			 "	ideaworks.user T2 " + 
-			 "where " + 
-			 "	T1.projectid = ? and " + 
-			 "	T1.creator = ? and " + 
-			 "	T1.creator = T2.id " + 
-			 "order by id desc limit 1 ";
-		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid, p_creator);
-		ResultSet rs_stmt = stmt.executeQuery();
-		
-		JSONObject milestone = new JSONObject();
-		
-		while(rs_stmt.next()) {
-			milestone.put("milestoneid", rs_stmt.getInt("id"));
-			milestone.put("projectid", rs_stmt.getInt("projectid"));
-			milestone.put("title", rs_stmt.getString("title"));
-			JSONObject creator = new JSONObject();
-			creator.put("userid", rs_stmt.getString("creator"));
-			creator.put("nickname", rs_stmt.getString("creatorNickname"));
-			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creatorLogo"));
-			milestone.put("creator", creator);
-			milestone.put("time", rs_stmt.getTimestamp("time").getTime());
-			milestone.put("description", rs_stmt.getString("description"));
-		}
-		DBUtil.getInstance().closeStatementResource(stmt);
-
-		//record activity
-		String msg = p_title;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.CREATE, 
-				ProjectActivityService.Entity.MILESTONE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, filename,
+				ProjectActivityService.Action.UPLOAD, 
+				ProjectActivityService.Entity.FILE);
 		
-		return milestone;
+		return null;
 	}
 	
 	@DELETE
-	@Path("/{fileid}")
+	@Path("/{fileid}")	
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONObject deleteUserProjectFiles(
 			@PathParam("userid") String p_userid,
@@ -357,10 +382,7 @@ public class ProjectFileService extends BaseService {
 		
 		//删除file文件
 		String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
-		File file = new File(filename);     
-        if(file.isFile() && file.exists()){     
-            file.delete();
-        }
+		FileUtil.delete(fileLocation);
 		
 		//record activity
 		//param: projectid, operator, action, entity, title

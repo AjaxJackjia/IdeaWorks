@@ -173,7 +173,17 @@ define([
 		
 		//修改project logo
 		logoProject: function() {
-			alert('logo!');
+			var logoUploadSubView = new LogoUploadSubView({
+				model: this.model
+			});
+			var $logoView = $('#logo_upload_sub_view');
+			if($logoView.length > 0) {
+				$('#logo_upload_sub_view').remove();
+			}
+			$('.content-panel').append($(logoUploadSubView.render().el));
+			
+			//显示view
+			$('#logo_upload_sub_view').modal('toggle');
 		},
 		
 		//删除project
@@ -246,6 +256,184 @@ define([
 		
 		return header_tpl + menu_tpl + content_tpl;
 	};
+	
+	/*
+	 * Project logo upload sub view
+	 * */
+	var LogoUploadSubView = Backbone.View.extend({
+		
+		id: 'logo_upload_sub_view',
+		
+		className: 'logo-upload-sub-view modal fade',
+		
+		events: {
+			'click .upload-logo': 'upload'
+		},
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'upload');
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = Header();
+			$modalDialogContent.append(header);
+			
+			var body = Body();
+			$modalDialogContent.append(body);
+			
+			var footer = Footer();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//绑定modal消失时出发的事件
+			var self = this;
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		//上传file
+		upload: function() {
+			//当前project model
+			var projectModel = this.model;
+			
+			//validate
+			if(!this.validate()) {
+				return;
+			}
+			
+			//创建file model
+			var fileDom = document.getElementById("upload_logo_input");
+			//因为backbone post请求默认是"application/x-www-form-urlencoded"，所以在这里需要重写上传logo的方法
+			var data = new FormData();
+			data.append('logo', fileDom.files[0]);
+			
+			$.ajax({
+			    url: projectModel.url + '/logo',
+			    data: data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST',
+			    success: function(data){
+			    	alert("Upload complete!");
+			    	
+			    	//更新project
+			    	projectModel.set('logo', data.logo);
+			    	
+	    			//隐藏窗口
+					$('#logo_upload_sub_view').modal('toggle');
+			    },
+			    error: function(data){
+			    	alert('Upload logo failed. Please try again later!');
+			    	//隐藏窗口
+			    	$('#logo_upload_sub_view').modal('toggle');
+			    }
+			});
+		},
+		
+		//检查logo上传
+		validate: function() {
+			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
+			var emptyMsg = "Please select your upload logo image!";
+			var errMsg = "The maxsize of upload file is 1M!";
+			var fileTypeMsg = "The file type doesn't support!";
+			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
+			var ua = window.navigator.userAgent;
+			var browserCfg = {};
+			if(ua.indexOf("Firefox")>=1){
+				browserCfg.firefox = true;
+			}else if(ua.indexOf("Chrome")>=1){
+				browserCfg.chrome = true;
+			}
+			
+			//检查浏览器类型
+			if(!browserCfg.firefox && !browserCfg.chrome ){
+		 		alert(tipMsg);
+		 		return false;
+		 	}
+			
+			//检查上传文件是否非空
+			var file = document.getElementById("upload_logo_input");
+		 	if(file.value == ""){
+		 		alert(emptyMsg);
+		 		return false;
+		 	}
+		 	
+		 	//检查文件类型
+		 	var accept_file_type = [
+	   	        'image/gif',
+	   	        'image/jpeg',
+	   	        'image/png'
+	           ];
+		 	var filetype = file.files[0].type;
+		 	var isValid = _.indexOf(accept_file_type, filetype);
+		 	if(isValid == -1) {
+		 		alert(fileTypeMsg);
+		 		return false;
+		 	}
+	        
+		 	//检查文件大小
+		 	var filesize = file.files[0].size;
+		 	if(filesize > maxsize){
+		 		alert(errMsg);
+		 		return false;
+			}
+		 	
+		 	return true;
+		}
+	});
+	
+	var Header = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Change Project Logo</h3> ' + 
+			'</div>';
+		return tpl;
+	}
+	
+	var Footer = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="submit" class="upload-logo btn btn-primary">Upload</a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var Body = function() {
+		var accept_file_type = [
+	        'image/gif',
+	        'image/jpeg',
+	        'image/png'
+        ];
+
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="fileAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="upload_logo_input" class="control-label">File:</label> ' + 
+			'			<input id="upload_logo_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label class="control-label">(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)</label> ' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
 
 	return ProjectDetailView;
 });

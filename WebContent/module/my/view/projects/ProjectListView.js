@@ -36,6 +36,9 @@ define([
 		
 		//method: 添加project元素到list(UI)头部
 		addProjectItem: function(project) {
+			//设置每个project model的url
+			project.url = this.model.url + '/' + project.get('projectid');
+			
 			var $placeholder = $('.project-list-content > .empty-place-holder', this.el);
 			if($placeholder.length > 0) {
 				$placeholder.remove();

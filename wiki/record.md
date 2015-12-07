@@ -33,4 +33,9 @@ collation-server=utf8_unicode_ci
 
 找到的方案是为collection增加一个save方法, 里面重写Backbone的sync方法, 自己设定参数(create, update, delete等), 然后调用重写sync方法来作用. 本质上其实是增加一个wrapper, 将collection里面要操作的model写到一个model里面(BulkModel), 然后对BulkModel设定url与toJSON方法, 最后作用的是BulkModel.
 
+# 使用jersey上传文件后台总是要么接收不到参数，要么解析不出来？
+
+后面试了查了N多资料才知道，是因为少两个package，一个是与jersey-core 1.17兼容的jersey multipart 1.17，这个包是jersey解析mime type使用到的包，另一个是jersey multipart使用的mimepull包，这个包不能用1.6版本，1.5版本才可以运行。
+
+
 

@@ -36,11 +36,12 @@ define([ 'backbone' ], function(Backbone) {
 		switch(entity) {
 		case 0: return "project";
 		case 1: return "advisor and abstract";
-		case 2: return "member";
-		case 3: return "milestone";
-		case 4: return "topic";
-		case 5: return "dicussion";
-		case 6: return "file";
+		case 2: return "project logo";
+		case 3: return "member";
+		case 4: return "milestone";
+		case 5: return "topic";
+		case 6: return "dicussion";
+		case 7: return "file";
 		default: return "unknown";
 		}
 	};

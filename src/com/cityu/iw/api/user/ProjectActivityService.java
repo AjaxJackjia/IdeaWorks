@@ -31,6 +31,7 @@ import com.cityu.iw.util.Config;
 public class ProjectActivityService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectActivityService.class);
 	
+	//这边的Action与Entity修改之后，一定也要同步前端 ActivityModel 中的mapping，才能生效
 	public static enum Action {
 		CREATE, 	//创建 
 		UPDATE, 	//修改
@@ -45,6 +46,7 @@ public class ProjectActivityService extends BaseService {
 	public static enum Entity {
 		PROJECT,			//项目
 		ADVISOR_ABSTRACT,	//负责人和摘要
+		LOGO,				//项目图标
 		MEMEBER,			//成员
 		MILESTONE,			//里程碑
 		TOPIC,				//forum下的话题

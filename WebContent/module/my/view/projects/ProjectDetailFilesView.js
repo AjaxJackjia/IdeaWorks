@@ -16,7 +16,6 @@ define([
 		
 		initialize: function(){
 			//确保在正确作用域
-			//确保在正确作用域
 			_.bindAll(this, 'render', 'addFileItem', 'removeFileItem', 'uploadFile', 'deleteFile', 'upload');
 			
 			//注册全局事件
@@ -60,7 +59,12 @@ define([
 			if($placeholder.length > 0) {
 				$placeholder.remove();
 			}
-			$filesContainer.prepend(FileItem(file));
+			
+			var projectDetailFileItemView = new ProjectDetailFileItemView({
+				model: file
+			});
+			
+			$filesContainer.prepend($(projectDetailFileItemView.render().el));
 			//保持scrollY在最上
 			$('.project-content').scrollTop( 0 );
 		},
@@ -75,6 +79,11 @@ define([
 					$(element).remove();
 				}
 			});
+			
+			//if list is empty, then add placeholder 
+			if($('.file[cid]', this.el).length == 0) {
+				$('.files-container', this.el).append('<div class="placeholder"><h4>No files...</h4></div>');
+			}
 		},
 		
 		/*
@@ -98,14 +107,49 @@ define([
 		 * */
 		uploadFile: function(file) {
 			var files = this.model;
-			files.create(file, {
-				 wait: true, 
-				 success: function() {
-					 
-				 }, 
-				 error: function() {
-					 alert('Upload file failed. Please try again later!');
-				 }
+			//因为backbone create默认是发送"application/x-www-form-urlencoded"请求，所以在这里需要重写上传文件的方法
+			var data = new FormData();
+			data.append('creator[userid]', file.get('creator').userid);  //创建者id
+			data.append('description', file.get('description')); 		 //文件描述
+			data.append('attachment', file.get('attachment'));	 		 //上传文件
+			data.append('filesize', file.get('filesize'));	 		     //上传文件大小
+			data.append('filetype', file.get('filetype'));	 		     //上传文件类型
+			data.append('filename', file.get('filename'));	 		     //上传文件文件名
+			
+			$.ajax({
+			    url: files.url,
+			    data: data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST',
+			    success: function(){
+			    	alert("Upload complete!");
+			    	
+			    	//更新整个file集合(先删除之前，然后再获取新的)
+			    	_.each($('.file[cid]'), function(dom, index) {
+						var cid = $(dom).attr('cid');
+						files.remove(cid);
+			    	});
+			    	
+			    	files.fetch({
+			    		wait: true,
+			    		success: function() {
+			    			//隐藏窗口
+							$('#upload_sub_view').modal('toggle');
+			    		},
+				    	error: function() {
+				    		alert('Fetch files failed. Please try again later!');
+			    			//隐藏窗口
+							$('#upload_sub_view').modal('toggle');
+			    		}
+			    	});
+			    },
+			    error: function(data){
+			    	alert('Upload file failed. Please try again later!');
+			    	//隐藏窗口
+			    	$('#upload_sub_view').modal('toggle');
+			    }
 			});
 		},
 		
@@ -126,35 +170,6 @@ define([
 			});
 		}
 	});
-	
-	var FileItem = function(file) {
-		var creator = file.get('creator');
-		var file_tpl = 
-			'<div class="file attachment well">' + 
-			'	<div class="preview">' + 
-			'		<div class="extension"></div>' +
-			'		<div class="overlay">' + 
-			'			<div class="top">' +
-			'				<span class="time">' + util.timeformat(new Date(file.get('createtime')), "smart") + '</span>' + 
-			'				<a class="delete"><i class="fa fa-trash-o"></i></a>'+	
-			'			</div>' +
-			'			<div class="action">' +
-			'				<a class="btn btn-default btn-long" href="' + util.baseUrl + file.get('url') + '" target="_blank">Download file</a>' + 
-			'			</div>' +
-			'		</div>' +
-			'	</div>' +
-			'	<div class="footer">' + 
-			'		<a class="filename truncate" title="' + file.get('filename') + '">' + file.get('filename') + '</a>' + 
-			'		<a class="filedescription truncate" title="' + file.get('description') + '">' + file.get('description') + '</a>' + 
-			'		<div class="user">' + 
-		    '			<img class="img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '">' +
-		    '			<div class="name truncate">' + creator.nickname + '</div>' +
-		    '		</div>' + 
-			'	</div>' + 
-			'</div>';
-		
-		return file_tpl;
-	};
 	
 	/*
 	 * File upload sub view
@@ -218,25 +233,26 @@ define([
 		 		filelastmodified = fileDom.files[0].lastModified;
 			
 			var file = new FileModel();
-			file.set('title', $('#milestone_title').val());
-			file.set('description', $('#milestone_description').val());
 			file.set('creator', util.currentUserProfile());
+			file.set('attachment', fileDom.files[0]);
+			file.set('description', $('#file_description').val());
+			file.set('filesize', filesize);
+			file.set('filetype', filetype);
+			file.set('filename', filename);
 			
 			//触发全局事件
 			Backbone.trigger('ProjectDetailFilesView:uploadFile', file);
-			
-			//隐藏窗口
-			$('#upload_sub_view').modal('toggle');
 		},
 		
 		//检查文件上传
 		validate: function() {
-			var maxsize = 2 * 1024 * 1024;// 文件大小最大500M
+			var maxsize = 50 * 1024 * 1024; //文件大小最大50M
 			var emptyMsg = "Please select your upload file!";
-			var errMsg = "The maxsize of upload file is 500M!";
+			var errMsg = "The maxsize of upload file is 50M!";
+			var fileTypeMsg = "The file type doesn't support!";
 			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
 			var ua = window.navigator.userAgent;
-			browserCfg = {};
+			var browserCfg = {};
 			if(ua.indexOf("Firefox")>=1){
 				browserCfg.firefox = true;
 			}else if(ua.indexOf("Chrome")>=1){
@@ -251,24 +267,34 @@ define([
 			
 			//检查上传文件是否非空
 			var file = document.getElementById("upload_file_input");
-	        //上次修改时间  
-	        console.log(file.files[0].lastModifiedDate);  
-	        //名称  
-	        console.log(file.files[0].name);  
-	        //大小 字节  
-	        console.log(file.files[0].size);  
-	        //类型  
-	        console.log(file.files[0].type);
-	        
-	        console.log(file.files[0]);  
-	        
-		    return false;
-		    
 		 	if(file.value == ""){
 		 		alert(emptyMsg);
 		 		return false;
 		 	}
 		 	
+		 	//检查文件类型
+		 	var accept_file_type = [
+	   	        'application/msword',
+	   	        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	   	        'application/pdf',
+	   	        'application/vnd.ms-exce',
+	   	        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+	   	        'application/vnd.ms-powerpoint',
+	   	        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+	   	        'application/zip',
+	   	        'application/x-rar',
+	   	        'text/plain',
+	   	        'image/gif',
+	   	        'image/jpeg',
+	   	        'image/png'
+	           ];
+		 	var filetype = file.files[0].type;
+		 	var isValid = _.indexOf(accept_file_type, filetype);
+		 	if(isValid == -1) {
+		 		alert(fileTypeMsg);
+		 		return false;
+		 	}
+	        
 		 	//检查文件大小
 		 	var filesize = file.files[0].size;
 		 	if(filesize > maxsize){
@@ -318,7 +344,15 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="fileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
+			'			<label for="upload_file_input" class="control-label">File:</label> ' + 
 			'			<input id="upload_file_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label class="control-label">(Max upload file size is 50M. Support file type: doc, docx, xls, xlsx, ppt, pptx, pdf, zip, rar, txt, gif, jpeg, jpg, png)</label> ' + 
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="file_description" class="control-label">Description:</label> ' + 
+			'			<textarea class="form-control" id="file_description" name="file_description" placeholder="file description..."></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '
