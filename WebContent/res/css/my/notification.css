@@ -1,0 +1,135 @@
+/* common style begin */
+.btn
+{
+	border-radius: 40px;
+  	line-height: 24px;
+}
+
+.btn-default
+{
+	color: #7c8589;
+	background-color: #ffffff;
+	border-color: #d8e3e7;
+}
+
+.text-color
+{
+	color: #7b898d;
+}
+
+.dark-text-color 
+{
+	color: #5f6a6d;
+}
+
+/* common style end */
+
+/* notification-side-view begin */
+.notification-side-view
+{
+	position: absolute;
+	top: -60px;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	width: 300px;
+	background-color: #f2f2f4;
+	overflow: auto;
+	z-index: 20000;
+}
+
+.notification-side-view.side-show
+{
+	animation: side-show 0.3s;
+	-webkit-animation: side-show 0.3s; /*Safari and Chrome*/
+}
+@keyframes side-show
+{
+	from {width: 0px;}
+	to {width: 300px;}
+}
+@-webkit-keyframes side-show /*Safari and Chrome*/
+{
+	from {width: 0px;}
+	to {width: 300px;}
+}
+
+.notification-side-view > .heading
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 60px;
+	margin: 0;
+	padding: 0;
+	width: 300px;
+	border-bottom: 1px solid #dedede;
+}
+
+.notification-side-view > .heading > .title
+{
+	display: inline-block;
+	color: #5f6a6d;
+    padding-left: 20px;
+    padding-top: 13px;
+}
+
+.notification-side-view > .heading > .close-btn
+{
+	float: right;
+	width: 40px;
+	height: 40px;
+	margin-top: 8px;
+	margin-right: 20px;
+	font-size: 17px;
+	border-radius: 50%;
+}
+
+.notification-side-view > .msg-list
+{
+	position: absolute;
+	top: 60px;
+	bottom: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	width: 300px;
+}
+
+.notification-side-view > .msg-list > .placeholder
+{
+	position: absolute;
+    top: 120px;
+    margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    height: 100px;
+}
+
+.notification-side-view > .msg-list > .placeholder > h4 
+{
+	margin: 0 auto;
+    padding: 0;
+    width: 100%;
+    height: 100px;
+    line-height: 100px;
+    color: #afb6ba;
+    text-align: center;
+}
+
+.notification-view-cover
+{
+	position: absolute;
+	top: -60px;
+	bottom: 0;
+	right: 0;
+	left: -120px;
+	margin: 0;
+	padding: 0;
+	
+	background: rgba(0, 0, 0, 0) linear-gradient(45deg, rgba(42, 51, 61, 0.44) 0%, rgba(42, 51, 61, 0.9) 100%) repeat scroll 0 0 !important;
+	z-index: 19999;
+}
+
+/* notification-side-view end */

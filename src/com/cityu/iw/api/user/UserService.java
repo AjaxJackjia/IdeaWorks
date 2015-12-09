@@ -48,18 +48,8 @@ public class UserService extends BaseService {
 			user.put("userid", rs_stmt.getString("id"));
 			user.put("nickname", rs_stmt.getString("nickname"));
 			user.put("signature", rs_stmt.getString("signature"));
-			user.put("realname", rs_stmt.getString("realname"));
-			user.put("phone", rs_stmt.getString("phone"));
-			user.put("email", rs_stmt.getString("email"));
 			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
-			user.put("usertype", rs_stmt.getInt("usertype"));
-			user.put("major", rs_stmt.getString("major"));
-			user.put("department", rs_stmt.getString("department"));
-			user.put("college", rs_stmt.getString("college"));
-			user.put("address", rs_stmt.getString("address"));
-			user.put("introduction", rs_stmt.getString("introduction"));
-			user.put("interests", rs_stmt.getString("interests"));
-			user.put("interests", rs_stmt.getString("isDeleted"));
+			user.put("usertype", getUserType( rs_stmt.getInt("usertype") ));
 			
 			list.put(user);
 		}
@@ -69,12 +59,12 @@ public class UserService extends BaseService {
 	}
 	
 	@GET
-	@Path("/{id}")
+	@Path("/{userid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUsersById(@PathParam("id") String p_id) throws Exception
+	public JSONObject getUsersById(@PathParam("userid") String p_userid) throws Exception
 	{
 		String sql = "select * from ideaworks.user where id = ?";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_id);
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
 		JSONObject user = new JSONObject();
@@ -86,18 +76,284 @@ public class UserService extends BaseService {
 			user.put("realname", rs_stmt.getString("realname"));
 			user.put("phone", rs_stmt.getString("phone"));
 			user.put("email", rs_stmt.getString("email"));
+			user.put("skype", rs_stmt.getString("skypeid"));
+			user.put("wechat", rs_stmt.getString("wechatid"));
 			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
-			user.put("usertype", rs_stmt.getInt("usertype"));
+			user.put("usertype", getUserType( rs_stmt.getInt("usertype") ));
 			user.put("major", rs_stmt.getString("major"));
 			user.put("department", rs_stmt.getString("department"));
 			user.put("college", rs_stmt.getString("college"));
 			user.put("address", rs_stmt.getString("address"));
 			user.put("introduction", rs_stmt.getString("introduction"));
 			user.put("interests", rs_stmt.getString("interests"));
-			user.put("interests", rs_stmt.getString("isDeleted"));
+			user.put("notifications", new JSONObject(rs_stmt.getString("notifications")));
+			user.put("privacy", rs_stmt.getInt("privacy"));
+			user.put("sync", rs_stmt.getInt("sync"));
+			user.put("language", rs_stmt.getString("language"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		return user;
+	}
+	
+	@POST
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject createUser(
+			@FormParam("title") String p_title, 
+			@FormParam("creator[userid]") String p_creator,
+			@FormParam("description") String p_description ) throws Exception
+	{
+		//check param
+		if((p_title == null || p_title.equals("")) && 
+		   (p_creator == null || p_creator.equals("")) && 
+		   (p_description == null || p_description.equals("")) ) {
+			return null;
+		}
+		
+		return null;
+	}
+	
+	@PUT
+	@Path("/{userid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject updateUser(
+			@PathParam("userid") String p_userid,
+			@FormParam("nickname") String p_nickname, 
+			@FormParam("signature") String p_signature, 
+			@FormParam("realname") String p_realname, 
+			@FormParam("phone") String p_phone, 
+			@FormParam("email") String p_email, 
+			@FormParam("skype") String p_skype, 
+			@FormParam("wechat") String p_wechat, 
+			@FormParam("major") String p_major, 
+			@FormParam("department") String p_department, 
+			@FormParam("college") String p_college, 
+			@FormParam("address") String p_address, 
+			@FormParam("introduction") String p_introduction, 
+			@FormParam("interests") String p_interests, 
+			@FormParam("notifications") String p_notifications, 
+			@FormParam("privacy") int p_privacy, 
+			@FormParam("sync") int p_sync,
+			@FormParam("language") String p_language ) throws Exception
+	{
+		//Step 1. check param
+		if((p_userid == null || p_userid.equals("")) && 
+		   (p_nickname == null || p_nickname.equals("")) ) {
+			return null;
+		}
+		
+		//Step 2. update user profile 
+		String sql = "update " +
+					 "	ideaworks.user " + 
+					 "set " + 
+					 "	nickname = ?, " + 
+					 "	signature = ?, " + 
+					 "	realname = ?, " + 
+					 "	phone = ?, " + 
+					 "	email = ?, " + 
+					 "	skypeid = ?, " + 
+					 "	wechatid = ?, " + 
+					 "	major = ?, " + 
+					 "	department = ?, " + 
+					 "	college = ?, " + 
+					 "	address = ?, " + 
+					 "	introduction = ?, " + 
+					 "	interests = ?, " + 
+					 "	notifications = ?, " + 
+					 "	privacy = ?, " + 
+					 "	sync = ?, " + 
+					 "	language = ? " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
+				p_nickname, p_signature, p_realname, p_phone, p_email, 
+				p_skype, p_wechat, p_major, p_department, p_college, 
+				p_address, p_introduction, p_interests, p_notifications, 
+				p_privacy, p_sync, p_language, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 3. return update result
+		sql = "select * from ideaworks.user where id = ?";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		JSONObject user = new JSONObject();
+		while(rs_stmt.next()) {
+			user.put("userid", rs_stmt.getString("id"));
+			user.put("nickname", rs_stmt.getString("nickname"));
+			user.put("signature", rs_stmt.getString("signature"));
+			user.put("realname", rs_stmt.getString("realname"));
+			user.put("phone", rs_stmt.getString("phone"));
+			user.put("email", rs_stmt.getString("email"));
+			user.put("skype", rs_stmt.getString("skypeid"));
+			user.put("wechat", rs_stmt.getString("wechatid"));
+			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
+			user.put("usertype", getUserType( rs_stmt.getInt("usertype") ));
+			user.put("major", rs_stmt.getString("major"));
+			user.put("department", rs_stmt.getString("department"));
+			user.put("college", rs_stmt.getString("college"));
+			user.put("address", rs_stmt.getString("address"));
+			user.put("introduction", rs_stmt.getString("introduction"));
+			user.put("interests", rs_stmt.getString("interests"));
+			user.put("notifications", new JSONObject(rs_stmt.getString("notifications")));
+			user.put("privacy", rs_stmt.getInt("privacy"));
+			user.put("sync", rs_stmt.getInt("sync"));
+			user.put("language", rs_stmt.getString("language"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+
+		return user;
+	}
+	
+	@POST
+	@Path("/{userid}/notifications")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject updateUserNotifications(
+			@PathParam("userid") String p_userid,
+			@FormParam("project") String p_project,
+			@FormParam("member") String p_member,
+			@FormParam("milestone") String p_milestone,
+			@FormParam("forum") String p_forum,
+			@FormParam("discussion") String p_discussion,
+			@FormParam("file") String p_file ) throws Exception
+	{
+		JSONObject result = new JSONObject();
+		//Step 1. check param
+		if((p_userid == null || p_userid.equals("")) ||
+		   (p_member == null || p_member.equals("")) || 
+		   (p_milestone == null || p_milestone.equals("")) || 
+		   (p_forum == null || p_forum.equals("")) ||
+		   (p_discussion == null || p_discussion.equals("")) ||
+		   (p_file == null || p_file.equals(""))) {
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
+		JSONObject notifications = new JSONObject();
+		notifications.put("project", (p_project.equals("true")?true:false));		//project的相关提醒
+		notifications.put("member", (p_member.equals("true")?true:false));			//member成员活动的相关提醒
+		notifications.put("milestone", (p_milestone.equals("true")?true:false));	//milestone相关提醒
+		notifications.put("forum", (p_forum.equals("true")?true:false));			//forum相关提醒
+		notifications.put("discussion", (p_discussion.equals("true")?true:false));	//discussion相关提醒
+		notifications.put("file", (p_file.equals("true")?true:false));				//file相关提醒
+		
+		//Step 2. update user notification 
+		String sql = "update " +
+					 "	ideaworks.user " + 
+					 "set " + 
+					 "	notifications = ? " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, notifications.toString(), p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		result.put("ret", "0");
+		result.put("msg", "ok");
+		return result;
+	}
+	
+	@POST
+	@Path("/{userid}/privacy")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject updateUserPrivacy(
+			@PathParam("userid") String p_userid,
+			@FormParam("privacy") int p_privacy ) throws Exception
+	{
+		JSONObject result = new JSONObject();
+		//Step 1. check param
+		if((p_userid == null || p_userid.equals(""))) {
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
+		//规则：
+		//	是否只对自己可见 -> 0
+		//	是否只对project advisor可见 -> 1
+		//	是否只对project member可见 -> 2
+		//	是否公开所有人可见 -> 3
+		//Step 2. update user privacy 
+		String sql = "update " +
+					 "	ideaworks.user " + 
+					 "set " + 
+					 "	privacy = ? " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_privacy, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		result.put("ret", "0");
+		result.put("msg", "ok");
+		return result;
+	}
+	
+	@POST
+	@Path("/{userid}/advancedsetting")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject updateUserAdvancedSetting(
+			@PathParam("userid") String p_userid,
+			@FormParam("sync") int p_sync,
+			@FormParam("language") String p_language ) throws Exception
+	{
+		JSONObject result = new JSONObject();
+		//Step 1. check param
+		if((p_userid == null || p_userid.equals("")) || 
+		   (p_language == null || p_language.equals(""))) {
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
+		//Step 2. update user advanced setting 
+		String sql = "update " +
+					 "	ideaworks.user " + 
+					 "set " + 
+					 "	sync = ?, " + 
+					 "	language = ? " +
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_sync, p_language, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		result.put("ret", "0");
+		result.put("msg", "ok");
+		return result;
+	}
+	
+	@DELETE
+	@Path("/{userid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject deleteUser(@PathParam("userid") String p_userid) throws Exception
+	{
+		//check param
+		if(p_userid == null || p_userid.equals("")) {
+			return null;
+		}
+
+		//设置标志位, 删除topic
+		String sql = "update " +
+					 "	ideaworks.user " + 
+					 "set " + 
+					 "	isDeleted = 1 " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+				
+		return null;
+	}
+	
+	private String getUserType(int type) {
+		switch(type) {
+		case 1: return "Student"; 
+		case 2: return "Professor"; 
+		default: return "Social";
+		}
 	}
 }

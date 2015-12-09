@@ -107,11 +107,6 @@
 	border-left: 4px solid #23a8f5;
 	padding-left: 11px;
 	background-color: #f8fafb;
-	
-	transition: all 0.2s ease 0s;
-	-webkit-transition: all 0.2s ease 0s;
-	-moz-transition: all 0.2s ease 0s;
-	-o-transition: all 0.2s ease 0s;
 }
 
 .project-detail-view

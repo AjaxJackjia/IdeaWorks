@@ -24,9 +24,11 @@
     "text": "requirejs-text#~2.0.14",
     "require-css": "~0.1.8",
     "headroom.js": "~0.7.0",
-    "bootstrap-switch": "~3.3.2",
     "jquery.cookie": "~1.4.1",
     "bootstrapvalidator": "bootstrapValidator#~0.5.3",
-    "bootstrap-wysiwyg": "*"
+    "bootstrap-wysiwyg": "*",
+    "js-md5": "md5#~0.3.0",
+    "bootstrap-switch": "~3.3.2",
+    "iCheck": "~1.0.2"
   }
 }

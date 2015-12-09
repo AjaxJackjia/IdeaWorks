@@ -77,7 +77,7 @@ public class ProjectFileService extends BaseService {
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
 		//check param
-		if((p_userid == null || p_userid.equals("")) && p_projectid == 0) {
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
 			return null;
 		}
 		

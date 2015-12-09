@@ -50,13 +50,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			'<div class="topic">' + 
 			'	<div class="heading">' + 
 			'		<div class="topic-icon"><i class="fa fa-users"></i></div>' + 
-			'		<div class="topic-title"> ' + topic.get('title') + ' </div> ' +
-			'		<span class="time">2 days ago</span>' +
+			'		<div class="topic-title" title="' + topic.get('topic_title') + '"> ' + topic.get('topic_title') + ' </div> ' +
+			'		<span class="time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</span>' +
 			'	</div>' + 
 			'	<div class="content">' + 
-			'		<div class="project"> [ project id: ' + topic.get('projectid') + '] </div> ' +
-			'		<div class="participant">' + topic.get('participantNo') + ' participants</div> ' +
-			'		<div class="message">' + topic.get('messageNo') + ' messages</div> ' +
+			'		<div class="message">' + topic.get('msg_count') + ' messages </div> ' +
+			'		<div class="project"> [ ' + topic.get('project_title') + ' ] </div> ' +
 			'	</div>' + 
 			'</div>';
 		

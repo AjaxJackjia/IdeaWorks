@@ -36,12 +36,94 @@ public class DashboardService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONObject getUserDashboardBrief(@PathParam("userid") String p_userid) throws Exception
 	{
+		//check param
+		if((p_userid == null || p_userid.equals(""))) {
+			return null;
+		}
+		
+		//retrieve result
 		JSONObject brief = new JSONObject();
 		
-		brief.put("projectNo", 22);
-		brief.put("activityNo", 102);
-		brief.put("relatedMemberNo", 234);
-		brief.put("forumParticipationNo", 500);
+		String sql = "";
+		PreparedStatement stmt = null;
+		ResultSet rs_stmt = null;
+		
+		//Step 1. get user project number
+		int projectNo = 0;
+		sql = "select " + 
+			 "	count(T1.id) as no " + 
+			 "from " +
+			 "	ideaworks.project T1, " + 
+			 "	ideaworks.project_member T2 " + 
+			 "where " + 
+			 "	T2.userid = ? and " +
+			 "	T1.id = T2.projectid and " + 
+			 "	T1.isDeleted = 0 ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			projectNo = rs_stmt.getInt("no");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 2. get user activity number
+		int activityNo = 0;
+		sql = "select " + 
+			 "	count(id) as no " + 
+			 "from " +
+			 "	ideaworks.activity " + 
+			 "where " + 
+			 "	operator = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			activityNo = rs_stmt.getInt("no");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 3. get user activity number
+		int relatedMemberNo = 0;
+		sql = "select " + 
+			 "	count(distinct T3.userid) as no " + 
+			 "from " +
+			 "	ideaworks.project T1, " + 
+			 "	ideaworks.project_member T2, " +
+			 "	ideaworks.project_member T3 " + 
+			 "where " + 
+			 "	T2.userid = ? and " +
+			 "	T1.id = T2.projectid and " + 
+			 "	T3.projectid = T2.projectid and " + 
+			 "	T1.isDeleted = 0 ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			relatedMemberNo = rs_stmt.getInt("no");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 4. get user forum participation number (create forum topic or send message)
+		int forumParticipationNo = 0;
+		sql = "select " + 
+			 "	count(*) as no " + 
+			 "from " +
+			 "	ideaworks.topic T1, " + 
+			 "	ideaworks.topic_discussion T2 " +
+			 "where " + 
+			 "	T1.creator = ? or " +
+			 "	T2.fromuser = ? and " + 
+			 "	T1.isDeleted = 0 ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid, p_userid);
+		rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			forumParticipationNo = rs_stmt.getInt("no");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+				
+		//set result
+		brief.put("projectNo", projectNo);
+		brief.put("activityNo", activityNo);
+		brief.put("relatedMemberNo", relatedMemberNo);
+		brief.put("forumParticipationNo", forumParticipationNo);
 		
 		return brief;
 	}
@@ -51,22 +133,60 @@ public class DashboardService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONArray getPopularTopics(@PathParam("userid") String p_userid) throws Exception
 	{
-		JSONArray list = new JSONArray();
-		
-		for(int i = 0;i<10;i++) {
-			JSONObject topic = new JSONObject();
-			
-			topic.put("topicid", i);
-			topic.put("projectid", i);
-			topic.put("title", "test title " + i);
-			topic.put("creator", "jackjia");
-			topic.put("participantNo", Math.ceil(Math.random() * 100.0));
-			topic.put("messageNo", Math.ceil(Math.random() * 100.0));
-			
-			list.put(topic);
+		//check param
+		if((p_userid == null || p_userid.equals("")) ) {
+			return null;
 		}
 		
-		return list;
+		//popular topics指标主要是discussion message的数量
+		String sql = 
+				"select " + 
+				"	T3.title as project_title, " + 
+				"	T4.title as topic_title, " + 
+				"	T4.createtime, " + 
+				"	T5.topic_id, " + 
+				"	T5.msg_count " + 
+				"from " + 
+				"	ideaworks.project T3, " + 
+				"	ideaworks.topic T4, " + 
+				"	(select " + 
+				"		T1.id as topic_id, " + 
+				"		count(T2.id) as msg_count " + 
+				"	from " +
+				"		ideaworks.project_member T0, " + 
+				"		ideaworks.topic_discussion T2 " +
+				"			left join " + 
+				"		ideaworks.topic T1 " + 
+				"			on T2.topicid = T1.id  " + 
+				"	where " + 
+				"		T0.projectid = T1.projectid and " + 
+				"		T0.userid = ? " + 
+				"	group by " + 
+				"		T1.id " + 
+				"	order by " +
+				"		msg_count desc " +
+				"	limit 5 ) T5 " +
+				"where " + 
+				"	T3.id = T4.projectid and " + 
+				"	T4.id = T5.topic_id ";
+				
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		//result
+		JSONArray topics = new JSONArray();
+		while(rs_stmt.next()) {
+			JSONObject topic = new JSONObject();
+			topic.put("topicid", rs_stmt.getInt("topic_id"));
+			topic.put("topic_title", rs_stmt.getString("topic_title"));
+			topic.put("createtime", rs_stmt.getTimestamp("createtime").getTime());
+			topic.put("project_title", rs_stmt.getString("project_title"));
+			topic.put("msg_count", rs_stmt.getInt("msg_count"));
+
+			topics.put(topic);
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		return topics;
 	}
 	
 	@GET
@@ -74,17 +194,56 @@ public class DashboardService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONArray getRecentActivities(@PathParam("userid") String p_userid) throws Exception
 	{
+		//check param
+		if((p_userid == null || p_userid.equals("")) ) {
+			return null;
+		}
+				
 		JSONArray list = new JSONArray();
 		
-		for(int i = 0;i<10;i++) {
+		String sql = 
+				"select " + 
+				"	T2.id as activityid, " + 
+				"	T2.action as activity_action, " + 
+				"	T2.entity as activity_entity, " + 
+				"	T2.title as activity_title, " + 
+				"	T2.time as activity_time, " + 
+				"	T1.title as porject_title, " + 
+				"	T2.operator as userid, " + 
+				"	T3.logo as logo, " + 
+				"	T3.nickname as nickname " + 
+				"from " + 
+				"	ideaworks.project T1, " + 
+				"	ideaworks.activity T2, " + 
+				"	ideaworks.user T3 " + 
+				"where " + 
+				"	T1.id = T2.projectid and " + 
+				"	T2.operator = T3.id and " + 
+				"	T2.operator = ? " + 
+				"order by " + 
+				"	T2.time desc " + 
+				"limit 30 ";
+				
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		//result
+		while(rs_stmt.next()) {
 			JSONObject activity = new JSONObject();
-			
-			activity.put("activityid", i);
-			activity.put("title", "Test activity " + i);
-			activity.put("operator", "jackjia");
-			
+			activity.put("activityid", rs_stmt.getInt("activityid"));
+			activity.put("activity_action", rs_stmt.getInt("activity_action"));
+			activity.put("activity_entity", rs_stmt.getInt("activity_entity"));
+			activity.put("activity_title", rs_stmt.getString("activity_title"));
+			activity.put("porject_title", rs_stmt.getString("porject_title"));
+			JSONObject operator = new JSONObject();
+			operator.put("userid", rs_stmt.getString("userid"));
+			operator.put("nickname", rs_stmt.getString("nickname"));
+			operator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
+			activity.put("operator", operator);
+			activity.put("activity_time", rs_stmt.getTimestamp("activity_time").getTime());
+
 			list.put(activity);
 		}
+		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		return list;
 	}

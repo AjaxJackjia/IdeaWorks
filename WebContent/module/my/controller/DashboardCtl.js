@@ -16,7 +16,12 @@ define([
 		console.log("This is dashborad controller module!");
 		
 		//初始化侧边栏状态
-		$($('.navigation > .list-unstyled > li')[0]).click();
+		setTimeout(function() {
+			$($('.navigation > .list-unstyled > li')[0]).click();
+		}, 0);
+		
+		//若存在search view打开，则关闭
+		Backbone.trigger('TopPanelView:hideSearch');
 		
 		//view container
 		var $dashboardViewContainer = $('<div class="dashboard-container">');
@@ -41,7 +46,7 @@ define([
 		});
 		
 		//添加视图
-		$dashboardViewContainer.append($(briefView.el)); 
+		$dashboardViewContainer.append($(briefView.el));
 		$dashboardViewContainer.append($(popularTopicView.el));
 		$dashboardViewContainer.append($(recentActivityView.el));
 		

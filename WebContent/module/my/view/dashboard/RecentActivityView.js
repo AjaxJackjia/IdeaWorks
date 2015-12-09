@@ -46,15 +46,17 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 	});
 	
 	var Activity = function(activity) {
+		var operator = activity.get('operator');
+		var msg = activity.get('activity_action') + ' ' + activity.get('activity_entity') + ' ' + activity.get('activity_title');
 		var tpl = 
 			'<div class="activity">' + 
 			'	<div class="heading">' + 
-			'		<img class="img-circle" src="http://localhost:8888/IdeaWorks/res/images/my/user/darryl.png"> ' + 
-			'		<div class="user">' + activity.get('operator') + '</div> ' +
-			'		<div class="project"> [ project id: ' + activity.get('projectId') + '] </div> ' +
-			'		<span class="time">2 days ago</span>' +
+			'		<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '"> ' + 
+			'		<div class="user">' + operator.nickname + '</div> ' +
+			'		<div class="project"> [ ' + activity.get('porject_title') + ' ] </div> ' +
+			'		<span class="time">' + util.timeformat(new Date(activity.get('activity_time')), "smart") + '</span>' +
 			'	</div>' + 
-			'	<div class="content">' + activity.get('title') + '</div>' + 
+			'	<div class="content">' + msg + '</div>' + 
 			'</div>';
 		
 		return tpl;

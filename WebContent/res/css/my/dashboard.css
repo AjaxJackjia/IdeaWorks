@@ -102,7 +102,7 @@
 	position: relative;
 	padding: 10px 15px;
 	width: 50%;
-	height: 400px;
+	height: 500px;
 }
 
 .dashboard-container > .recent-activity-view .well
@@ -115,7 +115,7 @@
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: 360px;
+	height: 460px;
 	padding: 10px 5px;
 	overflow: auto;
 }
@@ -208,7 +208,7 @@
 	position: relative;
 	padding: 10px 15px;
 	width: 50%;
-	height: 400px;
+	height: 500px;
 }
 
 .dashboard-container > .popular-topic-view .well
@@ -221,7 +221,7 @@
 	margin: 0;
 	padding: 0;
 	width: 100%;
-	height: 360px;
+	height: 460px;
 	padding: 10px 5px;
 	overflow: auto;
 }
@@ -281,7 +281,8 @@
 	display: inline-block;
 	margin-left: 10px;
 	margin-top: 12px;
-	
+	min-width: 100px;
+	max-width: 550px;
 	color: #23a8f5;
 	font-weight: 500;
 	font-size: 16px;

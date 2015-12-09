@@ -13,39 +13,63 @@ define([
 		
 		render: function(){
 			var $notifications = $('<div class="notification-container well">');
-			$notifications.append(Notice({
-				title: 'Notifications about new projects'
-			}));
-			$notifications.append(Notice({
-				title: 'Notifications about new activities'
-			}));
-			$notifications.append(Notice({
-				title: 'Notifications about new forums'
-			}));
-			$notifications.append(Notice({
-				title: 'Notifications about new members'
-			}));
+			$notifications.append(Notice('project-notify', 'Notifications about projects'));
+			$notifications.append(Notice('member-notify', 'Notifications about members'));
+			$notifications.append(Notice('milestone-notify', 'Notifications about milestones'));
+			$notifications.append(Notice('forum-notify', 'Notifications about forums'));
+			$notifications.append(Notice('discussion-notify', 'Notifications about forum discussions'));
+			$notifications.append(Notice('file-notify', 'Notifications about files'));
 			
 			$(this.el).append($notifications);
-			//初始化bootstrap switch
-			$notifications.find('.notification >.switch').bootstrapSwitch('toggleState');
 			
-			$notifications.find('.notification >.switch').off('switch-change').on('switch-change', function (e, data) {
-			    var $el = $(data.el), value = data.value;
-			    console.log(e, $el, value);
+			//初始化bootstrap switch
+			$notifications.find('.notification input').bootstrapSwitch();
+			$notifications.find('.notification .bootstrap-switch').addClass('switch bootstrap-switch-mini');
+			
+			$('.project-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').project);
+			$('.member-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').member);
+			$('.milestone-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').milestone);
+			$('.forum-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').forum);
+			$('.discussion-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').discussion);
+			$('.file-notify .bootstrap-switch input', this.el).bootstrapSwitch('state', this.model.get('notifications').file);
+			
+			//switch change event
+			var self = this;
+			$('.bootstrap-switch input', this.el).on('switchChange.bootstrapSwitch', function() {
+				//设置状态
+				self.model.get('notifications').project = $('.project-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				self.model.get('notifications').member = $('.member-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				self.model.get('notifications').milestone = $('.milestone-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				self.model.get('notifications').forum = $('.forum-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				self.model.get('notifications').discussion = $('.discussion-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				self.model.get('notifications').file = $('.file-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
+				
+				$.ajax({
+				    url: util.baseUrl + '/api/users/' + util.currentUser() + '/notifications',
+				    data: self.model.get('notifications'),
+				    type: 'POST',
+				    success: function(result){
+				    	if(result.ret == 0) {
+				    		alert("Set complete!");
+				    	}else{
+				    		alert(result.msg);
+				    	}
+				    },
+				    error: function(){
+				    	alert("Set notification failed. Please try again later!");
+				    }
+				});
 			});
 			
 		    return this;
 		}
 	});
 	
-	var Notice = function(data) {
+	var Notice = function(className, title) {
 		var tpl = 
-			'<div class="notification">' + 
-			'	<div class="switch switch-small">' + 
-		    '		<input type="checkbox" />' + 
-		    '	</div>' + 
-			'	<div class="option truncate">' + data.title + '</div>' + 
+			'<div class="'+ className +' notification">' + 
+		    '	<input type="checkbox" />' + 
+			'	<div class="option truncate">' + title + '</div>' + 
 			'</div>';
 
 		return tpl;

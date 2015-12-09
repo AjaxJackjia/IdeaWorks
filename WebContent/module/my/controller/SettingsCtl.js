@@ -8,7 +8,12 @@ define([ 'backbone',
 		console.log("This is settings controller module!");
 		
 		//初始化侧边栏状态
-		$($('.navigation > .list-unstyled > li')[2]).click();
+		setTimeout(function() {
+			$($('.navigation > .list-unstyled > li')[2]).click();
+		}, 0);
+		
+		//若存在search view打开，则关闭
+		Backbone.trigger('TopPanelView:hideSearch');
 		
 		//view
 		var listView = new SettingListView();
