@@ -1,99 +1,146 @@
-define([ 'backbone' ], function(Backbone) {
+define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbone, util, Validator, SignupModel) {
 	
 	var SignupView = Backbone.View.extend({
 		tagName: 'div',
 		
 		className: 'signup',
 		
+		events: {
+			'click .sign-up': 'signup'
+		},
+		
 		initialize: function(){
-			
+			_.bindAll(this, 'render', 'signup');
 		},
 		
 		render: function(){
-			var $username = $('<div class="input-group">');
-			$username.append($('<span class="input-group-addon">'));
-			$username.find('.input-group-addon').append('User Name');
-			$username.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$username.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="user name ...">');
-
-			var $nickname = $('<div class="input-group">');
-			$nickname.append($('<span class="input-group-addon">'));
-			$nickname.find('.input-group-addon').append('Nick Name');
-			$nickname.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$nickname.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="nick name ...">');
-			
-			var $pwd = $('<div class="input-group">');
-			$pwd.append($('<span class="input-group-addon">'));
-			$pwd.find('.input-group-addon').append('Password');
-			$pwd.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$pwd.append('<input class="form-control ng-valid-minlength valid ng-dirty ng-valid ng-valid-required" type="password" placeholder="password ..." required="" ng-minlength="6">');
-			
-			var $pwdagain = $('<div class="input-group">');
-			$pwdagain.append($('<span class="input-group-addon">'));
-			$pwdagain.find('.input-group-addon').append('Confirm Password');
-			$pwdagain.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$pwdagain.append('<input class="form-control ng-valid-minlength valid ng-dirty ng-valid ng-valid-required" type="password" placeholder="confirm password ..." required="" ng-minlength="6">');
-			
-			var $realname = $('<div class="input-group">');
-			$realname.append($('<span class="input-group-addon">'));
-			$realname.find('.input-group-addon').append('Real Name');
-			$realname.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$realname.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="real name ...">');
-			
-			var $usertype = $('<div class="input-group">');
-			$usertype.append($('<span class="input-group-addon">'));
-			$usertype.find('.input-group-addon').append('User Type');
-			$usertype.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$usertype.append('<select class="form-control">');
-			$usertype.find('select').append('<option>1</option>');
-			$usertype.find('select').append('<option>2</option>');
-			$usertype.find('select').append('<option>3</option>');
-			$usertype.find('select').append('<option>4</option>');
-			
-			var $department = $('<div class="input-group">');
-			$department.append($('<span class="input-group-addon">'));
-			$department.find('.input-group-addon').append('Department');
-			$department.append('<select class="form-control">');
-			$department.find('select').append('<option>1</option>');
-			$department.find('select').append('<option>2</option>');
-			$department.find('select').append('<option>3</option>');
-			$department.find('select').append('<option>4</option>');
-			
-			var $id = $('<div class="input-group">');
-			$id.append($('<span class="input-group-addon">'));
-			$id.find('.input-group-addon').append('Student/Staff ID');
-			$id.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$id.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="please enter your username">');
-			
-			var $phoneno = $('<div class="input-group">');
-			$phoneno.append($('<span class="input-group-addon">'));
-			$phoneno.find('.input-group-addon').append('Phone No');
-			$phoneno.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="please enter your username">');
-			
-			var $email = $('<div class="input-group">');
-			$email.append($('<span class="input-group-addon">'));
-			$email.find('.input-group-addon').append('Email');
-			$email.find('.input-group-addon').append('<span style="color:red;">*</span>');
-			$email.append('<input class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="please enter your username">');
+			var $signup_items = $(SiupItems());
 			
 			var $signup = $('<div class="actions">');
-			$signup.append($('<input class="btn btn-primary" type="button" value="Sign Up">'));
+			$signup.append($('<input class="sign-up btn btn-primary" type="button" value="Sign Up">'));
 			
-			$(this.el).append($username);
-			$(this.el).append($nickname);
-			$(this.el).append($pwd);
-			$(this.el).append($pwdagain);
-			$(this.el).append($realname);
-			$(this.el).append($usertype);
-			$(this.el).append($department);
-			$(this.el).append($id);
-			$(this.el).append($phoneno);
-			$(this.el).append($email);
+			//form validator
+			$signup_items.bootstrapValidator({
+				live: 'enabled',
+		        message: 'This value is not valid',
+		        feedbackIcons: {
+		            valid: 'glyphicon glyphicon-ok',
+		            invalid: 'glyphicon glyphicon-remove',
+		            validating: 'glyphicon glyphicon-refresh'
+		        },
+		        fields: {
+		        	username: {
+		                validators: {
+		                    notEmpty: {
+		                        message: 'The topic title is required'
+		                    }
+		                }
+		            },
+		            pwd: {
+		                validators: {
+		                	notEmpty: {
+		                        message: 'The password is required'
+		                    },
+		                    identical: {
+		                        field: 'pwd_confirm',
+		                        message: 'The password twice input are not the same'
+		                    },
+		                    stringLength: {
+		                    	min: 6,
+		                        message: 'The password must be larger than 6 characters'
+		                    }
+		                }
+		            },
+		            pwd_confirm: {
+		                validators: {
+		                	notEmpty: {
+		                        message: 'The confirm password is required'
+		                    },
+		                    identical: {
+		                        field: 'pwd',
+		                        message: 'The password twice input are not the same'
+		                    }
+		                }
+		            },
+		            email: {
+		                validators: {
+		                	notEmpty: {
+		                        message: 'The email address is required'
+		                    },
+		                	emailAddress: {
+		                        message: 'The value is not a valid email address'
+		                    }
+		                }
+		            }
+		        }
+		    });
+			
+			$(this.el).append($signup_items);
 			$(this.el).append($signup);
 			
 			return this;
+		},
+		
+		signup: function() {
+			//validate
+			$('#signupAttribute').data('bootstrapValidator').validateField('username');
+			$('#signupAttribute').data('bootstrapValidator').validateField('pwd');
+			$('#signupAttribute').data('bootstrapValidator').validateField('pwd_confirm');
+			$('#signupAttribute').data('bootstrapValidator').validateField('email');
+			if(!$('#signupAttribute').data('bootstrapValidator').isValid()) return;
+			
+			var signupModel = new SignupModel();
+			signupModel.save({
+				'username': $('#username').val(),
+				'password': md5($('#pwd').val()),
+				'usertype': $('#usertype').val(),
+				'email': $('#email').val() 
+			},{
+				success: function() {
+					//注册失败
+					if(signupModel.get('msg') != 'ok') {
+						alert(signupModel.get('msg'));
+						return;
+					}
+					
+					//注册成功
+					alert("Sign up success! Please login in use your username and password! Enjoy~")
+					window.location.href = util.baseUrl + "/login.html";
+				}
+			}); 
 		}
 	});
+	
+	var SiupItems = function() {
+		var tpl = 
+			'<form id="signupAttribute"> ' + 
+			'	<div class="form-group"> ' + 
+			'		<label for="username" class="control-label">User name:</label> ' + 
+			'		<input type="text" class="form-control" id="username" name="username" placeholder="user name..."> ' + 
+			'	</div> ' + 
+			'	<div class="form-group"> ' + 
+			'		<label for="pwd" class="control-label">Password:</label> ' + 
+			'		<input type="password" class="form-control" id="pwd" name="pwd" placeholder="password..."> ' + 
+			'	</div> ' + 
+			'	<div class="form-group"> ' + 
+			'		<label for="pwd_confirm" class="control-label">Password Confirm:</label> ' + 
+			'		<input type="password" class="form-control" id="pwd_confirm" name="pwd_confirm" placeholder="password confirm..."> ' + 
+			'	</div> ' + 
+			'	<div class="form-group"> ' + 
+			'		<label for="usertype" class="control-label">User Type:</label> ' + 
+			'		<select id="usertype" class="form-control"> ' + 
+			'			<option value="0">Student</option>' +
+			'			<option value="1">Teacher</option>' +
+			'			<option value="2">Other</option>' +
+			'		</select> ' + 
+			'	</div> ' + 
+			'	<div class="form-group"> ' + 
+			'		<label for="email" class="control-label">Email:</label> ' + 
+			'		<input type="text" class="form-control" id="email" name="email" placeholder="email..."> ' + 
+			'	</div> ' + 
+			'</form> ';
+		return tpl;
+	}
 	
 	return SignupView;
 });

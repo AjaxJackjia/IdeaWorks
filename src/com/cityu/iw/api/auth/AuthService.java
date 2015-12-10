@@ -16,7 +16,9 @@ import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
+import com.cityu.iw.util.Config;
 import com.cityu.iw.util.Util;
+import com.sun.jersey.multipart.FormDataParam;
 
 
 @Path("/auth")
@@ -25,12 +27,22 @@ public class AuthService extends BaseService {
 	
 	@POST
 	@Path("/login")
-	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getLoginInfo(JSONObject login) throws Exception
+	public JSONObject login(
+			@FormParam("userid") String p_userid, 
+			@FormParam("password") String p_password ) throws Exception
 	{
+		JSONObject result = new JSONObject();
+		//check param
+		if((p_userid == null || p_userid.equals("")) ||
+		   (p_password == null || p_password.equals("")) ) {
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
 		String sql = "select * from ideaworks.user where id = ?";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, login.get("userid"));
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		//1. get password from db by id;
 		String db_password = "";
@@ -41,24 +53,115 @@ public class AuthService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//2. validate password && generate token
-		if(db_password.equals(login.get("password"))) {
+		if(db_password.equals(p_password)) {
 			//generate token by md5 using id and password
-			String token = Util.md5(login.get("userid").toString() + login.get("password").toString());
+			String token = Util.md5(p_userid + p_password);
 			
 			if(token == null) {
-				login.put("msg", "token miss match");
-				login.put("password", "*******");
+				result.put("ret", "-2");
+				result.put("msg", "token miss match");
+				result.put("userid", p_userid);
+				result.put("password", "*******");
 			}else{
-				login.put("msg", "ok");
+				result.put("ret", "0");
+				result.put("msg", "ok");
 				request.getSession().setAttribute("token", token);
-				login.put("password", "*******");
+				result.put("userid", p_userid);
+				result.put("password", "*******");
 			}
 		}else{
-			login.put("msg", "Username or password incorrect!");
-			login.put("password", "*******");
+			result.put("ret", "-3");
+			result.put("msg", "Username or password incorrect!");
+			result.put("userid", p_userid);
+			result.put("password", "*******");
 		}
 		
-		return login;
+		return result;
+	}
+	
+	@POST
+	@Path("/signup")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject signup(
+			@FormParam("username") String p_username, 
+			@FormParam("password") String p_password,
+			@FormParam("usertype") int p_usertype, 
+			@FormParam("email") String p_email ) throws Exception
+	{
+		JSONObject result = new JSONObject();
+		//check param
+		if((p_username == null || p_username.equals("")) || 
+		   (p_password == null || p_password.equals("")) || 
+		   (p_email == null || p_email.equals(""))) {
+			System.out.println(p_username);
+			System.out.println(p_password);
+			System.out.println(p_email);
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
+		// Step 1. Check id whether signed up
+		String sql = "select * from ideaworks.user where id = ?";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_username);
+		ResultSet rs_stmt = stmt.executeQuery();
+		String id = "";
+		while(rs_stmt.next()) {
+			id = rs_stmt.getString("id");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		if(!id.equals("")) {
+			result.put("ret", "-3");
+			result.put("msg", "This username has been signed up! Plase change another one!");
+			return result;
+		}
+		
+		// Step 2. create user
+		String notifications = "{\"project\":true,\"member\":true,\"milestone\":true,\"forum\":true,\"discussion\":true,\"file\":true}"; //信息通知设置
+		int privacy = 3;			//默认profile对外可见
+		int sync = 0;				//默认不同步
+		String language = "en_US"; //默认语言为英语
+		String logo = "default_user_logo.jpg"; //默认头像
+		
+		sql = "insert into " +
+					 "	ideaworks.user (" + 
+					 "		id, " + 
+					 "		password, " + 
+					 "		nickname, " +
+					 "		email, " + 
+					 "		logo, " +
+					 "		usertype, " + 
+					 "		notifications, " + 
+					 "		privacy, " + 
+					 "		sync, " + 
+					 "		language " + 
+					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, 
+				p_username, p_password, p_username, p_email, logo, p_usertype, 
+				notifications, privacy, sync, language );
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//Step 3. return result
+		sql = "select * from ideaworks.user where id = ?";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_username);
+		rs_stmt = stmt.executeQuery();
+		id = "";
+		while(rs_stmt.next()) {
+			id = rs_stmt.getString("id");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		if(!id.equals("")) {
+			result.put("ret", "0");
+			result.put("msg", "ok");
+		}else{
+			result.put("ret", "-2");
+			result.put("msg", "sign up failed! Please try again later!");
+		}
+		
+		return result;
 	}
 	
 	@POST

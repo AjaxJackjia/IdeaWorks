@@ -499,7 +499,7 @@ define([
 		                    },
 		                    stringLength: {
 		                    	min: 6,
-		                        message: 'The full name must be larger than 6 characters'
+		                        message: 'The password must be larger than 6 characters'
 		                    }
 		                }
 		            },
@@ -539,8 +539,8 @@ define([
 			
 			var data = {};
 			data.userid = util.currentUser();
-			data.oldpassword = $('#old_pwd_input').val();
-			data.newpassword = $('#new_pwd_input').val();
+			data.oldpassword = md5($('#old_pwd_input').val());
+			data.newpassword = md5($('#new_pwd_input').val());
 			
 			$.ajax({
 			    url: util.baseUrl + '/api/auth/password',

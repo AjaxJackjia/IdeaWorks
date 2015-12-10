@@ -96,24 +96,6 @@ public class UserService extends BaseService {
 		return user;
 	}
 	
-	@POST
-	@Path("")
-	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject createUser(
-			@FormParam("title") String p_title, 
-			@FormParam("creator[userid]") String p_creator,
-			@FormParam("description") String p_description ) throws Exception
-	{
-		//check param
-		if((p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
-		   (p_description == null || p_description.equals("")) ) {
-			return null;
-		}
-		
-		return null;
-	}
-	
 	@PUT
 	@Path("/{userid}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -131,14 +113,10 @@ public class UserService extends BaseService {
 			@FormParam("college") String p_college, 
 			@FormParam("address") String p_address, 
 			@FormParam("introduction") String p_introduction, 
-			@FormParam("interests") String p_interests, 
-			@FormParam("notifications") String p_notifications, 
-			@FormParam("privacy") int p_privacy, 
-			@FormParam("sync") int p_sync,
-			@FormParam("language") String p_language ) throws Exception
+			@FormParam("interests") String p_interests) throws Exception
 	{
 		//Step 1. check param
-		if((p_userid == null || p_userid.equals("")) && 
+		if((p_userid == null || p_userid.equals("")) || 
 		   (p_nickname == null || p_nickname.equals("")) ) {
 			return null;
 		}
@@ -159,18 +137,13 @@ public class UserService extends BaseService {
 					 "	college = ?, " + 
 					 "	address = ?, " + 
 					 "	introduction = ?, " + 
-					 "	interests = ?, " + 
-					 "	notifications = ?, " + 
-					 "	privacy = ?, " + 
-					 "	sync = ?, " + 
-					 "	language = ? " + 
+					 "	interests = ? " + 
 					 "where " + 
 					 "	id = ? ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
 				p_nickname, p_signature, p_realname, p_phone, p_email, 
 				p_skype, p_wechat, p_major, p_department, p_college, 
-				p_address, p_introduction, p_interests, p_notifications, 
-				p_privacy, p_sync, p_language, p_userid);
+				p_address, p_introduction, p_interests, p_userid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -196,10 +169,6 @@ public class UserService extends BaseService {
 			user.put("address", rs_stmt.getString("address"));
 			user.put("introduction", rs_stmt.getString("introduction"));
 			user.put("interests", rs_stmt.getString("interests"));
-			user.put("notifications", new JSONObject(rs_stmt.getString("notifications")));
-			user.put("privacy", rs_stmt.getInt("privacy"));
-			user.put("sync", rs_stmt.getInt("sync"));
-			user.put("language", rs_stmt.getString("language"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 

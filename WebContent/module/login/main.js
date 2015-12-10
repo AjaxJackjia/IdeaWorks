@@ -3,10 +3,12 @@
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
 			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
-			'backbone': '../../lib/backbone/backbone-min',
+			'backbone': '../../lib/backbone/backbone',
 			'underscore': '../../lib/underscore/underscore-min',
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
+			'Validator' : '../../lib/bootstrapvalidator/dist/js/bootstrapValidator.min',
 			'util': '../common/util',
+			'MD5' : '../../lib/js-md5/build/md5.min',
 			'css': '../../lib/require-css/css.min'
 		},
 		
@@ -24,6 +26,13 @@
 	        'bootstrap': {  
 	            deps : [ 'jquery' ],  
 	            exports : 'bootstrap'
+	       },
+	       'Validator': {  
+	            deps : [ 'jquery' ],  
+	            exports : 'Validator'
+	       },
+	       'MD5' : {
+	    	   exports: 'MD5'
 	       }
 		}  
 	});
@@ -78,14 +87,14 @@
 			},
 			
 			switchOption: function(e) {
-//				$(e.target).tab('show');
-//				
-//				//modify page title
-//				if($(e.target).html() === 'Sign In') {
-//					$('title').html('Sign in :: IdeaWorks');
-//				}else{
-//					$('title').html('Sign up :: IdeaWorks');
-//				}
+				$(e.target).tab('show');
+				
+				//modify page title
+				if($(e.target).html() === 'Sign In') {
+					$('title').html('Sign in :: IdeaWorks');
+				}else{
+					$('title').html('Sign up :: IdeaWorks');
+				}
 			}
 		});
 		

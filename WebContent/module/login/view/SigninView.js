@@ -1,4 +1,4 @@
-define([ 'backbone', 'util', 'cookie', 'model/LoginModel' ], function(Backbone, util, cookie, LoginModel) {
+define([ 'backbone', 'util', 'MD5', 'cookie', 'model/LoginModel' ], function(Backbone, util, MD5, cookie, LoginModel) {
 
 	var SigninView = Backbone.View.extend({
 		tagName: 'div',
@@ -10,7 +10,7 @@ define([ 'backbone', 'util', 'cookie', 'model/LoginModel' ], function(Backbone, 
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'login', 'validate');
+			_.bindAll(this, 'render', 'login', 'validate', 'keypress');
 		},
 		
 		render: function(){
@@ -31,8 +31,18 @@ define([ 'backbone', 'util', 'cookie', 'model/LoginModel' ], function(Backbone, 
 			$(this.el).append($pwd);
 			$(this.el).append($signin);
 			
+			//绑定enter点击事件
+			$('body').off('keydown').on('keydown', this.keypress);
+			
 			return this;
 		},
+		
+		keypress: function(e) {
+	        var code = e.keyCode || e.which;
+	        if(code == 13) {  //press enter button 
+	            this.login();
+	        }
+	    },
 		
 		login: function() {
 			//get params
@@ -46,19 +56,25 @@ define([ 'backbone', 'util', 'cookie', 'model/LoginModel' ], function(Backbone, 
 			var loginModel = new LoginModel();
 			loginModel.save({
 				'userid': userid, 
-				'password': password
+				'password': md5(password)
 			},{
 				success: function() {
 					//登录失败
 					if(loginModel.get('msg') != 'ok') {
-						$(".actions").find(".login-check").remove();
+						$(".actions").find(".login-	").remove();
 						$(".sign-in").before('<div class="login-check alert alert-danger" role="alert">'+ loginModel.get('msg') +'</div>');
 						return;
 					}
 					
 					//登录成功
 					$.cookie('userid', userid);
-					window.location.href = util.baseUrl + "/my.html";
+					//如果url后面无参数则默认跳转到my.html；否则跳转到参数所指的url
+					var urlParams = util.resolveUrlParams();
+					if(urlParams.hasOwnProperty('from')) {
+						window.location.href = urlParams.from;
+					}else{
+						window.location.href = util.baseUrl + "/my.html";
+					}
 				}
 			}); 
 		},
