@@ -27,8 +27,12 @@ define([ 'backbone', 'headroom', 'util' ], function(Backbone, Headroom, util) {
 			var $brand = $('<a class="brand" href="'+ brandUrl + '">');
 			$brand.append('<img alt="IdeaWorks" src="'+ util.baseUrl +'/res/images/portal/logo.png">');
 			
-			$(this.el).append($brand);
-			$(this.el).append($nav);
+			var $headerWrapper = $('<div class="wrapper">');
+			
+			$headerWrapper.append($brand);
+			$headerWrapper.append($nav);
+			
+			$(this.el).append($headerWrapper);
 			
 			return this;
 		}

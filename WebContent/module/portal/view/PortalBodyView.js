@@ -1,15 +1,20 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'model/NewsCollection', 'model/ProjectCollection' ], 
+	function(Backbone, util, NewsCollection, ProjectCollection) {
 	var PortalBodyView = Backbone.View.extend({
 		
 		className: 'portal-container',
 		
 		initialize: function(){
-
+			//latest news
+			this.newsList = NewsCollection; //已初始化
+			
+			//popular projects
+			this.projectList = ProjectCollection; //已初始化
 		},
 		
 		render: function(){
 			//Part #1: slides
-			var $carousel = $('<div id="portal-carousel" class="carousel slide">');
+			var $carousel = $('<div id="portal-carousel" class="row carousel slide">');
 			var carousel_tpl = 
 			   '<!-- 轮播（Carousel）指标 -->													 		   ' +
 			   '<ol class="carousel-indicators">											 		   ' + 
@@ -27,6 +32,11 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			   '      <img src="'+ util.baseUrl +'/res/images/portal/portal1.png" alt="First slide">   ' + 
 			   '   </div>																			   ' + 
 			   '   <div class="item">																   ' + 
+			   '	  <div class="carousel-fg">														   ' +
+			   '		<div class="carousel-title">Welcome to IdeaWorks!</div>  					   ' + 
+			   '		<div class="carousel-content">The Discovery-enriched Curriculum (DEC) has the goal of giving all students the opportunity to make an original discovery while at City University of Hong Kong. The DEC has been set as the academic blueprint in CityU Academic Development Proposal 2012-15 that was endorsed by the UGC.</div>' + 
+			   '		<div class="carousel-link"><a class="btn" href="index.html#introduction" target="_blank">Read More <i class="fa fa-angle-right"></i></a></div>  					   ' + 
+			   '	  </div>					            									       ' +
 			   '      <img src="'+ util.baseUrl +'/res/images/portal/portal2.jpg" alt="Second slide">  ' + 
 			   '   </div>							  												   ' + 
 			   '</div>								  												   ' + 
@@ -38,7 +48,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			$(this.el).append($carousel);
 			
 			//Part #2: three character icons with words
-			var $reason = $('<div class="row reason_list" id="reason_list">');
+			var $reason = $('<div class="row limit-width reason_list" id="reason_list">');
 			var reason_tpl = 
 	            '<div class="col-xs-4 col-md-4 col-lg-4 reason">' + 			
 	            '    <div class="icon-container"><i class="fa fa-search fa-5x"></i></div>' +
@@ -58,22 +68,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			
 			//Part #3: latest news (three items with thumbnail style)
 			var moreNewsUrl = util.baseUrl + '/index.html#news';
-			var $newsTitle = $('<div class="row latest-news-title"><h1>Latest News <a class="title-more" href="'+ moreNewsUrl +'">more>></a></h1></div>');
-			var $news = $('<div class="row latest-news">');
+			var $newsTitle = $('<div class="row limit-width latest-news-title"><h1><span>Latest News <a class="title-more" href="'+ moreNewsUrl +'">more>></a></span></h1></div>');
+			var $news = $('<div class="row limit-width latest-news">');
 			var news_tpl = '';
-			for(var i = 0;i<3;i++) {
-				news_tpl += 
-					'<div class="col-sm-6 col-md-4 latest-news-item">' +
-					'	<div class="thumbnail">' + 
-					'		<img src="'+ util.baseUrl +'/res/images/portal/news/dec_fair3.png">' + 
-					'		<div class="caption">' + 
-					'			<h3>Gateway Education@CityU</h3>' + 
-					'			<p>Gateway Education (GE) enables student to make a more informed choice of major and augments and rounds out the specialised training students will receive in their majors by providing exposure to cutting-edge knowledge and ideas that cross multiple disciplines.</p>' + 
-					'			<p><a href="#" class="btn btn-primary">More >></a></p>' +
-					'		</div>' +
-					'	</div>' + 
-					'</div>';
-			}
+			_.each(this.newsList.models, function(news, index) {
+				news_tpl += LatestNewsItem(news);
+			});
 			$news.html(news_tpl);
 
 			$(this.el).append($newsTitle);
@@ -82,10 +82,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			//Part #4: microscope with words
 			var $microscope = $('<div class="row microscope">');
 			var microscope_tpl =
-				'<div class="col-sm-4 col-md-4 microscope-image"></div>' + 
-				'<div class="col-sm-8 col-md-8 container padded text-center">' +
-				'	<h1>Discovery & Innovation & Teamwork</h1>' +
-				'	<h3>The DEC emphasizes on discovery, innovation, and creativity, which lie at the heart of academic strategy and four-year curriculum for teaching and learning, advanced scholarship, and community-related activities at City University.</h3>' +
+				'<div class="wrapper">' + 
+				'	<div class="microscope-image"></div>' + 
+				'	<div class="container padded text-center">' +
+				'		<h1>Discovery & Innovation & Teamwork</h1>' +
+				'		<h3>The DEC emphasizes on discovery, innovation, and creativity, which lie at the heart of academic strategy and four-year curriculum for teaching and learning, advanced scholarship, and community-related activities at City University.</h3>' +
+				'	</div>' +
 				'</div>';
 			$microscope.html(microscope_tpl);
 
@@ -93,22 +95,12 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			
 			//Part #5: popular projects (three items with thumbnail style)
 			var morePorjectsUrl = util.baseUrl + '/index.html#projects';
-			var $projectsTitle = $('<div class="row popular-projects-title"><h1>Popular Projects <a class="title-more" href="'+ morePorjectsUrl +'">more>></a></h1></div>');
-			var $projects = $('<div class="row popular-projects">');
+			var $projectsTitle = $('<div class="row limit-width popular-projects-title"><h1><span>Popular Projects <a class="title-more" href="'+ morePorjectsUrl +'">more>></a></span></h1></div>');
+			var $projects = $('<div class="row limit-width popular-projects">');
 			var projects_tpl = '';
-			for(var i = 0;i<3;i++) {
-				projects_tpl += 
-					'<div class="col-sm-6 col-md-4 popular-projects-item">' +
-					'	<div class="thumbnail">' + 
-					'		<img src="'+ util.baseUrl +'/res/images/portal/projects/carbon_1.jpg">' + 
-					'		<div class="caption">' + 
-					'			<h3>Low-carbon Home-Green Residential Development Design</h3>' + 
-					'			<p>These five students won the Platinum Award of the Business Environment Council (BEC) Low-carbon Home-Green Residential Development Design Competition. </p>' + 
-					'			<p><a href="#" class="btn btn-primary">More >></a></p>' +
-					'		</div>' +
-					'	</div>' + 
-					'</div>';
-			}
+			_.each(this.projectList.models, function(project, index) {
+				projects_tpl += PopularProjectItem(project);
+			});
 			$projects.html(projects_tpl);
 
 			$(this.el).append($projectsTitle);
@@ -129,6 +121,36 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			return this;
 		}
 	});
+	
+	var LatestNewsItem = function(news) {
+		var tpl = 
+				'<div class="latest-news-item">' +
+				'	<div class="thumbnail">' + 
+				'		<img src="'+ util.baseUrl +'/res/images/portal/news/' + news.get('img') + '">' + 
+				'		<div class="caption">' + 
+				'			<h3 title="' + news.get('title') + '">' + news.get('title') + '</h3>' + 
+				'			<p class="news_abstract">'+ news.get('abstractContent') +'</p>' + 
+				'			<p><a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '" target="_blank" class="btn btn-primary">More >></a></p>' +
+				'		</div>' +
+				'	</div>' + 
+				'</div>';
+		return tpl;
+	};
+	
+	var PopularProjectItem = function(project) {
+		var tpl = 
+				'<div class="popular-projects-item">' +
+				'	<div class="thumbnail">' + 
+				'		<img src="'+ util.baseUrl +'/res/images/portal/projects/' + project.get('img') + '">' + 
+				'		<div class="caption">' + 
+				'			<h3 title="' + project.get('title') + '">' + project.get('title') + '</h3>' + 
+				'			<p class="project_abstract">' + project.get('content') + '</p>' + 
+				'			<p><a href="'+ util.baseUrl +'/index.html#projects?id='+ project.get('projectid') + '" target="_blank" class="btn btn-primary">More >></a></p>' +
+				'		</div>' +
+				'	</div>' + 
+				'</div>';
+		return tpl;
+	};
 	
 	return PortalBodyView;
 });

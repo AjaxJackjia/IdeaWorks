@@ -50,7 +50,15 @@ body > .container
 	top: 0;
 }
 
-.header > .brand
+.header > .wrapper
+{
+	min-width: 1100px;
+	max-width: 1300px;
+	height: 100%;
+	margin: 0 auto;
+}
+
+.header > .wrapper > .brand
 {
 	display: inline-block;
 	margin: 0;
@@ -60,14 +68,14 @@ body > .container
 	height: 70px;
 }
 
-.header > .nav
+.header > .wrapper > .nav
 {
 	float: right;
 	margin-right: 60px;
 	list-style: none;
 }
 
-.header > .nav > li
+.header > .wrapper > .nav > li
 {
 	display: inline-block;
 	width: 100px;
@@ -78,7 +86,7 @@ body > .container
 	line-height: 50px;
 }
 
-.header > .nav > li a
+.header > .wrapper > .nav > li a
 {
 	text-decoration: none;
 	font-size: 18px;
@@ -136,15 +144,20 @@ body > .container
 /* portal body format begin */
 .portal-container
 {
-	margin: 0;
+	margin: 0 auto;
 	margin-top: -70px;
 	padding: 0;
 }
 
 .portal-container > .row 
 {
-	margin-left: 0;
-	margin-right: 0;
+	margin: 0 auto;
+}
+
+.portal-container > .row.limit-width
+{
+	min-width: 800px;
+	max-width: 1100px;
 }
 
 .portal-container > .carousel > .carousel-inner
@@ -152,11 +165,17 @@ body > .container
 	height: 650px;
 }
 
+.portal-container > .carousel > .carousel-inner > .item > img
+{
+	width: 100%;
+	height: 100%;
+}
+
 .portal-container > .carousel > .carousel-inner > .item > .carousel-fg
 {
 	position: absolute;
 	top: 140px;
-	left: 180px;
+	left: 20%;
 	
 	color: #fff;
 }
@@ -168,9 +187,10 @@ body > .container
 
 .portal-container > .carousel > .carousel-inner > .item > .carousel-fg > .carousel-content
 {
-	margin: 20px 0;
-	width: 480px;
-	font-size: 120%;
+	margin: 30px 0;
+  	width: 50%;
+  	font-size: 120%;
+  	line-height: 35px;
 }
 
 .portal-container > .carousel > .carousel-inner > .item > .carousel-fg > .carousel-link a.btn
@@ -236,9 +256,26 @@ body > .container
 .portal-container > .latest-news-title
 {
 	margin-top: 20px;
-	margin-bottom: 40px;
+	margin-bottom: 15px;
 	color: #333;
 	text-align: center;
+}
+
+.portal-container > .latest-news-title > h1:before
+{
+	background: #eeeeee;
+  	content: "";
+  	display: block;
+  	height: 1px;
+  	margin: -17px 0px;
+  	width: 100%;
+}
+
+.portal-container > .latest-news-title > h1 > span
+{
+	padding: 0 25px;
+	background: #ffffff;
+	z-index: 1;
 }
 
 .title-more
@@ -259,10 +296,31 @@ body > .container
 	margin-bottom: 30px;
 }
 
-.portal-container > .latest-news > .latest-news-item > .thumbnail
+.portal-container > .latest-news > .latest-news-item
 {
-	width: 350px;
-	margin: 0 auto;
+	display: inline-block;
+	padding: 0 15px;
+	width: 33.3%;
+}
+
+.portal-container > .latest-news > .latest-news-item img
+{
+	height: 260px;
+}
+
+.portal-container > .latest-news > .latest-news-item h3
+{
+	height: 26px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.portal-container > .latest-news > .latest-news-item .news_abstract
+{
+	height: 80px;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .portal-container > .microscope 
@@ -272,41 +330,61 @@ body > .container
   	background-color: #87CEEB;
 }
 
-.portal-container > .microscope > .microscope-image
+.portal-container > .microscope > .wrapper
 {
-	display: inline-block;
-	margin-top: -20px;
+	margin: 0 auto;
+	min-width: 800px;
+	max-width: 1100px;
+}
+
+.portal-container > .microscope > .wrapper > .microscope-image
+{
+	float: left;
+	margin-top: -30px;
 	margin-left: 50px;
 	width: 299px;
 	height: 381px;
 	background: url("../../images/portal/microscope.png") no-repeat transparent;
 }
 
-.portal-container > .microscope  > .container.padded {
-	display: inline-block;
+.portal-container > .microscope > .wrapper  > .container.padded 
+{
+	float: right;
 	width: 700px;
 	margin-top: 50px;
 	margin-left: 40px;
 	text-align: center;
 }
 
-.portal-container > .microscope > .container a.btn
+.portal-container > .microscope > .wrapper  > .container.padded > h3 
 {
-	font-weight: bold;
-	color: #fff;
-	text-decoration: none;
-	background-color: rgba(255, 255, 255, 0.1);
-	border-radius: 4px;
-	margin-top: 30px;
+	line-height: 30px;
 }
 
 .portal-container > .popular-projects-title
 {
 	font-size: 32px;
-	margin-top: 40px;
+	margin-top: 55px;
 	margin-bottom: 40px;
 	color: #333;
 	text-align: center;
+}
+
+.portal-container > .popular-projects-title > h1:before
+{
+	background: #eeeeee;
+  	content: "";
+  	display: block;
+  	height: 1px;
+  	margin: -17px 0px;
+  	width: 100%;
+}
+
+.portal-container > .popular-projects-title > h1 > span
+{
+	padding: 0 25px;
+	background: #ffffff;
+	z-index: 1;
 }
 
 .portal-container > .popular-projects
@@ -315,10 +393,31 @@ body > .container
 	margin-bottom: 30px;
 }
 
-.portal-container > .popular-projects > .popular-projects-item > .thumbnail
+.portal-container > .popular-projects > .popular-projects-item
 {
-	width: 350px;
-	margin: 0 auto;
+	display: inline-block;
+	padding: 0 15px;
+	width: 33.3%;
+}
+
+.portal-container > .popular-projects > .popular-projects-item img
+{
+	height: 260px;
+}
+
+.portal-container > .popular-projects > .popular-projects-item h3
+{
+	height: 26px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.portal-container > .popular-projects > .popular-projects-item .project_abstract
+{
+	height: 80px;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .portal-container > .joinus 
@@ -327,9 +426,17 @@ body > .container
   	background-color: #B0E0E6;
 }
 
-.portal-container > .joinus  > .container.padded {
+.portal-container > .joinus  > .container.padded 
+{
 	padding: 50px 0px;
 	text-align: center;
+	min-width: 800px;
+	max-width: 1100px;
+}
+
+.portal-container > .joinus  > .container.padded > h3
+{
+	line-height: 35px;
 }
 
 .portal-container > .joinus > .container a.btn
@@ -675,7 +782,8 @@ body > .container
 	transition: all 0.2s ease-in-out;
 }
 
-.news-container
+.news-container,
+.project-container
 {
 	width: 900px;
 	margin: 0 auto;
@@ -683,26 +791,43 @@ body > .container
 }
 
 .news-container > h1,
-.news-container > h3
+.news-container > h3,
+.project-container > h1,
+.project-container > h3
 {
 	margin: 25px 0;
 	text-align: center;
 }
 
 .news-container > p, 
-.news-container > a
+.news-container > a,
+.project-container > p, 
+.project-container > a
 {
 	margin: 20px 0;
 	font-size: 18px;
 	font-weight: 400;
 }
 
-.news-container > .row
+.news-container > .row,
+.project-container > .row
 {
 	margin: 20px 0;
 }
 
+.news-container > .not-found,
+.project-container > .not-found
+{
+	margin: 0 auto;
+	width: 300px;
+	height: 450px;
+	text-align: center;
+}
+
+.news-container > .not-found > h4,
+.project-container > .not-found > h4
+{
+	padding-top: 100px;
+}
+
 /* news list view & news view end */
-
-
-
