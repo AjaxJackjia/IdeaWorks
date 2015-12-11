@@ -79,9 +79,10 @@ define([
 				 wait: true, 
 				 success: function() {
 					 
-				 }, 
-				 error: function() {
-					 alert('Create topic failed. Please try again later!');
+				 },
+				 error: function(model, response, options) {
+					var alertMsg = 'Create topic failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
 		},
@@ -97,8 +98,9 @@ define([
 					//从list中删除topic
 					topics.remove(topic);
 				},
-				error: function() {
-					alert('Delete topic failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete topic failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},

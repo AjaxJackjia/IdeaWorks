@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -16,7 +17,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -30,11 +33,12 @@ import com.cityu.iw.util.Config;
 @Path("/users")
 public class UserService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(UserService.class);
+	@Context HttpServletRequest request;
 	
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUsers() throws Exception
+	public Response getUsers() throws Exception
 	{
 		String sql = "select * from ideaworks.user";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql);
@@ -55,13 +59,13 @@ public class UserService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return list;
+		return buildResponse(OK, list);
 	}
 	
 	@GET
 	@Path("/{userid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUsersById(@PathParam("userid") String p_userid) throws Exception
+	public Response getUsersById(@PathParam("userid") String p_userid) throws Exception
 	{
 		String sql = "select * from ideaworks.user where id = ?";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
@@ -93,13 +97,13 @@ public class UserService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return user;
+		return buildResponse(OK, user);
 	}
 	
 	@PUT
 	@Path("/{userid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUser(
+	public Response updateUser(
 			@PathParam("userid") String p_userid,
 			@FormParam("nickname") String p_nickname, 
 			@FormParam("signature") String p_signature, 
@@ -115,10 +119,16 @@ public class UserService extends BaseService {
 			@FormParam("introduction") String p_introduction, 
 			@FormParam("interests") String p_interests) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//Step 1. check param
 		if((p_userid == null || p_userid.equals("")) || 
 		   (p_nickname == null || p_nickname.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//Step 2. update user profile 
@@ -172,13 +182,13 @@ public class UserService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
-		return user;
+		return buildResponse(OK, user);
 	}
 	
 	@POST
 	@Path("/{userid}/notifications")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserNotifications(
+	public Response updateUserNotifications(
 			@PathParam("userid") String p_userid,
 			@FormParam("project") String p_project,
 			@FormParam("member") String p_member,
@@ -187,6 +197,12 @@ public class UserService extends BaseService {
 			@FormParam("discussion") String p_discussion,
 			@FormParam("file") String p_file ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		JSONObject result = new JSONObject();
 		//Step 1. check param
 		if((p_userid == null || p_userid.equals("")) ||
@@ -197,7 +213,7 @@ public class UserService extends BaseService {
 		   (p_file == null || p_file.equals(""))) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			return result;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		JSONObject notifications = new JSONObject();
@@ -221,22 +237,28 @@ public class UserService extends BaseService {
 		
 		result.put("ret", "0");
 		result.put("msg", "ok");
-		return result;
+		return buildResponse(OK, result);
 	}
 	
 	@POST
 	@Path("/{userid}/privacy")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserPrivacy(
+	public Response updateUserPrivacy(
 			@PathParam("userid") String p_userid,
 			@FormParam("privacy") int p_privacy ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		JSONObject result = new JSONObject();
 		//Step 1. check param
 		if((p_userid == null || p_userid.equals(""))) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			return result;
+			return buildResponse(PARAMETER_INVALID, result);
 		}
 		
 		//规则：
@@ -257,24 +279,30 @@ public class UserService extends BaseService {
 		
 		result.put("ret", "0");
 		result.put("msg", "ok");
-		return result;
+		return buildResponse(OK, result);
 	}
 	
 	@POST
 	@Path("/{userid}/advancedsetting")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserAdvancedSetting(
+	public Response updateUserAdvancedSetting(
 			@PathParam("userid") String p_userid,
 			@FormParam("sync") int p_sync,
 			@FormParam("language") String p_language ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		JSONObject result = new JSONObject();
 		//Step 1. check param
 		if((p_userid == null || p_userid.equals("")) || 
 		   (p_language == null || p_language.equals(""))) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			return result;
+			return buildResponse(PARAMETER_INVALID, result);
 		}
 		
 		//Step 2. update user advanced setting 
@@ -291,17 +319,23 @@ public class UserService extends BaseService {
 		
 		result.put("ret", "0");
 		result.put("msg", "ok");
-		return result;
+		return buildResponse(OK, result);
 	}
 	
 	@DELETE
 	@Path("/{userid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUser(@PathParam("userid") String p_userid) throws Exception
+	public Response deleteUser(@PathParam("userid") String p_userid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
 		if(p_userid == null || p_userid.equals("")) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 
 		//设置标志位, 删除topic

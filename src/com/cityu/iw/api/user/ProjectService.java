@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -18,7 +19,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -39,12 +42,24 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 @Path("/users/{userid}/projects")
 public class ProjectService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectService.class);
+	@Context HttpServletRequest request;
 	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjects(@PathParam("userid") String p_userid) throws Exception
+	public Response getUserProjects(@PathParam("userid") String p_userid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals(""))) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		String sql = "select " + 
 					 "	T2.id, " + 
 					 "	T2.title, " + 
@@ -108,16 +123,27 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return list;
+		return buildResponse(OK, list);
 	}
 	
 	@GET
 	@Path("/{projectid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserProjectsById(
+	public Response getUserProjectsById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		String sql = "select " + 
 					 "	T2.id, " + 
 					 "	T2.title, " + 
@@ -176,23 +202,30 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return project;
+		return buildResponse(OK, project);
 	}
 	
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject createUserProjects(
+	public Response createUserProjects(
 			@PathParam("userid") String p_userid,
 			@FormParam("title") String p_title, 
 			@FormParam("creator[userid]") String p_creator,
 			@FormParam("advisor[userid]") String p_advisor ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
-		   (p_advisor == null || p_advisor.equals("")) ) {
-			return null;
+		if((p_userid == null || p_userid.equals("")) || 
+		   (p_title == null || p_title.equals("")) || 
+		   (p_creator == null || p_creator.equals("")) || 
+		   (p_advisor == null || p_advisor.equals(""))) {
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//1. create project
@@ -304,17 +337,23 @@ public class ProjectService extends BaseService {
 				ProjectActivityService.Action.CREATE, 
 				ProjectActivityService.Entity.PROJECT);
 				
-		return project;
+		return buildResponse(OK, project);
 	}
 	
 	@POST
 	@Path("/{projectid}/logo")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)  
-	public JSONObject updateUserProjectsLogo(
+	public Response updateUserProjectsLogo(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			FormDataMultiPart form ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
 		/*
 		 * Step 1. 获取参数
 		 * */
@@ -328,7 +367,7 @@ public class ProjectService extends BaseService {
 		 * Step 2. 校验参数
 		 * */
 		if((p_projectid == 0) && (p_userid == null || p_userid.equals(""))) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		/*
@@ -372,19 +411,32 @@ public class ProjectService extends BaseService {
 				ProjectActivityService.Action.UPDATE,
 				ProjectActivityService.Entity.LOGO);
 		
-		return logoObj;
+		return buildResponse(OK, logoObj);
 	}
 	
 	@PUT
 	@Path("/{projectid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserProjects(
+	public Response updateUserProjects(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@FormParam("title") String p_title, 
 			@FormParam("abstractContent") String p_abstract, 
 			@FormParam("advisor[userid]") String p_advisor) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
+		   (p_title == null || p_title.equals("")) || 
+		   (p_advisor == null || p_advisor.equals(""))) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//1. 更新project
 		String sql = "update " +
 					 "	ideaworks.project " + 
@@ -464,16 +516,27 @@ public class ProjectService extends BaseService {
 				ProjectActivityService.Action.UPDATE, 
 				ProjectActivityService.Entity.ADVISOR_ABSTRACT);
 				
-		return project;
+		return buildResponse(OK, project);
 	}
 	
 	@DELETE
 	@Path("/{projectid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUserProjects(
+	public Response deleteUserProjects(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//设置标志位, 删除project
 		String sql = "update " +
 					 "	ideaworks.project " + 

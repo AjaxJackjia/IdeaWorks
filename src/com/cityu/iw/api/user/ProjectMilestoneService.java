@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -16,7 +17,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -30,14 +33,26 @@ import com.cityu.iw.util.Config;
 @Path("/users/{userid}/projects/{projectid}/milestones")
 public class ProjectMilestoneService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectMilestoneService.class);
+	@Context HttpServletRequest request;
 	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectMilestones(
+	public Response getUserProjectMilestones(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.projectid, " + 
@@ -78,17 +93,28 @@ public class ProjectMilestoneService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return milestones;
+		return buildResponse(OK, milestones);
 	}
 	
 	@GET
 	@Path("/{milestoneid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserProjectMilestoneById(
+	public Response getUserProjectMilestoneById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("milestoneid") int p_milestoneid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || p_milestoneid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.projectid, " + 
@@ -123,25 +149,31 @@ public class ProjectMilestoneService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return milestone;
+		return buildResponse(OK, milestone);
 	}
 	
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject createUserProjectMilestones(
+	public Response createUserProjectMilestones(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@FormParam("title") String p_title, 
 			@FormParam("creator[userid]") String p_creator,
 			@FormParam("description") String p_description ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
+		if((p_projectid == 0) ||
+		   (p_title == null || p_title.equals("")) ||
+		   (p_creator == null || p_creator.equals("")) ||
 		   (p_description == null || p_description.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//1. create milestone
@@ -203,13 +235,13 @@ public class ProjectMilestoneService extends BaseService {
 				ProjectActivityService.Action.CREATE, 
 				ProjectActivityService.Entity.MILESTONE);
 		
-		return milestone;
+		return buildResponse(OK, milestone);
 	}
 	
 	@PUT
 	@Path("/{mielstoneid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserProjectMiletones(
+	public Response updateUserProjectMiletones(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("mielstoneid") int p_mielstoneid,
@@ -217,12 +249,18 @@ public class ProjectMilestoneService extends BaseService {
 			@FormParam("creator[userid]") String p_creator,
 			@FormParam("description") String p_description ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
+		if((p_projectid == 0) || 
+		   (p_title == null || p_title.equals("")) ||
+		   (p_creator == null || p_creator.equals("")) ||
 		   (p_description == null || p_description.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//1. update milestone
@@ -280,17 +318,29 @@ public class ProjectMilestoneService extends BaseService {
 				ProjectActivityService.Action.UPDATE, 
 				ProjectActivityService.Entity.MILESTONE);
 		
-		return milestone;
+		return buildResponse(OK, milestone);
 	}
 	
 	@DELETE
 	@Path("/{milestoneid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUserProjectMilestones(
+	public Response deleteUserProjectMilestones(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("milestoneid") int p_milestoneid ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_projectid == 0) || (p_milestoneid == 0) ||
+		   (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+
 		//查询要删除的milestone信息
 		String msg = "";
 		String sql = 

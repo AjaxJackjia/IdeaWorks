@@ -105,7 +105,12 @@ define([
 				//members model
 				var members = new MemberCollection();
 				members.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/members';
-				members.fetch();
+				members.fetch({
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project members failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
 				//members view
 				var membersView = new ProjectDetailMembersView({
 					model: members
@@ -115,7 +120,12 @@ define([
 				//milestone model
 				var milestones = new MilestoneCollection();
 				milestones.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/milestones';
-				milestones.fetch();
+				milestones.fetch({
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project milestones failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
 				//milestone view
 				var milestoneView = new ProjectDetailMilestoneView({
 					model: milestones
@@ -125,7 +135,12 @@ define([
 				//topic model
 				var topics = new TopicCollection();
 				topics.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/topics';
-				topics.fetch();
+				topics.fetch({
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project topics failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
 				//topic view
 				var forumView = new ProjectDetailForumView({
 					model: topics
@@ -135,7 +150,12 @@ define([
 				//file model
 				var files = new FileCollection();
 				files.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/files';
-				files.fetch();
+				files.fetch({
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project files failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
 				//file view
 				var filesView = new ProjectDetailFilesView({
 					model: files
@@ -145,7 +165,12 @@ define([
 				//activity model
 				var activities = new ActivityCollection();
 				activities.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/activities';
-				activities.fetch();
+				activities.fetch({
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project activities failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
 				//activity view
 				var activityView = new ProjectDetailActivityView({
 					model: activities
@@ -336,8 +361,9 @@ define([
 	    			//隐藏窗口
 					$('#logo_upload_sub_view').modal('toggle');
 			    },
-			    error: function(data){
-			    	alert('Upload logo failed. Please try again later!');
+			    error: function(response){
+					var alertMsg = 'Upload logo failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 			    	//隐藏窗口
 			    	$('#logo_upload_sub_view').modal('toggle');
 			    }

@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -17,7 +18,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -31,18 +34,24 @@ import com.cityu.iw.util.Config;
 @Path("/users/{userid}/projects/{projectid}/topics")
 public class ProjectTopicService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectTopicService.class);
-
+	@Context HttpServletRequest request;
+	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectTopics(
+	public Response getUserProjectTopics(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+		if((p_projectid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		String sql = "select " + 
@@ -85,22 +94,27 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return topics;
+		return buildResponse(OK, topics);
 	}
 	
 	@GET
 	@Path("/{topicid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserProjectTopicById(
+	public Response getUserProjectTopicById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
+		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		String sql = "select " + 
@@ -138,25 +152,31 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return topic;
+		return buildResponse(OK, topic);
 	}
 	
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject createUserProjectTopics(
+	public Response createUserProjectTopics(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@FormParam("title") String p_title, 
 			@FormParam("creator[userid]") String p_creator,
 			@FormParam("description") String p_description ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
-		   (p_description == null || p_description.equals("")) ) {
-			return null;
+		if((p_projectid == 0) || 
+		   (p_userid == null || p_userid.equals("")) ||
+		   (p_title == null || p_title.equals("")) || 
+		   (p_creator == null || p_creator.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//1. create topic
@@ -221,13 +241,13 @@ public class ProjectTopicService extends BaseService {
 				ProjectActivityService.Action.CREATE, 
 				ProjectActivityService.Entity.TOPIC);
 		
-		return topic;
+		return buildResponse(OK, topic);
 	}
 	
 	@PUT
 	@Path("/{topicid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject updateUserProjectTopics(
+	public Response updateUserProjectTopics(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
@@ -235,15 +255,20 @@ public class ProjectTopicService extends BaseService {
 			@FormParam("creator[userid]") String p_creator,
 			@FormParam("description") String p_description ) throws Exception
 	{
-		//check param
-		if((p_projectid == 0) && (p_topicid == 0) && 
-		   (p_userid == null || p_userid.equals("")) && 
-		   (p_title == null || p_title.equals("")) && 
-		   (p_creator == null || p_creator.equals("")) && 
-		   (p_description == null || p_description.equals("")) ) {
-			return null;
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
 		}
 		
+		//check param
+		if((p_projectid == 0) || 
+		   (p_userid == null || p_userid.equals("")) ||
+		   (p_title == null || p_title.equals("")) || 
+		   (p_creator == null || p_creator.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//1. update topic
 		String sql = "update " +
 					 "	ideaworks.topic " + 
@@ -301,22 +326,27 @@ public class ProjectTopicService extends BaseService {
 				ProjectActivityService.Action.UPDATE, 
 				ProjectActivityService.Entity.TOPIC);
 				
-		return topic;
+		return buildResponse(OK, topic);
 	}
 	
 	@DELETE
 	@Path("/{topicid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUserProjectTopics(
+	public Response deleteUserProjectTopics(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
+		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//查询topic
@@ -355,18 +385,23 @@ public class ProjectTopicService extends BaseService {
 	@GET
 	@Path("/{topicid}/messages")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectTopicsMessages(
+	public Response getUserProjectTopicsMessages(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid) throws Exception
 	{
-		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
-		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
 		}
 		
+		//check param
+		if((p_projectid == 0) || (p_topicid == 0) ||
+		   (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//Step 1. get all topic first level message
 		String sql = "select " + 
 					 "	T1.id, " + 
@@ -461,24 +496,28 @@ public class ProjectTopicService extends BaseService {
 			message.put("replyCount", (pid_sub_msg_count.get(messageid)==null) ? 0 : pid_sub_msg_count.get(messageid));
 		}
 		
-		return messages;
+		return buildResponse(OK, messages);
 	}
 	
 	@GET
 	@Path("/{topicid}/messages/{messageid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserProjectTopicsMessagesById(
+	public Response getUserProjectTopicsMessagesById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
 			@PathParam("messageid") int p_messageid ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
-		   (p_messageid == 0) && 
-		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+		if((p_projectid == 0) || (p_topicid == 0) ||
+		   (p_messageid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		// Step 1. retrieve message detail info
@@ -560,26 +599,30 @@ public class ProjectTopicService extends BaseService {
 			message.put("replyCount", 0);
 		}
 		
-		return message;
+		return buildResponse(OK, message);
 	}
 	
 	@GET
 	@Path("/{topicid}/messages/{messageid}/replylist")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectTopicsMessagesReplyListById(
+	public Response getUserProjectTopicsMessagesReplyListById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
 			@PathParam("messageid") int p_messageid ) throws Exception
 	{
-		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
-		   (p_messageid == 0) && 
-		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
 		}
 		
+		//check param
+		if((p_projectid == 0) || (p_topicid == 0) ||
+		   (p_messageid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		String sql = "select " + 
 			 "	T1.id, " + 
 			 "	T1.pid, " + 
@@ -638,13 +681,13 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return replyList;
+		return buildResponse(OK, replyList);
 	}
 	
 	@POST
 	@Path("/{topicid}/messages")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject createUserProjectTopicsMessages(
+	public Response createUserProjectTopicsMessages(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
@@ -654,14 +697,18 @@ public class ProjectTopicService extends BaseService {
 			@FormParam("to[userid]") String p_to,
 			@FormParam("msg") String p_msg ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
-		   (p_messageid == 0) && 
-		   (p_userid == null || p_userid.equals("")) && 
-		   (p_from == null || p_from.equals("")) &&
+		if((p_projectid == 0) || (p_topicid == 0) || (p_messageid == 0) ||
+		   (p_userid == null || p_userid.equals("")) || 
+		   (p_from == null || p_from.equals("")) ||
 		   (p_msg == null || p_msg.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//1. create message
@@ -734,26 +781,30 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
-		return message;
+		return buildResponse(OK, message);
 	}
 	
 	@DELETE
 	@Path("/{topicid}/messages/{messageid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUserProjectTopicsMessages(
+	public Response deleteUserProjectTopicsMessages(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
 			@PathParam("messageid") int p_messageid ) throws Exception
 	{
-		//check param
-		if((p_projectid == 0) && 
-		   (p_topicid == 0) && 
-		   (p_messageid == 0) && 
-		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
 		}
 		
+		//check param
+		if((p_projectid == 0) || (p_topicid == 0) || (p_messageid == 0) ||
+		   (p_userid == null || p_userid.equals("")) ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//删除消息的同时，将满足条件的父信息也删除
 		String sql = "delete from " +
 					 "	ideaworks.topic_discussion " + 

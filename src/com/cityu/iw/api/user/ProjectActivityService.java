@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -17,7 +18,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -30,6 +33,7 @@ import com.cityu.iw.util.Config;
 @Path("/users/{userid}/projects/{projectid}/activities")
 public class ProjectActivityService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectActivityService.class);
+	@Context HttpServletRequest request;
 	
 	//这边的Action与Entity修改之后，一定也要同步前端 ActivityModel 中的mapping，才能生效
 	public static enum Action {
@@ -81,10 +85,21 @@ public class ProjectActivityService extends BaseService {
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectActivities(
+	public Response getUserProjectActivities(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 ) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.projectid, " + 
@@ -127,6 +142,6 @@ public class ProjectActivityService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
-		return activities;
+		return buildResponse(OK, activities);
 	}
 }

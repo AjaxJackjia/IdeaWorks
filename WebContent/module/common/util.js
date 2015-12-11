@@ -36,7 +36,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
     };
     
     var isLogin = function() {
-    	return !$.cookie('userid') ? false : true;
+    	return !($.cookie('userid') == undefined || $.cookie('userid') == null);
     };
     
     var logout = function() {
@@ -50,6 +50,18 @@ define(['jquery', 'cookie' ], function($, cookie) {
     var attrIsValid = function(options, attr) {
     	return options.hasOwnProperty(attr) && options.attr !== "" ? 
 			true : false;
+	};
+	
+	var commonErrorHandler = function(data, definedMsg) {
+		if(data.ret == '400') { //参数错误
+			alert(data.msg);
+		}else if(data.ret == '401') { //session失效
+			alert(data.msg);
+			window.location.href = baseUrl + '/login.html';
+		}else{ //自定义提示错误
+			if(definedMsg != "")
+				alert(data.msg);
+		}
 	};
 	
 	// 判断类型
@@ -425,6 +437,9 @@ define(['jquery', 'cookie' ], function($, cookie) {
 		isLogin: isLogin,
 		logout: logout,
 		attrIsValid: attrIsValid,
-		timeformat: Date.format
+		timeformat: Date.format,
+		
+		//请求统一错误处理函数
+		commonErrorHandler: commonErrorHandler
 	}
 });

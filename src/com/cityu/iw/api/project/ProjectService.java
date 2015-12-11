@@ -27,9 +27,6 @@ public class ProjectService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public JSONArray getProjects() throws Exception
 	{
-		//TODO 每次请求都需要校验token的合法性；
-		//validateToken();
-		
 		String sql = "select * from ideaworks.project order by createtime desc";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql);
 		ResultSet rs_stmt = stmt.executeQuery();

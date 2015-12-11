@@ -21,7 +21,11 @@ define([
 		
 		//model
 		var listModel = new ProjectCollection();
-		listModel.fetch();		
+		listModel.fetch({
+			error: function(model, response, options) {
+				util.commonErrorHandler(response.responseJSON, 'Get user projects failed. Please try again later!');
+			}
+		});		
 		
 		//view
 		var projectListView = new ProjectListView({

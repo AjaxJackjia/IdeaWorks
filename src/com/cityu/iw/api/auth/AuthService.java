@@ -55,7 +55,7 @@ public class AuthService extends BaseService {
 		//2. validate password && generate token
 		if(db_password.equals(p_password)) {
 			//generate token by md5 using id and password
-			String token = Util.md5(p_userid + p_password);
+			String token = generateToken(p_userid, db_password);
 			
 			if(token == null) {
 				result.put("ret", "-2");
@@ -93,9 +93,6 @@ public class AuthService extends BaseService {
 		if((p_username == null || p_username.equals("")) || 
 		   (p_password == null || p_password.equals("")) || 
 		   (p_email == null || p_email.equals(""))) {
-			System.out.println(p_username);
-			System.out.println(p_password);
-			System.out.println(p_email);
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
 			return result;
@@ -203,6 +200,9 @@ public class AuthService extends BaseService {
 			
 			result.put("ret", "0");
 			result.put("msg", "ok");
+			//update token 
+			String token = generateToken(p_userid, p_new_password);
+			request.getSession().setAttribute("token", token);
 		}else{
 			result.put("ret", "-2");
 			result.put("msg", "old password invalid");

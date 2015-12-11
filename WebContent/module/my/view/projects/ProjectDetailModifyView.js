@@ -152,17 +152,17 @@ define([
 			}else{
 				//修改project
 				var advisorRaw = this.advisorCandidates.where({userid: $('#project_advisor').val()});
-				this.model.set('title', $('#project_title').val());
-				this.model.set('advisor', {
-					userid: advisorRaw[0].get('userid'),
-					nickname: advisorRaw[0].get('nickname'),
-					logo: advisorRaw[0].get('logo')
-				});
+				var advisorObj = {};
+				advisorObj.userid = advisorRaw[0].get('userid');
+				advisorObj.nickname = advisorRaw[0].get('nickname');
+				advisorObj.logo = advisorRaw[0].get('logo');
 				
-				this.model.save({
+				this.model.set('title', $('#project_title').val());
+				this.model.save('advisor', advisorObj, {
 					wait: true,
-					error: function() {
-						alert('update project failed!');
+					error: function(model, response, options) {
+						var alertMsg = 'Update project failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
 			}

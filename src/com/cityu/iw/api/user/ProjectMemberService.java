@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -36,14 +38,26 @@ import com.sun.jersey.api.representation.Form;
 @Path("/users/{userid}/projects/{projectid}/members")
 public class ProjectMemberService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectMemberService.class);
+	@Context HttpServletRequest request;
 	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectMembers(
+	public Response getUserProjectMembers(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+				
 		//get creator and advisor
 		String sql = "select creator, advisor from ideaworks.project where id = ? ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
@@ -96,23 +110,29 @@ public class ProjectMemberService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return members;
+		return buildResponse(OK, members);
 	}
 	
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray addUserProjectMembers(
+	public Response addUserProjectMembers(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			Form form) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
 		//返回结果
 		JSONArray members = new JSONArray();
 		
 		//检查参数
 		if(form.isEmpty() || p_projectid <= 0 || p_userid == null || p_userid.equals("")) {
-			return members;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//更新project_member表
@@ -183,6 +203,6 @@ public class ProjectMemberService extends BaseService {
 				ProjectActivityService.Action.ADD, 
 				ProjectActivityService.Entity.MEMEBER);
 				
-		return members;
+		return buildResponse(OK, members);
 	}
 }

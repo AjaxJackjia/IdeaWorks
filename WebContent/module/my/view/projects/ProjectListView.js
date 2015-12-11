@@ -73,8 +73,9 @@ define([
 					 //默认选中最新创建的project item
 					 $($('.project-list-content > li')[0]).click();
 				 }, 
-				 error: function() {
-					 alert('Create project failed. Please try again later!');
+				 error: function(model, response, options) {
+					var alertMsg = 'Create project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
 		},
@@ -89,8 +90,9 @@ define([
 					//从list中删除project
 					projectList.remove(project);
 				},
-				error: function() {
-					alert('Delete project failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		}

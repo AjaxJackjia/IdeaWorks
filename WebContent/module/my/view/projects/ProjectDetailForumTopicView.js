@@ -266,12 +266,11 @@ define([
 			
 			//修改topic
 			this.model.set('title', $('#topic_title').val());
-			this.model.set('description', $('#topic_description').val());
-			
-			this.model.save({
+			this.model.save('description', $('#topic_description').val(), {
 				wait: true,
-				error: function() {
-					alert('update topic failed!');
+				error: function(model, response, options) {
+					var alertMsg = 'Update topic failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 			

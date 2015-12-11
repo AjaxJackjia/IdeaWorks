@@ -1,5 +1,6 @@
 define([ 
          'backbone',
+         'util',
          'css!../../../res/css/my/dashboard.css',
          //view
          'view/dashboard/BriefView',
@@ -9,7 +10,7 @@ define([
          'model/dashboard/BriefModel',
          'model/dashboard/PopularTopicCollection',
          'model/dashboard/RecentActivityCollection'
-       ], function(Backbone, css,
+       ], function(Backbone, util, css,
     		   BriefView, PopularTopicView, RecentActivityView, 
     		   BriefModel, PopularTopicCollection, RecentActivityCollection) {
 	var DashboardController = function() {
@@ -28,7 +29,11 @@ define([
 		
 		//model
 		var briefModel = new BriefModel();
-		briefModel.fetch();
+		briefModel.fetch({
+			error: function(model, response, options) {
+				util.commonErrorHandler(response.responseJSON, 'Get user dashboard failed. Please try again later!');
+			}
+		});
 		var topics = new PopularTopicCollection();
 		topics.fetch();
 		var activities = new RecentActivityCollection();

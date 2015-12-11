@@ -216,8 +216,9 @@ define([
 				success: function() {
 					$('#edit_signature_sub_view').modal('toggle');
 				},
-				error: function() {
-					alert("Update signature failed. Please try again later!");
+				error: function(model, response, options) {
+					var alertMsg = 'Update signature failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#edit_signature_sub_view').modal('toggle');
 				}
 			});
@@ -355,8 +356,9 @@ define([
 				success: function() {
 					$('#edit_profile_sub_view').modal('toggle');
 				},
-				error: function() {
-					alert("Update profile failed. Please try again later!");
+				error: function(model, response, options) {
+					var alertMsg = 'Update profile failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#edit_profile_sub_view').modal('toggle');
 				}
 			});
@@ -554,10 +556,11 @@ define([
 			    	}
 			    	$('#change_password_sub_view').modal('toggle');
 			    },
-			    error: function(){
-			    	alert("Change password failed. Please try again later!");
+			    error: function(response) {
+					var alertMsg = 'Change password failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#change_password_sub_view').modal('toggle');
-			    }
+				}
 			});
 		}
 	});

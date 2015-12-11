@@ -138,15 +138,17 @@ define([
 			    			//隐藏窗口
 							$('#upload_sub_view').modal('toggle');
 			    		},
-				    	error: function() {
-				    		alert('Fetch files failed. Please try again later!');
+				    	error: function(model, response, options) {
+				    		var alertMsg = 'Fetch files failed. Please try again later!';
+							util.commonErrorHandler(response.responseJSON, alertMsg);
 			    			//隐藏窗口
 							$('#upload_sub_view').modal('toggle');
 			    		}
 			    	});
 			    },
-			    error: function(data){
-			    	alert('Upload file failed. Please try again later!');
+			    error: function(response){
+			    	var alertMsg = 'Upload file failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 			    	//隐藏窗口
 			    	$('#upload_sub_view').modal('toggle');
 			    }
@@ -164,8 +166,9 @@ define([
 					//从list中删除file
 					files.remove(file);
 				},
-				error: function() {
-					alert('Delete file failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete file failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		}

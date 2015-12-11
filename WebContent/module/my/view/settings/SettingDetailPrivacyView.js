@@ -71,9 +71,10 @@ define([
 					    		alert(result.msg);
 					    	}
 					    },
-					    error: function(){
-					    	alert("Set privacy failed. Please try again later!");
-					    }
+					    error: function(response) {
+							var alertMsg = 'Set privacy failed. Please try again later!';
+							util.commonErrorHandler(response.responseJSON, alertMsg);
+						}
 					});
 				});
 			}, 0);

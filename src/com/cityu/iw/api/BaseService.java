@@ -6,6 +6,10 @@ import java.sql.SQLException;
 
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Util;
@@ -13,17 +17,51 @@ import com.cityu.iw.util.Util;
 
 public class BaseService
 {
-    public Response buildResponse(Object p_result, String p_mimeType, java.util.Date p_expires)
+	private static final String SESSION_PRIVATE_KEY = "IdeaWorks";
+	public static final int OK = 1;
+	public static final int PARAMETER_INVALID = 2;
+	public static final int TOKEN_INVALID = 3;
+	
+    public Response buildResponse(int responseType, Object p_result) throws JSONException
     {
-        ResponseBuilder builder = Response.ok(p_result, p_mimeType);
-        if (p_expires != null)
-        {
-            builder.expires(p_expires);
-        }
-        return builder.build();
+    	ResponseBuilder builder = null;
+    	
+    	switch(responseType)
+    	{
+    	case OK:
+    		builder = Response.status(Status.OK).entity(p_result).type("application/json");
+    		break;
+    	case PARAMETER_INVALID:
+    		JSONObject parameter_invalid = new JSONObject();
+    		parameter_invalid.put("ret", "400");
+    		parameter_invalid.put("msg", "Parameter invalid!");
+    		builder = Response.status(Status.BAD_REQUEST).entity(parameter_invalid).type("application/json");
+    		break;
+    	case TOKEN_INVALID:
+    		JSONObject token_invalid = new JSONObject();
+    		token_invalid.put("ret", "401");
+    		token_invalid.put("msg", "Session time out!");
+    		builder = Response.status(Status.UNAUTHORIZED).entity(token_invalid).type("application/json");
+    		break;
+    	default:
+    		builder = Response.status(Status.OK).entity(p_result).type("application/json");
+    		break;
+    	}
+		
+		return builder.build();
+    }
+    
+    public String generateToken(String userid, String password) {
+    	return Util.md5(userid + password + SESSION_PRIVATE_KEY);
     }
     
     public boolean validateToken(String p_id, String p_token) throws SQLException {
+    	//session token 过期
+    	if(p_token == null) {
+    		return false;
+    	}
+    	
+    	//校验session token的准确性
     	String sql = "select * from ideaworks.user where id = ?";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_id);
 		ResultSet rs_stmt = stmt.executeQuery();
@@ -31,7 +69,9 @@ public class BaseService
 		while(rs_stmt.next()) {
 			db_password = rs_stmt.getString("password");
 		}
-    	String genToken = Util.md5(p_id + db_password);
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+    	String genToken = generateToken(p_id, db_password);
     	
     	return genToken == null ? false : genToken.equals(p_token);
     }

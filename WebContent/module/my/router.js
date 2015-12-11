@@ -5,7 +5,7 @@ define([ 'backbone', 'util',
          'model/settings/UserModel'
        ], function (Backbone, util, cookie, LeftPanelView, TopPanelView, UserModel) {
 	
-	//check login status
+	//check login status when load router
 	if(util.isLogin()) {
 		//get current user info
 		var userModel = new UserModel({ 
@@ -13,7 +13,6 @@ define([ 'backbone', 'util',
 		});
 		userModel.fetch({
 			success: function() {
-				console.log('fetch!');
 				$.cookie('userlogo', userModel.get('logo'));
 				$.cookie('nickname', userModel.get('nickname'));
 				
@@ -45,6 +44,11 @@ define([ 'backbone', 'util',
     var router = new Router();
     
     router.on('route', function (route, params) {
+    	//check user login status when change router
+    	if(!util.isLogin()) {
+    		window.location.href = util.baseUrl + '/login.html';
+    	}
+    	
         require([route], function (controller) {
             if(router.currentController && router.currentController !== controller){
                 router.currentController.onRouteChange && router.currentController.onRouteChange();

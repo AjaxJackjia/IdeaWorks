@@ -256,12 +256,11 @@ define([
 			
 			//修改milestone
 			this.model.set('title', $('#milestone_title').val());
-			this.model.set('description', $('#milestone_description').val());
-			
-			this.model.save({
+			this.model.save('description', $('#milestone_description').val(), {
 				wait: true,
-				error: function() {
-					alert('update milestone failed!');
+				error: function(model, response, options) {
+					var alertMsg = 'Update milestone failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 			

@@ -115,12 +115,11 @@ define([
 			
 			//如果内容有不同才会发送请求来修改
 			if(project.get('abstractContent') != content) {
-				project.set({'abstractContent': content});
-				project.save({
+				project.save('abstractContent', content, {
 					wait: true,
-					error: function() {
-						project.previous("abstractContent");
-						alert("Update project abstract error! Please try again later...");
+					error: function(model, response, options) {
+						var alertMsg = "Update project abstract error! Please try again later...";
+						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
 			}

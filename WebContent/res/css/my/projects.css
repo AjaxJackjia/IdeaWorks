@@ -350,6 +350,28 @@
 	text-transform: uppercase;
 }
 
+.project-detail-members-view > .advisor > .advisor-content > .placeholder,
+.project-detail-members-view > .members > .members-content > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-members-view > .advisor > .advisor-content > .placeholder > h4,
+.project-detail-members-view > .members > .members-content > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
 .project-detail-members-view .member
 {
 	display: inline-block;

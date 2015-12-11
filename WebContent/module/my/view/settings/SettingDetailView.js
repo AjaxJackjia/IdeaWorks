@@ -41,8 +41,9 @@ define([
 				success: function() {
 					self.render();
 				},
-				error: function() {
-					alert('Get user profile failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Get user profile failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},

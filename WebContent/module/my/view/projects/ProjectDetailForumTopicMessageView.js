@@ -118,8 +118,9 @@ define([
 					 //清空message box
 					 $('#send_content').val("");
 				 }, 
-				 error: function() {
-					 alert('Create comment failed. Please try again later!');
+				 error: function(model, response, options) {
+					 var alertMsg = 'Create comment failed. Please try again later!';
+					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
 		},
@@ -135,8 +136,9 @@ define([
 					//从list中删除message
 					messages.remove(message);
 				},
-				error: function() {
-					alert('Delete comment failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete comment failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},
@@ -170,7 +172,11 @@ define([
 			$('.discussion-content', this.el).html('');
 			messages.reset();
 			//重新拉取信息
-			messages.fetch();
+			messages.fetch({
+				error: function(model, response, options) {
+					util.commonErrorHandler(response.responseJSON, 'Fetch messages failed. Please try again later!');
+				}
+			});
 		},
 		
 		/*
@@ -334,8 +340,9 @@ define([
 					var $originMessageTarget = $($('.message-origin', this.el)[0]).find('.message-text');
 					$originMessageTarget.append($actionWithReply);
 				},
-				error: function() {
-					alert('Get message reply list failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Get message reply list failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 			
@@ -403,9 +410,10 @@ define([
 				 success: function() {
 					 //清空message box
 					 $('#reply_msg').val("");
-				 }, 
-				 error: function() {
-					 alert('Create reply failed. Please try again later!');
+				 },
+				 error: function(model, response, options) {
+					 var alertMsg = 'Create reply failed. Please try again later!';
+					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
 		},
@@ -415,18 +423,15 @@ define([
 		 * */
 		deleteReply: function(reply) {
 			var replyList = this.replyList;
-			console.log("reply: " + replyList.get(reply.cid).url);
-			console.log(replyList.get(reply.cid).isNew());
-			console.log(replyList.get(reply.cid).id);
-			console.log(this.model.isNew());
 			replyList.get(reply.cid).destroy({
 				wait: true, 
 				success: function() {
 					//从list中删除reply
 					replyList.remove(reply);
 				},
-				error: function() {
-					alert('Delete comment failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete comment failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},

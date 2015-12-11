@@ -37,5 +37,22 @@ collation-server=utf8_unicode_ci
 
 后面试了查了N多资料才知道，是因为少两个package，一个是与jersey-core 1.17兼容的jersey multipart 1.17，这个包是jersey解析mime type使用到的包，另一个是jersey multipart使用的mimepull包，这个包不能用1.6版本，1.5版本才可以运行。
 
+# model fetch，save，destroy options中函数参数顺序
+
+fetch option中的参数顺序为 model, response, options；
+
+save option中的参数顺序为 model, response, options；
+
+destroy option中的参数顺序为 model, response, options；
+
+# collection fetch，create中options参数顺序
+
+fetch option中的参数顺序为 collection, response, options；
+
+create option中的参数顺序为 ？；
+
+调用save方法的话(直接降级为一个ajax调用)，option中的参数顺序为 response， error，type，例：error中参数返回 Object，error，Unauthorized
+
+
 
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
@@ -16,7 +17,9 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -30,15 +33,22 @@ import com.cityu.iw.util.Config;
 @Path("/users/{userid}/dashboard/")
 public class DashboardService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(DashboardService.class);
-
+	@Context HttpServletRequest request;
+	
 	@GET
 	@Path("brief")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserDashboardBrief(@PathParam("userid") String p_userid) throws Exception
+	public Response getUserDashboardBrief(@PathParam("userid") String p_userid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//retrieve result
@@ -125,17 +135,23 @@ public class DashboardService extends BaseService {
 		brief.put("relatedMemberNo", relatedMemberNo);
 		brief.put("forumParticipationNo", forumParticipationNo);
 		
-		return brief;
+		return buildResponse(OK, brief);
 	}
 	
 	@GET
 	@Path("populartopics")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getPopularTopics(@PathParam("userid") String p_userid) throws Exception
+	public Response getPopularTopics(@PathParam("userid") String p_userid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
 		//check param
 		if((p_userid == null || p_userid.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//popular topics指标主要是discussion message的数量
@@ -186,17 +202,23 @@ public class DashboardService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return topics;
+		return buildResponse(OK, topics);
 	}
 	
 	@GET
 	@Path("recentactivities")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getRecentActivities(@PathParam("userid") String p_userid) throws Exception
+	public Response getRecentActivities(@PathParam("userid") String p_userid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
 		//check param
 		if((p_userid == null || p_userid.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
 		JSONArray list = new JSONArray();
@@ -245,6 +267,6 @@ public class DashboardService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return list;
+		return buildResponse(OK, list);
 	}
 }

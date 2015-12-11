@@ -30,6 +30,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -48,6 +49,7 @@ import com.sun.jersey.multipart.FormDataParam;
 public class ProjectFileService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectFileService.class);
 	private static HashMap<String, String> SUPPORT_MIME_FILE_TYPE; //支持上传的文件类型
+	@Context HttpServletRequest request;
 	
 	public ProjectFileService() {
 		SUPPORT_MIME_FILE_TYPE = new HashMap<String, String>();
@@ -72,13 +74,19 @@ public class ProjectFileService extends BaseService {
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONArray getUserProjectFiles(
+	public Response getUserProjectFiles(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		String sql = "select " + 
@@ -127,20 +135,26 @@ public class ProjectFileService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return files;
+		return buildResponse(OK, files);
 	}
 	
 	@GET
 	@Path("/{fileid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject getUserProjectFilesById(
+	public Response getUserProjectFilesById(
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid, 
 			@PathParam("fileid") int p_fileid ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+
 		//check param
-		if((p_userid == null || p_userid.equals("")) && p_projectid == 0 && p_fileid == 0) {
-			return null;
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || p_fileid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		String sql = "select " + 
@@ -184,7 +198,7 @@ public class ProjectFileService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return file;
+		return buildResponse(OK, file);
 	}
 	
 	@GET
@@ -198,8 +212,8 @@ public class ProjectFileService extends BaseService {
 			@Context HttpServletResponse response) throws Exception
 	{
 		//check param
-		if((p_userid == null || p_userid.equals("")) && 
-			p_projectid == 0 && p_fileid == 0) {
+		if((p_userid == null || p_userid.equals("")) || 
+			p_projectid == 0 || p_fileid == 0) {
 			return null;
 		}
 		
@@ -247,11 +261,17 @@ public class ProjectFileService extends BaseService {
 	@POST
 	@Path("")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)  
-	public JSONObject createUserProjectFiles(
+	public Response createUserProjectFiles(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			FormDataMultiPart form ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
 		/*
 		 * Step 1. 获取参数
 		 * */
@@ -276,12 +296,12 @@ public class ProjectFileService extends BaseService {
 	    /*
 		 * Step 2. 校验参数 (description字段可为空)
 		 * */
-		if((p_projectid == 0) && (filesize == 0) && 
-		   (p_userid == null || p_userid.equals("")) &&
-		   (filetype == null || filetype.equals("")) &&
-		   (filename == null || filename.equals("")) &&
+		if((p_projectid == 0) || (filesize == 0) ||
+		   (p_userid == null || p_userid.equals("")) ||
+		   (filetype == null || filetype.equals("")) ||
+		   (filename == null || filename.equals("")) ||
 		   (creator == null || creator.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		/*
@@ -345,15 +365,21 @@ public class ProjectFileService extends BaseService {
 	@DELETE
 	@Path("/{fileid}")	
 	@Produces(MediaType.APPLICATION_JSON)
-	public JSONObject deleteUserProjectFiles(
+	public Response deleteUserProjectFiles(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("fileid") int p_fileid ) throws Exception
 	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
 		//check param
-		if((p_projectid == 0) && (p_fileid == 0) &&
+		if((p_projectid == 0) || (p_fileid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
-			return null;
+			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
 		//查询要删除的file信息

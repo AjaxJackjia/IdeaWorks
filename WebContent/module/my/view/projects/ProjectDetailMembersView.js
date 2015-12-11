@@ -197,8 +197,9 @@ define([
 					//关闭页面
 					$('#add_member_sub_view').modal('toggle');
 				},
-				error: function() {
-					alert('Add project member project failed. Please try again later!');
+				error: function(response) {
+					var alertMsg = 'Add project member project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		}

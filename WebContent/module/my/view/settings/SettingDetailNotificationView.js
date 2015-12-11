@@ -55,9 +55,10 @@ define([
 				    		alert(result.msg);
 				    	}
 				    },
-				    error: function(){
-				    	alert("Set notification failed. Please try again later!");
-				    }
+				    error: function(response) {
+						var alertMsg = 'Set notification failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+					}
 				});
 			});
 			

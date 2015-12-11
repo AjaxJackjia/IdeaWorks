@@ -93,8 +93,9 @@ define([
 				 success: function() {
 					 
 				 }, 
-				 error: function() {
-					 alert('Create milestone failed. Please try again later!');
+				 error: function(model, response, options) {
+					 var alertMsg = 'Create milestone failed. Please try again later!';
+					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
 		},
@@ -110,8 +111,9 @@ define([
 					//从list中删除milestone
 					milestones.remove(milestone);
 				},
-				error: function() {
-					alert('Delete milestone failed. Please try again later!');
+				error: function(model, response, options) {
+					var alertMsg = 'Delete milestone failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		}

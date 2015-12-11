@@ -57,9 +57,10 @@ define([
 			    		alert(result.msg);
 			    	}
 			    },
-			    error: function(){
-			    	alert("Set advanced settings failed. Please try again later!");
-			    }
+			    error: function(response) {
+					var alertMsg = 'Set advanced settings failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				}
 			});
 		}
 	});
