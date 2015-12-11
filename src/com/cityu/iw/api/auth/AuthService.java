@@ -23,6 +23,7 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/auth")
 public class AuthService extends BaseService {
+	private static final String DEFAULT_USER_LOGO = "default_user_logo.jpg";
 	@Context HttpServletRequest request;
 	
 	@POST
@@ -119,7 +120,6 @@ public class AuthService extends BaseService {
 		int privacy = 3;			//默认profile对外可见
 		int sync = 0;				//默认不同步
 		String language = "en_US"; //默认语言为英语
-		String logo = "default_user_logo.jpg"; //默认头像
 		
 		sql = "insert into " +
 					 "	ideaworks.user (" + 
@@ -135,7 +135,7 @@ public class AuthService extends BaseService {
 					 "		language " + 
 					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, 
-				p_username, p_password, p_username, p_email, logo, p_usertype, 
+				p_username, p_password, p_username, p_email, DEFAULT_USER_LOGO, p_usertype, 
 				notifications, privacy, sync, language );
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);

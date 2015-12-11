@@ -1,5 +1,7 @@
 package com.cityu.iw.api.user;
 
+import java.io.InputStream;
+import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -28,6 +30,10 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.FileUtil;
+import com.sun.jersey.core.header.FormDataContentDisposition;
+import com.sun.jersey.multipart.FormDataBodyPart;
+import com.sun.jersey.multipart.FormDataMultiPart;
 
 
 @Path("/users")
@@ -183,6 +189,66 @@ public class UserService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 
 		return buildResponse(OK, user);
+	}
+	
+	@POST
+	@Path("/{userid}/logo")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)  
+	public Response updateUserLogo(
+			@PathParam("userid") String p_userid,
+			FormDataMultiPart form ) throws Exception
+	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+				
+		/*
+		 * Step 1. 获取参数
+		 * */
+		//获取文件流  
+	    FormDataBodyPart filePart = form.getField("logo");
+	    InputStream fileInputStream = filePart.getValueAs(InputStream.class);
+	    FormDataContentDisposition formDataContentDisposition = filePart.getFormDataContentDisposition();
+	    String filename = formDataContentDisposition.getFileName();
+	    
+	    /*
+		 * Step 2. 校验参数
+		 * */
+		if(p_userid == null || p_userid.equals("")) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		/*
+		 * Step 3. 将logo写入server
+		 * */
+		String suffix = filename.substring(filename.lastIndexOf("."));
+		filename = p_userid + suffix; //修改文件名使其更符合规范(命名规范为userid.xxx)
+	    String fileLocation = Config.WEBCONTENT_DIR + Config.USER_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
+		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
+	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
+			return null;
+		}
+	    
+		/*
+		 * Step 4. 将logo更新到DB
+		 * */
+		String sqlUpdate = "update " +
+							 "	ideaworks.user " + 
+							 "set " + 
+							 "	logo = ? " + 
+							 "where " + 
+							 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, filename, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//返回修改的project logo
+		JSONObject logoObj = new JSONObject();
+		logoObj.put("logo", Config.USER_IMG_BASE_DIR + filename);
+		
+		return buildResponse(OK, logoObj);
 	}
 	
 	@POST

@@ -42,6 +42,7 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 @Path("/users/{userid}/projects")
 public class ProjectService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectService.class);
+	private static final String DEFAULT_PROJECT_LOGO = "default_prj_logo.png";
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -241,7 +242,7 @@ public class ProjectService extends BaseService {
 					 "		modifytime " + 
 					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ? )";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-									p_title, p_creator, p_advisor, "", 510, "default_prj_logo.jpg", new Date(), new Date());
+									p_title, p_creator, p_advisor, "", 510, DEFAULT_PROJECT_LOGO, new Date(), new Date());
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -366,7 +367,7 @@ public class ProjectService extends BaseService {
 	    /*
 		 * Step 2. 校验参数
 		 * */
-		if((p_projectid == 0) && (p_userid == null || p_userid.equals(""))) {
+		if((p_projectid == 0) || (p_userid == null || p_userid.equals(""))) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -384,8 +385,11 @@ public class ProjectService extends BaseService {
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sqlSelect, p_projectid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
-			String preLogoPath = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + rs_stmt.getString("logo");
-			FileUtil.delete(preLogoPath); //删除之前的logo
+			String logo = rs_stmt.getString("logo");
+			String preLogoPath = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + logo;
+			if(!logo.equals(DEFAULT_PROJECT_LOGO)) {
+				FileUtil.delete(preLogoPath); //删除之前的logo
+			}
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 	    

@@ -8,12 +8,13 @@ define([
 		
 		events: {
 			'click .edit-signature': 'editSignature',
+			'click .change-logo': 'changeLogo',
 			'click .edit-profile': 'editProfile',
 			'click .change-password': 'changePassword'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'editSignature', 'editProfile', 'changePassword');
+			_.bindAll(this, 'render', 'editSignature', 'changeLogo', 'editProfile', 'changePassword');
 			
 			//绑定model变化事件
 			this.model.bind('change', this.render);
@@ -42,6 +43,19 @@ define([
 			}
 			//显示view
 			$('#edit_signature_sub_view').modal('toggle');
+		},
+		
+		changeLogo: function() {
+			var user = this.model;
+			var logoUploadSubView = new LogoUploadSubView({
+				model: user
+			});
+			var $subView = $('#logo_upload_sub_view');
+			if($subView.length == 0) {
+				$('.content-panel').append($(logoUploadSubView.render().el));
+			}
+			//显示view
+			$('#logo_upload_sub_view').modal('toggle');
 		},
 		
 		editProfile: function() {
@@ -77,6 +91,9 @@ define([
 			'	<div class="actions">' + 
 			'		<a class="edit-signature btn btn-default"> ' + 
 			'			<i class="fa fa-paper-plane"></i> Edit Signature' +
+			'		</a>' + 
+			'		<a class="change-logo btn btn-default"> ' + 
+			'			<i class="fa fa-picture-o"></i> Logo' +
 			'		</a>' + 
 			'		<a class="edit-profile btn btn-default"> ' + 
 			'			<i class="fa fa-pencil"></i> Edit profile' +
@@ -254,6 +271,188 @@ define([
 			'</div> '
 		return tpl;
 	}
+	/*
+	 * user logo upload sub view
+	 * */
+	var LogoUploadSubView = Backbone.View.extend({
+		
+		id: 'logo_upload_sub_view',
+		
+		className: 'logo-upload-sub-view modal fade',
+		
+		events: {
+			'click .upload-logo': 'upload'
+		},
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'upload');
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = LogoModalHeader();
+			$modalDialogContent.append(header);
+			
+			var body = LogoModalBody();
+			$modalDialogContent.append(body);
+			
+			var footer = LogoModalFooter();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//绑定modal消失时出发的事件
+			var self = this;
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		//上传file
+		upload: function() {
+			//当前user model
+			var self = this;
+			
+			//validate
+			if(!this.validate()) {
+				return;
+			}
+			
+			//创建file model
+			var fileDom = document.getElementById("upload_logo_input");
+			//因为backbone post请求默认是"application/x-www-form-urlencoded"，所以在这里需要重写上传logo的方法
+			var data = new FormData();
+			data.append('logo', fileDom.files[0]);
+			
+			$.ajax({
+			    url: self.model.url + '/logo',
+			    data: data,
+			    cache: false,
+			    contentType: false,
+			    processData: false,
+			    type: 'POST',
+			    success: function(data){
+			    	alert("Upload complete!");
+			    	
+			    	//更新user
+			    	self.model.set('logo', data.logo);
+			    	//更新cookie
+			    	util.setUserLogo(data.logo);
+			    	//更新left panel
+			    	Backbone.trigger('LeftPanelView:updateProfile');
+			    	
+	    			//隐藏窗口
+					$('#logo_upload_sub_view').modal('toggle');
+			    },
+			    error: function(response){
+					var alertMsg = 'Upload logo failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+			    	//隐藏窗口
+			    	$('#logo_upload_sub_view').modal('toggle');
+			    }
+			});
+		},
+		
+		//检查logo上传
+		validate: function() {
+			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
+			var emptyMsg = "Please select your upload logo image!";
+			var errMsg = "The maxsize of upload file is 1M!";
+			var fileTypeMsg = "The file type doesn't support!";
+			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
+			var ua = window.navigator.userAgent;
+			var browserCfg = {};
+			if(ua.indexOf("Firefox")>=1){
+				browserCfg.firefox = true;
+			}else if(ua.indexOf("Chrome")>=1){
+				browserCfg.chrome = true;
+			}
+			
+			//检查浏览器类型
+			if(!browserCfg.firefox && !browserCfg.chrome ){
+		 		alert(tipMsg);
+		 		return false;
+		 	}
+			
+			//检查上传文件是否非空
+			var file = document.getElementById("upload_logo_input");
+		 	if(file.value == ""){
+		 		alert(emptyMsg);
+		 		return false;
+		 	}
+		 	
+		 	//检查文件类型
+		 	var accept_file_type = [
+	   	        'image/gif',
+	   	        'image/jpeg',
+	   	        'image/png'
+	           ];
+		 	var filetype = file.files[0].type;
+		 	var isValid = _.indexOf(accept_file_type, filetype);
+		 	if(isValid == -1) {
+		 		alert(fileTypeMsg);
+		 		return false;
+		 	}
+	        
+		 	//检查文件大小
+		 	var filesize = file.files[0].size;
+		 	if(filesize > maxsize){
+		 		alert(errMsg);
+		 		return false;
+			}
+		 	
+		 	return true;
+		}
+	});
+	
+	var LogoModalHeader = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Change Project Logo</h3> ' + 
+			'</div>';
+		return tpl;
+	}
+	
+	var LogoModalFooter = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="submit" class="upload-logo btn btn-primary">Upload</a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var LogoModalBody = function() {
+		var accept_file_type = [
+	        'image/gif',
+	        'image/jpeg',
+	        'image/png'
+        ];
+
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="fileAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="upload_logo_input" class="control-label">File:</label> ' + 
+			'			<input id="upload_logo_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label class="control-label">(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)</label> ' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
 	
 	/*
 	 * Edit profile sub view
@@ -303,6 +502,10 @@ define([
 		                validators: {
 		                    notEmpty: {
 		                        message: 'The nickname is required'
+		                    },
+		                    stringLength: {
+		                    	max: 30,
+		                        message: 'The nickname must be smaller than 30 characters'
 		                    }
 		                }
 		            }
@@ -354,6 +557,11 @@ define([
 			this.model.set('interests', $('#interests_input').val());
 			this.model.save('introduction', $('#introduction_input').val(), {
 				success: function() {
+			    	//更新cookie
+			    	util.setUserNickname($('#nickname_input').val());
+			    	//更新left panel
+			    	Backbone.trigger('LeftPanelView:updateProfile');
+			    	
 					$('#edit_profile_sub_view').modal('toggle');
 				},
 				error: function(model, response, options) {

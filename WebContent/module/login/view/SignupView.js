@@ -32,7 +32,15 @@ define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbo
 		        	username: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The topic title is required'
+		                        message: 'The username is required'
+		                    },
+		                    regexp: {
+		                        regexp: /^[a-zA-Z1-9]+$/i,
+		                        message: 'The username can consist of alphabetical characters and numbers only'
+		                    },
+		                    stringLength: {
+		                    	max: 30,
+		                        message: 'The username must be smaller than 30 characters'
 		                    }
 		                }
 		            },

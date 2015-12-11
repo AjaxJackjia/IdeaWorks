@@ -9,7 +9,12 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'select', 'createProject');
+			_.bindAll(this, 'render', 'select', 'createProject', 'updateProfile');
+			
+			//注册全局事件
+			Backbone.
+				off('LeftPanelView:updateProfile').
+				on('LeftPanelView:updateProfile', this.updateProfile, this);
 			
 			//navigation
 			this.nav = {
@@ -72,6 +77,14 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 			
 			//显示view
 			$('#project_detail_modify_view').modal('toggle');
+		},
+		
+		updateProfile: function() {
+			var $profile = $('.profile', this.el);
+			$profile.find('img').attr('src', util.baseUrl + $.cookie('userlogo'));
+			$profile.find('img').attr('alt', $.cookie('nickname'));
+			$profile.find('h4').attr('title', $.cookie('nickname'));
+			$profile.find('h4').html($.cookie('nickname'));
 		}
 	});
 	
@@ -84,7 +97,7 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 			'	<img src="'+ util.baseUrl + $.cookie('userlogo') + '" class="img-circle" alt="' + $.cookie('nickname') + '"> ' +
 			'</a> ' +
 			'<a class="username" href="#settings"> ' + 
-            '	<h4>' + $.cookie('nickname') + '</h4> ' +
+            '	<h4 title="' + $.cookie('nickname') + '">' + $.cookie('nickname') + '</h4> ' +
             '</a>';
 		$user.html(user_tpl);
 		

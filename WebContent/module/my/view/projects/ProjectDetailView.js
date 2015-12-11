@@ -229,7 +229,7 @@ define([
 			'			<i class="fa fa-pencil"></i> Edit' +
 			'		</a>' + 
 			'		<a class="logo-project btn btn-default"> ' + 
-			'			<i class="fa fa-flag"></i> Logo' +
+			'			<i class="fa fa-picture-o"></i> Logo' +
 			'		</a>' + 
 			'		<a class="delete-project btn btn-default"> ' + 
 			'			<i class="fa fa-trash"></i> Delete' +

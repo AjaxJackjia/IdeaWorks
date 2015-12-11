@@ -76,6 +76,13 @@ body
 	-o-transition: all 0.2s ease 0s;
 }
 
+.left-panel > .profile > .username > h4
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
 .left-panel > .navigation > ul
 {
 	margin-top: 20px;

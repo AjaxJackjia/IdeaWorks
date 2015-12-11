@@ -1,6 +1,6 @@
 define(['jquery', 'cookie' ], function($, cookie) {
 	
-	var baseUrl = 'http://localhost:8888/IdeaWorks'; //'http://10.100.40.23:8888/IdeaWorks'; 
+	var baseUrl = 'http://10.100.40.36:8888/IdeaWorks'; //'http://localhost:8888/IdeaWorks';
 	
     var resolveUrlParams = function() {
     	var hash = location.hash || location.search;
@@ -13,6 +13,14 @@ define(['jquery', 'cookie' ], function($, cookie) {
     	}
     	
     	return {};
+    };
+    
+    var setUserNickname = function(nickname) {
+    	$.cookie('nickname', nickname)
+    };
+    
+    var setUserLogo = function(logo) {
+    	$.cookie('userlogo', logo)
     };
     
     var currentUser = function() {
@@ -432,6 +440,8 @@ define(['jquery', 'cookie' ], function($, cookie) {
 	return {
 		baseUrl: baseUrl,
 		resolveUrlParams: resolveUrlParams,
+	    setUserNickname: setUserNickname,
+	    setUserLogo: setUserLogo,
 		currentUser: currentUser,
 		currentUserProfile: currentUserProfile,
 		isLogin: isLogin,
