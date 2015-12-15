@@ -1,6 +1,6 @@
 define(['jquery', 'cookie' ], function($, cookie) {
 	
-	var baseUrl = 'http://10.100.40.36:8888/IdeaWorks'; //'http://localhost:8888/IdeaWorks';
+	var baseUrl = 'http://localhost:8888/IdeaWorks'; //'http://10.100.40.36:8888/IdeaWorks';
 	
     var resolveUrlParams = function() {
     	var hash = location.hash || location.search;

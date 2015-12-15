@@ -63,6 +63,7 @@ define([
 		showSearchView: function() {
 			//change search button state
 			$('.search-btn > .fa').removeClass('fa-search').addClass('fa-remove');
+			$('.search-btn').addClass('active');
 			$('.search-input > input').focus();
 			
 			if($('.search-main-view').length == 0) {
@@ -74,6 +75,8 @@ define([
 		hideSearchView: function() {
 			//change search button state
 			$('.search-btn > .fa').removeClass('fa-remove').addClass('fa-search');
+			$('.search-btn').removeClass('active');
+			$('.search-input > input').val('');
 			
 			if($('.search-main-view').length != 0) {
 				this.searchView.unrender();

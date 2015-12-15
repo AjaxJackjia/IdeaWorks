@@ -227,12 +227,22 @@ body
 	border-radius: 50%;
 }
 
+.top-panel > .search-box > .search-btn.active
+{
+	background-color: #23a8f5;
+}
+
 .top-panel > .search-box > .search-btn > i
 {
 	display: block;
 	width: 17px;
 	height: 17px;
 	margin-top: 4px;
+}
+
+.top-panel > .search-box > .search-btn > i.fa-remove
+{
+	color: #ffffff;
 }
 
 .top-panel > .search-box > .search-input
