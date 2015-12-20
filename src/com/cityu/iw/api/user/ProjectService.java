@@ -230,6 +230,7 @@ public class ProjectService extends BaseService {
 		}
 		
 		//1. create project
+		int security = 0; //默认为public
 		String sql = "insert into " +
 					 "	ideaworks.project (" + 
 					 "		title, " + 
@@ -242,14 +243,14 @@ public class ProjectService extends BaseService {
 					 "		modifytime " + 
 					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ? )";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-									p_title, p_creator, p_advisor, "", 510, DEFAULT_PROJECT_LOGO, new Date(), new Date());
+									p_title, p_creator, p_advisor, "", security, DEFAULT_PROJECT_LOGO, new Date(), new Date());
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//2. 返回最新的project id
 		int projectid = 0;
-		sql = "select id from ideaworks.project order by id desc limit 1";
-		stmt = DBUtil.getInstance().createSqlStatement(sql);
+		sql = "select id from ideaworks.project where title = ? order by id desc limit 1";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_title);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
 			projectid = rs_stmt.getInt("id");
@@ -334,9 +335,10 @@ public class ProjectService extends BaseService {
 		//record activity
 		String msg = p_title;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(projectid, p_userid, msg,
-				ProjectActivityService.Action.CREATE, 
-				ProjectActivityService.Entity.PROJECT);
+		ProjectActivityService.recordActivity(projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.PROJECT);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(projectid, p_userid, Config.Action.CREATE, Config.Entity.PROJECT, msg);
 				
 		return buildResponse(OK, project);
 	}
@@ -410,10 +412,12 @@ public class ProjectService extends BaseService {
 		JSONObject logoObj = new JSONObject();
 		logoObj.put("logo", Config.PROJECT_IMG_BASE_DIR + filename);
 		
+		//记录activity
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, "",
-				ProjectActivityService.Action.UPDATE,
-				ProjectActivityService.Entity.LOGO);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, "", Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, "");
 		
 		return buildResponse(OK, logoObj);
 	}
@@ -426,7 +430,9 @@ public class ProjectService extends BaseService {
 			@PathParam("projectid") int p_projectid,
 			@FormParam("title") String p_title, 
 			@FormParam("abstractContent") String p_abstract, 
-			@FormParam("advisor[userid]") String p_advisor) throws Exception
+			@FormParam("advisor[userid]") String p_advisor, 
+			@FormParam("status") int p_status, 
+			@FormParam("security") int p_security ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -436,22 +442,51 @@ public class ProjectService extends BaseService {
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
-		   (p_title == null || p_title.equals("")) || 
-		   (p_advisor == null || p_advisor.equals(""))) {
+		   (p_status < 0 || p_status > 1) || (p_security < 0 || p_security > 1) || 
+		   (p_title == null || p_title.equals("")) || (p_advisor == null || p_advisor.equals(""))) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
-				
+		
+		//0. 拉取project,用以对比属性是否发生变化
+		boolean isTitleChanged = false,
+				isAdvisorChanged = false,
+				isAbstractChanged = false,
+				isStatusChanged = false,
+				isSecurityChanged = false;
+		String sql = "select " + 
+					 "	title, " + 
+					 "	advisor, " + 
+					 "	abstract, " + 
+					 "	status, " + 
+					 "	security " + 
+					 "from " + 
+					 "	ideaworks.project " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			isTitleChanged = !rs_stmt.getString("title").equals(p_title);
+			isAdvisorChanged = !rs_stmt.getString("advisor").equals(p_advisor);
+			isAbstractChanged = !rs_stmt.getString("abstract").equals(p_abstract);
+			isStatusChanged = rs_stmt.getInt("status") != p_status;
+			isSecurityChanged = rs_stmt.getInt("security") != p_security;
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
 		//1. 更新project
-		String sql = "update " +
+		sql = "update " +
 					 "	ideaworks.project " + 
 					 "set " + 
 					 "	title = ?, " + 
 					 "	abstract = ?, " + 
-					 "	advisor = ? " + 
+					 "	advisor = ?, " +
+					 "	status = ?, " + 
+					 "	security = ? " + 
 					 "where " + 
 					 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-									p_title, p_abstract, p_advisor, p_projectid);
+		stmt = DBUtil.getInstance().createSqlStatement(sql, 
+									p_title, p_abstract, p_advisor, p_status, p_security, p_projectid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -484,7 +519,7 @@ public class ProjectService extends BaseService {
 				 "	T2.isDeleted = 0";
 		
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
-		ResultSet rs_stmt = stmt.executeQuery();
+		rs_stmt = stmt.executeQuery();
 		
 		JSONObject project = new JSONObject();
 		while(rs_stmt.next()) {
@@ -514,12 +549,48 @@ public class ProjectService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = p_title;
-		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.UPDATE, 
-				ProjectActivityService.Entity.ADVISOR_ABSTRACT);
-				
+		//需要区分哪些属性是变化的;
+		String msg = "";
+		if(isTitleChanged) {
+			msg = project.getString("title");
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE, msg);
+		}
+		if(isAdvisorChanged) {
+			msg = project.getJSONObject("advisor").getString("nickname") + " (" + project.getJSONObject("advisor").getString("userid") + ")";
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR, msg);
+		}
+		if(isAbstractChanged) {
+			msg = project.getString("abstractContent");
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT, msg);
+		}
+		if(isStatusChanged) {
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS, msg);
+		}
+		if(isSecurityChanged) {
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, msg);
+		}
+		System.out.println( Config.Action.UPDATE.getValue() + " - " + Config.Entity.PROJECT_SECURITY.getValue());
+		
 		return buildResponse(OK, project);
 	}
 	
@@ -540,18 +611,95 @@ public class ProjectService extends BaseService {
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 ) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
-				
-		//设置标志位, 删除project
-		String sql = "update " +
+		
+		//获取project基本信息
+		String sql = "select " + 
+					 "	title, " + 
+					 "from " + 
 					 "	ideaworks.project " + 
-					 "set " + 
-					 "	isDeleted = 1 " + 
 					 "where " + 
 					 "	id = ? ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		String project_title = "";
+		while(rs_stmt.next()) {
+			project_title = rs_stmt.getString("title");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//设置标志位, 删除project
+		sql = "update " +
+			 "	ideaworks.project " + 
+			 "set " + 
+			 "	isDeleted = 1 " + 
+			 "where " + 
+			 "	id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return null;
+		//record activity
+		String msg = project_title;
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.PROJECT_TITLE);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.PROJECT_TITLE, msg);
+		
+		return buildResponse(OK, null);
+	}
+	
+	@DELETE
+	@Path("/{projectid}/exit")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response exitUserProject(
+			@PathParam("userid") String p_userid,
+			@PathParam("projectid") int p_projectid) throws Exception
+	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		//获取user基本信息
+		String sql = "select " + 
+					 "	id, nickname " + 
+					 "from " + 
+					 "	ideaworks.user " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		String nickname = "";
+		while(rs_stmt.next()) {
+			nickname = rs_stmt.getString("nickname");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//删除project member
+		sql = "delete from " +
+			 "	ideaworks.project_member " + 
+			 "where " + 
+			 "	projectid = ? and " + 
+			 "	userid = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//record activity
+		String msg = nickname + " (" + p_userid + ")";
+		//param: projectid, operator, action, entity, title
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.LEAVE, Config.Entity.PROJECT);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.LEAVE, Config.Entity.PROJECT, msg);
+		
+		return buildResponse(OK, null);
 	}
 }

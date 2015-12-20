@@ -8,7 +8,7 @@ define([
 		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'addProjectItem', 'removeProjectItem', 'createProject');
+			_.bindAll(this, 'render', 'addProjectItem', 'removeProjectItem', 'createProject', 'deleteProject', 'exitProject');
 			
 			//监听model变化
 			this.model.bind('add', this.addProjectItem);			//add model at the top of the list(UI)
@@ -21,6 +21,9 @@ define([
 			Backbone.
 				off('ProjectListView:deleteProject').
 				on('ProjectListView:deleteProject', this.deleteProject, this);
+			Backbone.
+				off('ProjectListView:exitProject').
+				on('ProjectListView:exitProject', this.exitProject, this);
 			
 			this.render();
 		},
@@ -95,7 +98,24 @@ define([
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
-		}
+		},
+		
+		//退出project
+		exitProject: function(project) {
+			var projectList = this.model;
+			project.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + project.id + '/exit';
+			projectList.get(project.cid).destroy({
+				wait: true, 
+				success: function() {
+					//从list中删除project
+					projectList.remove(project);
+				},
+				error: function(model, response, options) {
+					var alertMsg = 'Exit project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				}
+			});
+		},
 	});
 	
 	return ProjectListView;

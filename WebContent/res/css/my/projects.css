@@ -77,7 +77,7 @@
 	font-size: 14px;
 	font-weight: 600;
 	line-height: 18px;
-	width: 190px;
+	width: 185px;
 	margin: 5px 0px 3px 0px;
 	padding: 0px;
 	color: #7b898d;
@@ -160,13 +160,13 @@
 .project-detail-view > .project-header > .content > img
 {
 	float: left;
-	width: 80px;
-	height: 80px;
+	width: 90px;
+	height: 90px;
 }
 
 .project-detail-view > .project-header > .content > .info
 {
-	margin-left: 90px;
+	margin-left: 100px;
 	color: #7b898d;
 }
 
@@ -184,8 +184,12 @@
 }
 
 .project-detail-view > .project-header > .content > .info > .project-advisor, 
+.project-detail-view > .project-header > .content > .info > .project-creator,
 .project-detail-view > .project-header > .content > .info > .project-createtime
 {
+	margin: 0 0 4px;
+	padding: 0;
+	
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
@@ -193,9 +197,48 @@
 
 .project-detail-view > .project-header > .actions
 {
-	float: right;
+	position: absolute;
+	right: 40px;
 	height: 80px;
 	line-height: 80px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	margin-top: -20px;
+	margin-left: -65px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li
+{
+	height: 35px;
+	line-height: 35px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li.divider
+{
+	margin: 0;
+	height: 1px;
+	line-height: 1px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li > a
+{
+	color: #7b898d;
+	height: 35px;
+	line-height: 35px;
+	cursor: pointer;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu .delete-project:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
 }
 
 .project-detail-view > .project-header > .actions > .btn.btn-default
@@ -206,23 +249,6 @@
   	line-height: 24px;
   	color: #7c8589;
 	border-color: #d8e3e7;
-}
-
-.project-detail-view > .project-header > .actions > .modify-project:hover,
-.project-detail-view > .project-header > .actions > .logo-project:hover
-{
-	background-color: #E0FFFF;
-	-webkit-transition: background-color .5s ease;
-	-moz-transition: background-color .5s ease;
-	transition: background-color .5s ease;
-}
-
-.project-detail-view > .project-header > .actions > .delete-project:hover
-{
-	background-color: #F08080;
-	-webkit-transition: background-color .5s ease;
-	-moz-transition: background-color .5s ease;
-	transition: background-color .5s ease;
 }
 
 .project-detail-view > .project-menu
@@ -1443,6 +1469,43 @@
 	
 }
 
+/* project-status-sub-view / project-security-sub-view */
+.project-status-sub-view,
+.project-security-sub-view
+{
+	
+}
+
+.project-status-sub-view .status-container,
+.project-security-sub-view .security-container
+{
+	border-radius: 5px;
+	border: 1px solid #d8e3e7;
+	background-color: #ffffff;
+	padding: 15px;
+}
+
+.project-status-sub-view .status-container > .status-item,
+.project-security-sub-view .security-container > .security-item
+{
+	border: 1px solid #d8e3e7;
+	border-radius: 5px;
+	padding: 10px 15px;
+	margin-bottom: 15px;
+}
+
+.project-status-sub-view .status-container > .status-item > .option,
+.project-security-sub-view .security-container > .security-item > .option
+{
+	margin-left: 40px;
+	margin-top: -20px;
+	font-size: 15px;
+  	color: #7b898d;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
 /* edit-abstract-sub-view */
 .edit-abstract-sub-view .abstract-container
 {
@@ -1529,6 +1592,37 @@
 {
 	height: 25px;
 	line-height: 25px;
+}
+
+/* member-detail-sub-view  */
+.member-detail-sub-view #person_logo
+{
+	position: relative;
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+}
+
+.member-detail-sub-view .person-info
+{
+	position: relative;
+	display: inline-block;
+	height: 100px;
+	color: #7b898d;
+}
+
+.member-detail-sub-view .person-info > h4
+{
+	position: relative;
+	top: 20px;
+	font-weight: 600;
+}
+
+.member-detail-sub-view .person-info > .signature
+{
+	position: relative;
+	top: 25px;
 }
 
 /* reply-message-sub-view */

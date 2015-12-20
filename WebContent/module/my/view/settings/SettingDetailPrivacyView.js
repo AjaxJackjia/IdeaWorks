@@ -36,7 +36,6 @@ define([
 				});
 				
 				var userPrivacy = self.model.get('privacy');
-				console.log(userPrivacy);
 				switch(userPrivacy) {
 				case 0: $('.own').iCheck('check'); break;
 				case 1: $('.advisor').iCheck('check'); break;

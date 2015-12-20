@@ -11,7 +11,8 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			'logo': '',
 			'createtime': '',
 			'modifytime': '',
-			'isDeleted': ''
+			'isDeleted': '',
+			'userJoinStatus': ''
 		},
 		
 		//fetch时设置id属性, 以便后续的update操作

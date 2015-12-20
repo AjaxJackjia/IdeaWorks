@@ -117,7 +117,7 @@ public class AuthService extends BaseService {
 		
 		// Step 2. create user
 		String notifications = "{\"project\":true,\"member\":true,\"milestone\":true,\"forum\":true,\"discussion\":true,\"file\":true}"; //信息通知设置
-		int privacy = 3;			//默认profile对外可见
+		int privacy = 2;			//默认profile组内可见
 		int sync = 0;				//默认不同步
 		String language = "en_US"; //默认语言为英语
 		

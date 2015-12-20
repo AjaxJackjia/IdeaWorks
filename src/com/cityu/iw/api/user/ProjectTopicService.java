@@ -237,9 +237,10 @@ public class ProjectTopicService extends BaseService {
 		//record activity
 		String msg = p_title;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.CREATE, 
-				ProjectActivityService.Entity.TOPIC);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.TOPIC);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.TOPIC, msg);
 		
 		return buildResponse(OK, topic);
 	}
@@ -322,9 +323,10 @@ public class ProjectTopicService extends BaseService {
 		//record activity
 		String msg = p_title;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.UPDATE, 
-				ProjectActivityService.Entity.TOPIC);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.TOPIC);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC, msg);
 				
 		return buildResponse(OK, topic);
 	}
@@ -375,10 +377,11 @@ public class ProjectTopicService extends BaseService {
 		
 		//record activity
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.DELETE, 
-				ProjectActivityService.Entity.TOPIC);
-				
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.TOPIC);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.TOPIC, msg);
+		
 		return null;
 	}
 	
@@ -691,7 +694,6 @@ public class ProjectTopicService extends BaseService {
 			@PathParam("userid") String p_userid, 
 			@PathParam("projectid") int p_projectid,
 			@PathParam("topicid") int p_topicid,
-			@PathParam("messageid") int p_messageid,
 			@FormParam("pmessageid") int p_pmessageid, 
 			@FormParam("from[userid]") String p_from,
 			@FormParam("to[userid]") String p_to,
@@ -704,7 +706,7 @@ public class ProjectTopicService extends BaseService {
 		}
 		
 		//check param
-		if((p_projectid == 0) || (p_topicid == 0) || (p_messageid == 0) ||
+		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) || 
 		   (p_from == null || p_from.equals("")) ||
 		   (p_msg == null || p_msg.equals("")) ) {
@@ -781,6 +783,27 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
+		//通知被回复的用户
+		JSONObject info = new JSONObject();
+		sql = "select * from ideaworks.topic where id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
+		rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			info.put("topicid", rs_stmt.getString("id"));
+			info.put("topic_title", rs_stmt.getString("title"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		String operator = p_from;
+		if(p_to == null || p_to.equals("")) { //p_to为空说明为父消息,需要通知该topic下的所有一级消息发送者
+			ProjectNotificationService.notifyProjectTopicAllMembers(
+					p_projectid, operator, Config.Action.REPLY, Config.Entity.MESSAGE, info);
+		}else{ //p_to不为空说明为子消息,需要通知该topic下的特定消息发送者
+			info.put("touser", message.getJSONObject("to").getString("userid"));
+			ProjectNotificationService.notifyProjectTopicCertainMember(
+					p_projectid, operator, Config.Action.REPLY, Config.Entity.MESSAGE, info);
+		}
+		
 		return buildResponse(OK, message);
 	}
 	

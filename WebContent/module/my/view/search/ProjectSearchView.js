@@ -36,6 +36,7 @@ define([
 		search: function() {
 			var searchTxt = $.trim($('.search-input > input').val());
 			
+			this.projects.reset();
 			this.projects.fetch({
 				data: { key: searchTxt},
 				success: this.render,
@@ -53,6 +54,7 @@ define([
 		addProjects: function() {
 			var self = this;
 			_.each(this.projects.models, function(project, index) {
+				project.url = self.projects.url + '/' + project.get('projectid');
 				var projectItemView = new ProjectItemView({
 					model: project
 				});

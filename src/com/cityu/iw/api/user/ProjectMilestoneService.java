@@ -231,9 +231,11 @@ public class ProjectMilestoneService extends BaseService {
 		//record activity
 		String msg = p_title;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.CREATE, 
-				ProjectActivityService.Entity.MILESTONE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.MILESTONE);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.MILESTONE, msg);
+		
 		
 		return buildResponse(OK, milestone);
 	}
@@ -246,7 +248,6 @@ public class ProjectMilestoneService extends BaseService {
 			@PathParam("projectid") int p_projectid,
 			@PathParam("mielstoneid") int p_mielstoneid,
 			@FormParam("title") String p_title, 
-			@FormParam("creator[userid]") String p_creator,
 			@FormParam("description") String p_description ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
@@ -258,20 +259,37 @@ public class ProjectMilestoneService extends BaseService {
 		//check param
 		if((p_projectid == 0) || 
 		   (p_title == null || p_title.equals("")) ||
-		   (p_creator == null || p_creator.equals("")) ||
 		   (p_description == null || p_description.equals("")) ) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
+		//0. 拉取project,用以对比属性是否发生变化
+		boolean isTitleChanged = false,
+				isdescriptionChanged = false;
+		String sql = "select " + 
+					 "	title, " + 
+					 "	description " + 
+					 "from " + 
+					 "	ideaworks.milestone " + 
+					 "where " + 
+					 "	id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_mielstoneid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			isTitleChanged = !rs_stmt.getString("title").equals(p_title);
+			isdescriptionChanged = !rs_stmt.getString("description").equals(p_description);
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
 		//1. update milestone
-		String sql = "update " +
+		sql = "update " +
 					 "	ideaworks.milestone " + 
 					 "set " + 
 					 "	title = ?, " + 
 					 "	description = ? " + 
 					 "where " + 
 					 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_title, p_description, p_mielstoneid);
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_title, p_description, p_mielstoneid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -293,7 +311,7 @@ public class ProjectMilestoneService extends BaseService {
 			 "	T1.creator = T2.id and " + 
 			 "	T1.id = ? ";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_mielstoneid);
-		ResultSet rs_stmt = stmt.executeQuery();
+		rs_stmt = stmt.executeQuery();
 		
 		JSONObject milestone = new JSONObject();
 		
@@ -312,11 +330,26 @@ public class ProjectMilestoneService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = p_title;
-		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.UPDATE, 
-				ProjectActivityService.Entity.MILESTONE);
+		//需要区分哪些属性是变化的;
+		JSONObject info = new JSONObject();
+		if(isTitleChanged) {
+			info.put("milestoneid", milestone.getString("milestoneid"));
+			info.put("milestone_title", milestone.getString("title"));
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, milestone.getString("milestoneid"), Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE, info.toString());
+		}
+		if(isdescriptionChanged) {
+			info.put("milestoneid", milestone.getString("milestoneid"));
+			info.put("milestone_title", milestone.getString("title"));
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, milestone.getString("milestoneid"), Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION, info.toString());
+		}
 		
 		return buildResponse(OK, milestone);
 	}
@@ -367,10 +400,11 @@ public class ProjectMilestoneService extends BaseService {
 		
 		//record activity
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.DELETE, 
-				ProjectActivityService.Entity.MILESTONE);
-				
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.MILESTONE);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.MILESTONE, msg);
+		
 		return null;
 	}
 }

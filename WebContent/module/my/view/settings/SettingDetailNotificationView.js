@@ -45,7 +45,7 @@ define([
 				self.model.get('notifications').file = $('.file-notify .bootstrap-switch input', this.el).bootstrapSwitch('state');
 				
 				$.ajax({
-				    url: util.baseUrl + '/api/users/' + util.currentUser() + '/notifications',
+				    url: util.baseUrl + '/api/users/' + util.currentUser() + '/notification',
 				    data: self.model.get('notifications'),
 				    type: 'POST',
 				    success: function(result){

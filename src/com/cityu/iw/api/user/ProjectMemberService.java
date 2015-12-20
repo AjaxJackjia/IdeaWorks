@@ -71,18 +71,18 @@ public class ProjectMemberService extends BaseService {
 		
 		//get all relative users
 		sql = "select " + 
-					 "	T2.id, " +
-					 "	T2.nickname, " +
-					 "	T2.signature, " +
-					 "	T2.realname, " +
-					 "	T2.logo, " +
-					 "	T1.jointime " +
-					 "from " + 
-					 "	ideaworks.project_member T1, " +
-					 "	ideaworks.user T2 " +
-					 "where " + 
-					 "	T1.projectid = ? and " + 
-					 "	T1.userid = T2.id ";
+				 "	T2.id, " +
+				 "	T2.nickname, " +
+				 "	T2.signature, " +
+				 "	T2.realname, " +
+				 "	T2.logo, " +
+				 "	T1.jointime " +
+				 "from " + 
+				 "	ideaworks.project_member T1, " +
+				 "	ideaworks.user T2 " +
+				 "where " + 
+				 "	T1.projectid = ? and " + 
+				 "	T1.userid = T2.id ";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
 		rs_stmt = stmt.executeQuery();
 		
@@ -199,10 +199,11 @@ public class ProjectMemberService extends BaseService {
 		}
 		String msg = StringUtils.join(nicknames, ", ");
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg,
-				ProjectActivityService.Action.ADD, 
-				ProjectActivityService.Entity.MEMEBER);
-				
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.ADD, Config.Entity.MEMEBER);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, msg);
+		
 		return buildResponse(OK, members);
 	}
 }

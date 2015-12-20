@@ -35,33 +35,16 @@ public class ProjectActivityService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectActivityService.class);
 	@Context HttpServletRequest request;
 	
-	//这边的Action与Entity修改之后，一定也要同步前端 ActivityModel 中的mapping，才能生效
-	public static enum Action {
-		CREATE, 	//创建 
-		UPDATE, 	//修改
-		READ,		//查询
-		DELETE,		//删除
-		ADD,		//加入
-		REMOVE,		//移除
-		LEAV,		//离开
-		UPLOAD		//上传
-	};
-	
-	public static enum Entity {
-		PROJECT,			//项目
-		ADVISOR_ABSTRACT,	//负责人和摘要
-		LOGO,				//项目图标
-		MEMEBER,			//成员
-		MILESTONE,			//里程碑
-		TOPIC,				//forum下的话题
-		DISCUSSION,		//forum话题的discussion
-		FILE				//文件
-	};
-	
 	/*
-	 * 记录activity的function
+	 * 记录activity
+	 * params:
+	 * 	projectid是操作的project
+	 * 	operator是产生这条activity的用户;
+	 * 	title是操作对象的备注信息
+	 * 	action是操作类型;
+	 * 	entity是操作的对象;
 	 * */
-	public static void recordActivity(int projectid, String operator, String title, Action action, Entity entity) {
+	public static void recordActivity(int projectid, String operator, String title, Config.Action action, Config.Entity entity) {
 		String sql = "insert into " +
 					 "	ideaworks.activity (" + 
 					 "		projectid, " + 
@@ -72,7 +55,7 @@ public class ProjectActivityService extends BaseService {
 					 "		time " + 
 					 "	) values ( ?, ?, ?, ?, ?, ? )";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-										projectid, operator, action.ordinal(), entity.ordinal(), title, new Date());
+										projectid, operator, action.getValue(), entity.getValue(), title, new Date());
 		try {
 			stmt.execute();
 		} catch (SQLException e) {

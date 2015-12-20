@@ -29,7 +29,14 @@ public class BaseService
     	switch(responseType)
     	{
     	case OK:
-    		builder = Response.status(Status.OK).entity(p_result).type("application/json");
+    		if(p_result == null) {
+    			JSONObject ok_response = new JSONObject();
+        		ok_response.put("ret", "200");
+        		ok_response.put("msg", "ok");
+        		builder = Response.status(Status.OK).entity(ok_response).type("application/json");
+    		}else{
+    			builder = Response.status(Status.OK).entity(p_result).type("application/json");
+    		}
     		break;
     	case PARAMETER_INVALID:
     		JSONObject parameter_invalid = new JSONObject();
@@ -44,7 +51,10 @@ public class BaseService
     		builder = Response.status(Status.UNAUTHORIZED).entity(token_invalid).type("application/json");
     		break;
     	default:
-    		builder = Response.status(Status.OK).entity(p_result).type("application/json");
+    		JSONObject ok_response = new JSONObject();
+    		ok_response.put("ret", "200");
+    		ok_response.put("msg", "ok");
+    		builder = Response.status(Status.OK).entity(ok_response).type("application/json");
     		break;
     	}
 		

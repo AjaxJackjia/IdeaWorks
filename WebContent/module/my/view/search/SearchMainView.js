@@ -40,10 +40,15 @@ define([
 		},
 		
 		unrender: function() {
-			$(this.el).remove();
-			
 			//解绑定enter事件
 			$('body').off('keydown');
+			$('.search-options', this.el).off('click');
+			
+			$(this.el).remove();
+			
+			//reset state
+			this.currentSearchOption = 'project';
+			this.currentSearchView = this.projectSearchView;
 		},
 		
 		keypress: function(e) {
@@ -62,23 +67,25 @@ define([
 	    },
 	    
 	    changeSearchOption: function(e) {
-	    	$('.search-options > .option', this.el).removeClass('active');
 	    	var $li = $(e.target).closest('li');
-	    	$li.addClass('active');
-	    	$('.search-input > input').val('');
-	    	this.currentSearchOption = $li.attr('data-type');
-	    	//clean previous result
-	    	this.currentSearchView.unrender();
-	    	
-	    	if(this.currentSearchOption == 'project') {
-	    		this.currentSearchView = this.projectSearchView;
-    		}else if(this.currentSearchOption == 'person') {
-    			this.currentSearchView = this.personSearchView;
-    		}
-	    	
-	    	//init
-	    	this.currentSearchView.clean();
-	    	$('.search-result', this.el).html($(this.currentSearchView.el));
+	    	if($li.length != 0) {
+	    		$('.search-options > .option', this.el).removeClass('active');
+	    		$('.search-input > input').val('');
+	    		$li.addClass('active');
+		    	this.currentSearchOption = $li.attr('data-type');
+		    	//clean previous result
+		    	this.currentSearchView.unrender();
+		    	
+		    	if(this.currentSearchOption == 'project') {
+		    		this.currentSearchView = this.projectSearchView;
+	    		}else if(this.currentSearchOption == 'person') {
+	    			this.currentSearchView = this.personSearchView;
+	    		}
+		    	
+		    	//init
+		    	this.currentSearchView.clean();
+		    	$('.search-result', this.el).html($(this.currentSearchView.el));
+	    	}
 	    }
 	});
 	

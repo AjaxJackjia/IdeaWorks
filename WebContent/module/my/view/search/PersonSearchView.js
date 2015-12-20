@@ -53,6 +53,7 @@ define([
 		addPersons: function() {
 			var self = this;
 			_.each(this.persons.models, function(person, index) {
+				person.url = self.persons.url + '/' + person.get('userid');
 				var personItemView = new PersonItemView({
 					model: person
 				});

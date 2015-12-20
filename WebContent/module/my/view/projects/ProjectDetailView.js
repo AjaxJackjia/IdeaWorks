@@ -1,5 +1,6 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'CheckLib',
+ 		 'css!../../../../lib/iCheck/skins/square/blue.css',
          //view
          'view/projects/ProjectDetailAbstractView',
          'view/projects/ProjectDetailMembersView',
@@ -15,7 +16,7 @@ define([
  		'model/project/FileCollection',
  		'model/project/ActivityCollection'
        ], 
-    function(Backbone, util,
+    function(Backbone, util, CheckLib, iCheck_css,
     		//view
     		ProjectDetailAbstractView,
     		ProjectDetailMembersView,
@@ -38,13 +39,17 @@ define([
 			'click .project-menu>li': 'tabClick',
 			'click .modify-project': 'modifyProject',
 			'click .logo-project': 'logoProject',
+			'click .status-project': 'statusProject',
+			'click .security-project': 'securityProject',
+			'click .application-project': 'applicationProject',
+			'click .exit-project': 'exitProject',
 			'click .delete-project': 'deleteProject'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'unrender', 'projectChange', 
-							'tabClick', 'modifyProject',
-							'logoProject', 'deleteProject');
+			_.bindAll(this, 'render', 'unrender', 'projectChange', 'tabClick', 
+							'modifyProject', 'logoProject', 'statusProject', 'securityProject', 
+							'applicationProject', 'exitProject', 'deleteProject');
 			
 			//view 全局变量
 			this.initFlag = true; //标识是否为第一次render
@@ -211,6 +216,45 @@ define([
 			$('#logo_upload_sub_view').modal('toggle');
 		},
 		
+		//modify project status
+		statusProject: function() {
+			var projectStatusSubView = new ProjectStatusSubView({
+				model: this.model
+			});
+			var $statusView = $('#project_status_sub_view');
+			if($statusView.length > 0) {
+				$('#project_status_sub_view').remove();
+			}
+			$('.content-panel').append($(projectStatusSubView.render().el));
+			
+			//显示view
+			$('#project_status_sub_view').modal('toggle');
+		},
+		
+		securityProject: function() {
+			var projectSecuritySubView = new ProjectSecuritySubView({
+				model: this.model
+			});
+			var $securityView = $('#project_security_sub_view');
+			if($securityView.length > 0) {
+				$('#project_security_sub_view').remove();
+			}
+			$('.content-panel').append($(projectSecuritySubView.render().el));
+			
+			//显示view
+			$('#project_security_sub_view').modal('toggle');
+		},
+		
+		applicationProject: function() {
+			alert('application');
+		},
+		
+		exitProject: function() {
+			if(confirm('Do you want to exit this project?')) {
+				Backbone.trigger('ProjectListView:exitProject', this.model);
+			}
+		},
+		
 		//删除project
 		deleteProject: function() {
 			if(confirm('Do you want to delete this project?')) {
@@ -222,24 +266,18 @@ define([
 	var ProjectDetail_template = function(project) {
 		//project detail header
 		var advisor = project.get('advisor');
+		var creator = project.get('creator');
+		
 		var header_tpl = 
 			'<div class="project-header">' + 
-			'	<div class="actions">' + 
-			'		<a class="modify-project btn btn-default"> ' + 
-			'			<i class="fa fa-pencil"></i> Edit' +
-			'		</a>' + 
-			'		<a class="logo-project btn btn-default"> ' + 
-			'			<i class="fa fa-picture-o"></i> Logo' +
-			'		</a>' + 
-			'		<a class="delete-project btn btn-default"> ' + 
-			'			<i class="fa fa-trash"></i> Delete' +
-			'		</a>' + 
+			'	<div class="actions">' + ProjectDetailMenu_templete(project) +
 			'	</div>' + 
 			'	<div class="content">' + 
 			'		<img src="' + util.baseUrl + project.get('logo') + '" alt="' + project.get('title') + '" class="img-rounded" />' +
 			'		<div class="info"> ' + 
 			'			<h4 class="project-title">' + project.get('title') + '</h4>' + 
 			'			<p class="project-advisor">Advisor: ' + advisor.nickname + '</p>' + 
+			'			<p class="project-creator">Creator: ' + creator.nickname + '</p>' + 
 			'			<p class="project-createtime">Create time: ' + util.timeformat(new Date(project.get('createtime')), 'smart') + '</p>' + 
 			'		</div>' +
 			'	</div>' + 
@@ -280,6 +318,51 @@ define([
 			'</div>';
 		
 		return header_tpl + menu_tpl + content_tpl;
+	};
+	
+	//根据用户信息生成menu
+	var ProjectDetailMenu_templete = function(project) {
+		//project detail header
+		var creator = project.get('creator');
+		var advisor = project.get('advisor');
+		
+		//判断是否为管理员:默认管理员为creator和advisor
+		var isProjectManager = util.currentUser() == creator.userid || util.currentUser() == advisor.userid;
+		
+		//构造menu
+		var build_menu_tpl = ProjectDetailMenuItem_templete("modify-project", "pencil", "Edit") + 
+							 ProjectDetailMenuItem_templete("logo-project", "picture-o", "Logo") + 
+							 '<li class="divider"></li>';
+		if(isProjectManager) {
+			build_menu_tpl += ProjectDetailMenuItem_templete("status-project", "paper-plane", "Status") + 
+							  ProjectDetailMenuItem_templete("security-project", "user-secret", "Security") +
+							  ProjectDetailMenuItem_templete("application-project", "envelope", "Application") + 
+							  '<li class="divider"></li>' + 
+							  ProjectDetailMenuItem_templete("delete-project", "trash", "Delete project");
+		}else{
+			build_menu_tpl += ProjectDetailMenuItem_templete("exit-project", "sign-out", "Exit project");
+		}
+			
+		var menu_tpl = 
+			'<div class="project-action-menu"> ' + 
+			'	<a class="btn btn-default dropdown-toggle" type="button" id="project_menu_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + 
+		    '		<i class="fa fa-cogs"></i> Menu <span class="caret"></span> ' + 
+			'	</a> ' + 
+			'	<ul class="dropdown-menu" aria-labelledby="project_menu_dropdown"> ' + build_menu_tpl + 
+			'	</ul> ' + 
+			'</div>';
+		
+		return menu_tpl;
+	};
+	
+	var ProjectDetailMenuItem_templete = function(classname, icon, title) {
+		var tpl = 
+			'<li> ' + 
+			'	<a class="' + classname +'"> ' + 
+			'		<i class="fa fa-' + icon + '"></i> ' + title +
+			'	</a>' + 
+			'</li> ';
+		return tpl;
 	};
 	
 	/*
@@ -461,5 +544,279 @@ define([
 		return tpl;
 	}
 
+	/*
+	 * Project status setting sub view
+	 * */
+	var ProjectStatusSubView = Backbone.View.extend({
+		
+		id: 'project_status_sub_view',
+		
+		className: 'project-status-sub-view modal fade',
+		
+		events: {
+			'click .save': 'save'
+		},
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'save');
+			
+			//status flags
+			this.ONGOING_FLAG = 0;
+			this.END_FLAG = 1;
+			this.currentStatus = this.ONGOING_FLAG;
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = StatusModalHeader();
+			$modalDialogContent.append(header);
+			
+			var body = StatusModalBody();
+			$modalDialogContent.append(body);
+			
+			var footer = StatusModalFooter();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//绑定modal事件
+			var self = this;
+			//初始化控件并绑定事件
+			setTimeout(function() {
+				//初始化
+				$('.status-item').iCheck({
+				    checkboxClass: 'icheckbox_square-blue',
+				    radioClass: 'iradio_square-blue	',
+				    increaseArea: '20%' // optional
+				});
+				
+				var status = self.model.get('status');
+				switch(status) {
+				case 0: $('.project-ongoing').iCheck('check'); break;
+				case 1: $('.project-complete').iCheck('check'); break;
+				default: $('.project-ongoing').iCheck('check');break;
+				}
+				
+				//绑定事件
+				$('.status-item').on('ifClicked', function(event){
+					var $targetDom = $(event.target).closest('.status-item');
+					if($targetDom.length > 0) {
+						$('.status-item').iCheck('uncheck');
+						$targetDom.iCheck('check');
+						
+						if($targetDom.hasClass('.project-ongoing')) {
+							self.currentStatus = self.ONGOING_FLAG;
+						}else if($targetDom.hasClass('project-complete')) {
+							self.currentStatus = self.END_FLAG;
+						}
+					}
+				});
+			}, 0);
+			
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		save: function() {
+			var self = this;
+			this.model.save('status', this.currentStatus, {
+				wait: true,
+				error: function(model, response, options) {
+					var alertMsg = 'Update project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				}
+			});
+			//隐藏modal view
+			$('#project_status_sub_view .modal-header .close').click();
+		}
+	});
+	
+	var StatusModalHeader = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Project Status</h3> ' + 
+			'</div>';
+		return tpl;
+	}
+	
+	var StatusModalFooter = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var StatusModalBody = function() {
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="statusAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<div class="status-container well"> ' + 
+			'				<div class="project-ongoing status-item"  name="iCheck">' + 
+		    '					<input type="radio" />' + 
+			'					<div class="option truncate">Ongoing</div>' + 
+			'				</div>' + 
+			'				<div class="project-complete status-item"  name="iCheck">' + 
+		    '					<input type="radio" />' + 
+			'					<div class="option truncate">Complete</div>' + 
+			'				</div>' + 
+			'			</div>' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
+	
+	/*
+	 * Project security setting sub view
+	 * */
+	var ProjectSecuritySubView = Backbone.View.extend({
+		
+		id: 'project_security_sub_view',
+		
+		className: 'project-security-sub-view modal fade',
+		
+		events: {
+			'click .save': 'save'
+		},
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'save');
+			
+			//security flags
+			this.PUBLIC = 0;
+			this.GROUP = 1;
+			this.currentSecurity = this.PUBLIC;
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = SecurityModalHeader();
+			$modalDialogContent.append(header);
+			
+			var body = SecurityModalBody();
+			$modalDialogContent.append(body);
+			
+			var footer = SecurityModalFooter();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//绑定modal事件
+			var self = this;
+			//初始化控件并绑定事件
+			setTimeout(function() {
+				//初始化
+				$('.security-item').iCheck({
+				    checkboxClass: 'icheckbox_square-blue',
+				    radioClass: 'iradio_square-blue	',
+				    increaseArea: '20%' // optional
+				});
+				
+				var security = self.model.get('security');
+				switch(status) {
+				case 0: $('.project-public').iCheck('check'); break;
+				case 1: $('.project-group').iCheck('check'); break;
+				default: $('.project-public').iCheck('check');break;
+				}
+				
+				//绑定事件
+				$('.security-item').on('ifClicked', function(event){
+					var $targetDom = $(event.target).closest('.security-item');
+					if($targetDom.length > 0) {
+						$('.security-item').iCheck('uncheck');
+						$targetDom.iCheck('check');
+						
+						if($targetDom.hasClass('.project-public')) {
+							self.currentSecurity = self.PUBLIC;
+						}else if($targetDom.hasClass('project-group')) {
+							self.currentSecurity = self.GROUP;
+						}
+					}
+				});
+			}, 0);
+			
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		save: function() {
+			var self = this;
+			this.model.save('security', this.currentSecurity, {
+				wait: true,
+				error: function(model, response, options) {
+					var alertMsg = 'Update project failed. Please try again later!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				}
+			});
+			//隐藏modal view
+			$('#project_security_sub_view .modal-header .close').click();
+		}
+	});
+	
+	var SecurityModalHeader = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Project Security</h3> ' + 
+			'</div>';
+		return tpl;
+	}
+	
+	var SecurityModalFooter = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'</div> ';
+		return tpl;
+	}
+	
+	var SecurityModalBody = function() {
+		var tpl = 
+			'<div class="modal-body"> ' + 
+			'	<form id="securityAttribute"> ' + 
+			'		<div class="form-group"> ' + 
+			'			<div class="security-container well"> ' + 
+			'				<div class="project-public security-item"  name="iCheck">' + 
+		    '					<input type="radio" />' + 
+			'					<div class="option truncate">Project details are visible for everyone</div>' + 
+			'				</div>' + 
+			'				<div class="project-group security-item"  name="iCheck">' + 
+		    '					<input type="radio" />' + 
+			'					<div class="option truncate">Project details are only visible for group members</div>' + 
+			'				</div>' + 
+			'			</div>' + 
+			'		</div> ' + 
+			'	</form> ' + 
+			'</div> '
+		return tpl;
+	}
+	
 	return ProjectDetailView;
 });

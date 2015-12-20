@@ -10,8 +10,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			'security': '',
 			'logo': '',
 			'createtime': '',
-			'modifytime': '',
-			'isDeleted': ''
+			'modifytime': ''
 		},
 		
 		//fetch时设置id属性, 以便后续的update操作

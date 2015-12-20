@@ -252,9 +252,9 @@ public class UserService extends BaseService {
 	}
 	
 	@POST
-	@Path("/{userid}/notifications")
+	@Path("/{userid}/notification")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUserNotifications(
+	public Response updateUserNotification(
 			@PathParam("userid") String p_userid,
 			@FormParam("project") String p_project,
 			@FormParam("member") String p_member,
@@ -418,7 +418,7 @@ public class UserService extends BaseService {
 		return null;
 	}
 	
-	private String getUserType(int type) {
+	public static String getUserType(int type) {
 		switch(type) {
 		case 1: return "Student"; 
 		case 2: return "Professor"; 

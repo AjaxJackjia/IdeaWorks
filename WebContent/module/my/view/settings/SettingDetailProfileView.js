@@ -89,22 +89,38 @@ define([
 		var tpl = 
 			'<div class="base-info">' + 
 			'	<div class="actions">' + 
-			'		<a class="edit-signature btn btn-default"> ' + 
-			'			<i class="fa fa-paper-plane"></i> Edit Signature' +
-			'		</a>' + 
-			'		<a class="change-logo btn btn-default"> ' + 
-			'			<i class="fa fa-picture-o"></i> Logo' +
-			'		</a>' + 
-			'		<a class="edit-profile btn btn-default"> ' + 
-			'			<i class="fa fa-pencil"></i> Edit profile' +
-			'		</a>' + 
-			'		<a class="change-password btn btn-default"> ' + 
-			'			<i class="fa fa-lock"></i> Change password' +
-			'		</a>' + 
+			'		<div class="profile-action-menu"> ' + 
+			'			<a class="btn btn-default dropdown-toggle" type="button" id="profile_menu_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + 
+		    '				<i class="fa fa-cogs"></i> More actions <span class="caret"></span> ' + 
+			'			</a> ' + 
+			'			<ul class="dropdown-menu" aria-labelledby="profile_menu_dropdown"> ' + 
+			'    			<li> ' + 
+			'					<a class="edit-signature"> ' + 
+			'						<i class="fa fa-edit"></i> Edit Signature ' +
+			'					</a>' + 
+			'				</li> ' + 
+			'    			<li> ' + 
+			'					<a class="edit-profile"> ' + 
+			'						<i class="fa fa-pencil"></i> Edit profile' +
+			'					</a>' + 
+			'				</li> ' + 
+			'    			<li> ' + 
+			'					<a class="change-logo"> ' + 
+			'						<i class="fa fa-picture-o"></i> Logo' +
+			'					</a>' + 
+			'				</li> ' + 
+			'				<li class="divider"></li> ' + 
+			'    			<li> ' + 
+			'					<a class="change-password"> ' + 
+			'						<i class="fa fa-lock"></i> Change password' +
+			'					</a>' + 
+			'				</li> ' + 
+			'			</ul> ' + 
+			'		</div>' +
 			'	</div>' + 
 			'	<img class="img-circle" src="'+ util.baseUrl + user.get('logo') +'">' + 
 			'	<div class="info">' + 
-			'		<h3 class="user">' + user.get('nickname') + '</h3>' + 
+			'		<h3 class="user">' + user.get('nickname') + ' (' + user.get('userid') + ') </h3>' + 
 	        '		<div class="signature">' + 
 			'			<span class="text-color"><i class="fa fa-tag"></i></span> ' + 
 	        '			<h4 class="dark-text-color">' + (user.get('signature') != "" ? user.get('signature') : "Say Something :)") + '</h4>' + 
@@ -254,7 +270,8 @@ define([
 	var SigatureModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="save btn btn-primary">&nbsp;&nbsp;&nbsp;Save&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -585,7 +602,8 @@ define([
 	var ProfileModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="save btn btn-primary">&nbsp;&nbsp;&nbsp;Save&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -785,7 +803,8 @@ define([
 	var PasswordModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="save btn btn-primary">&nbsp;&nbsp;&nbsp;Save&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
 			'</div> ';
 		return tpl;
 	}

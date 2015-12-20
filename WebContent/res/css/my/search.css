@@ -24,6 +24,63 @@
 
 /* common style end */
 
+/* project modal dialog common begin */
+.modal .modal-header,
+.modal .modal-footer
+{
+	border: none;	
+}
+
+.modal .modal-header .modal-title
+{
+	margin-top: 12px;
+  	line-height: 1.8;
+  	color: #23a8f5;
+  	text-align: center;
+}
+
+.modal .modal-header .close
+{
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	z-index: 100;
+}
+
+.modal .modal-header .close > span
+{
+	font-size: 40px;
+}
+
+.modal .modal-content
+{
+	padding: 15px;	
+}
+
+.modal .modal-footer > .btn
+{
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.modal .modal-footer > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.modal .modal-footer > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+/* project modal dialog common end */
+
 /* search-main-view begin */
 .search-main-view
 {
@@ -36,7 +93,7 @@
 	padding: 0;
 	background-color: #ffffff;
 	overflow: auto;
-	z-index: 10000;
+	z-index: 999;
 }
 
 .search-main-view.show
@@ -240,5 +297,42 @@
 	width: 80px;
 }
 
-
 /* person-item-view end */
+
+/* sub view begin */
+.search-project-detail-sub-view #project_abstract
+{
+	height: 200px;
+}
+
+.search-person-detail-sub-view #person_logo
+{
+	position: relative;
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+}
+
+.search-person-detail-sub-view .person-info
+{
+	position: relative;
+	display: inline-block;
+	height: 100px;
+	color: #7b898d;
+}
+
+.search-person-detail-sub-view .person-info > h4
+{
+	position: relative;
+	top: 20px;
+	font-weight: 600;
+}
+
+.search-person-detail-sub-view .person-info > .signature
+{
+	position: relative;
+	top: 25px;
+}
+
+/* sub view end */

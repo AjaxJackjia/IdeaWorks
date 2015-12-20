@@ -34,5 +34,14 @@
 	</servlet-mapping>
 	<session-config> 
         <session-timeout>15</session-timeout> 
-    </session-config>   
+    </session-config>  
+    <security-constraint>
+	    <web-resource-collection>
+	        <web-resource-name>IdeaWorks</web-resource-name>
+	        <url-pattern>/*</url-pattern>
+	    </web-resource-collection>
+	    <user-data-constraint>
+	        <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+	    </user-data-constraint>
+	</security-constraint>
 </web-app>

@@ -193,13 +193,62 @@
 
 .setting-detail-profile-view > .profile-container > .base-info > .actions
 {
-	margin-top: 30px;
-	float: right;
+	position: absolute;
+	right: 50px;
+	height: 80px;
+	line-height: 80px;
 }
 
 .setting-detail-profile-view > .profile-container > .base-info > .actions > a.btn
 {
 	margin-left: 10px;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	margin-top: -20px;
+	margin-left: -16px;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu > li
+{
+	height: 35px;
+	line-height: 35px;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu > li.divider
+{
+	margin: 0;
+	height: 1px;
+	line-height: 1px;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu > li > a
+{
+	color: #7b898d;
+	height: 35px;
+	line-height: 35px;
+	cursor: pointer;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu .modify-project:hover,
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu .logo-project:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.setting-detail-profile-view > .profile-container > .base-info > .actions > .profile-action-menu > .dropdown-menu .delete-project:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
 }
 
 .setting-detail-profile-view > .profile-container > .base-info > img

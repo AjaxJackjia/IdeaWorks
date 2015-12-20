@@ -354,10 +354,13 @@ public class ProjectFileService extends BaseService {
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		//record activity
+		String msg = filename;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, filename,
-				ProjectActivityService.Action.UPLOAD, 
-				ProjectActivityService.Entity.FILE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPLOAD, Config.Entity.FILE);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.FILE, msg);
 		
 		return null;
 	}
@@ -411,10 +414,12 @@ public class ProjectFileService extends BaseService {
 		FileUtil.delete(fileLocation);
 		
 		//record activity
+		String msg = filename;
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, filename,
-				ProjectActivityService.Action.DELETE, 
-				ProjectActivityService.Entity.FILE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.FILE);
+		
+		//通知该project中的所有成员
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.FILE, msg);
 				
 		return null;
 	}
