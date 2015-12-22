@@ -50,7 +50,7 @@ define([
 			var project = this.model;
 			$.ajax({
 			    url: util.baseUrl + '/api/users/' + util.currentUser() + '/projects/' + project.get('projectid') + '/applications',
-			    data: {'proposer' : util.currentUser(), 'projectid' : project.get('projectid')},
+			    data: {'proposer[userid]' : util.currentUser(), 'projectid' : project.get('projectid')},
 			    type: 'POST',
 			    success: function(result){
 			    	if(result.ret == 0) {

@@ -294,6 +294,24 @@ body
 	margin-left: -1px;
 }
 
+.top-panel > .tool-box > .msg-btn > .unread
+{
+	position: absolute;
+	top: 3px;
+	right: 70px;
+	font-size: 14px;
+	color: #97cf55;
+	font-family: "FontAwesome";
+	background-color: #ff3c00;
+	border-radius: 50%;
+	padding: 0 4px;
+	height: 25px;
+	line-height: 20px;
+	color: #fff;
+	text-align: center;
+	border: 3px solid #fff;
+}
+
 .top-panel > .tool-box > .signout-btn > i
 {
 	display: block;

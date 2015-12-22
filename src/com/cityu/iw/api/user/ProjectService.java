@@ -568,7 +568,6 @@ public class ProjectService extends BaseService {
 			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR, msg);
 		}
 		if(isAbstractChanged) {
-			msg = project.getString("abstractContent");
 			//param: projectid, operator, action, entity, title
 			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT);
 			
@@ -589,7 +588,6 @@ public class ProjectService extends BaseService {
 			//通知该project中的所有成员
 			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, msg);
 		}
-		System.out.println( Config.Action.UPDATE.getValue() + " - " + Config.Entity.PROJECT_SECURITY.getValue());
 		
 		return buildResponse(OK, project);
 	}

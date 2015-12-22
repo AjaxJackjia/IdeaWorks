@@ -87,7 +87,6 @@ define([
 		 * notification view related event
 		 * */
 		toggleNotification: function() {
-			console.log($('.notification-side-view').length);
 			if($('.notification-side-view').length == 0) {
 				$(this.notificationView.render().el).addClass('side-show');
 				$('.content-panel').append($(this.notificationView.el));

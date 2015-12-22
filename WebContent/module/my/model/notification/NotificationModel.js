@@ -1,19 +1,25 @@
-define([ 'backbone' ], function(Backbone) {
-	var RecentActivityModel = Backbone.Model.extend({
+define([ 'backbone', 'util' ], function(Backbone, util) {
+	var Notification = Backbone.Model.extend({
 		defaults: {
-			'activityid': 0,
-			'activity_action': 0,
-			'activity_entity': 0,
-			'activity_title': '',
-			'porject_title': '',
+			'notificationid': 0,
+			'user': '',
+			'projectid': '',
+			'projectTitle': '',
 			'operator': '',
-			'activity_time': 0
+			'action': '',
+			'entity': '',
+			'title': '',
+			'time': '',
+			'isRead': ''
 		},
 		
-		//fetch时设置对应的action以及entity
+		//fetch时设置id属性, 以便后续的update操作
 		parse: function(response) {
-			response.activity_action = actionMapping(response.activity_action);
-			response.activity_entity = entityMapping(response.activity_entity);
+			response.id = response.notificationid ? response.notificationid : "";
+			
+			response.action = actionMapping(response.action);
+			response.entity = entityMapping(response.entity);
+			
 		    return response;
 		}
 	});
@@ -57,5 +63,5 @@ define([ 'backbone' ], function(Backbone) {
 		}
 	};
 	
-	return RecentActivityModel;
+	return Notification;
 });

@@ -1506,6 +1506,37 @@
 	overflow: hidden;
 }
 
+/* project-application-sub-view */
+.project-application-sub-view
+{
+	
+}
+
+.project-application-sub-view .applications thead
+{
+	font-weight: 600;
+}
+
+.project-application-sub-view .applications td
+{
+	text-align: center;
+}
+
+.project-application-sub-view .applications td.application_msg
+{
+	max-width: 90px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-application-sub-view .agree,
+.project-application-sub-view .reject
+{
+	padding: 0px 10px;
+	margin-right: 10px;
+}
+
 /* edit-abstract-sub-view */
 .edit-abstract-sub-view .abstract-container
 {

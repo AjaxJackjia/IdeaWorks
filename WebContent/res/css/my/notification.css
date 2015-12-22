@@ -33,7 +33,7 @@
 	right: 0;
 	margin: 0;
 	padding: 0;
-	width: 300px;
+	width: 420px;
 	background-color: #f2f2f4;
 	overflow: auto;
 	z-index: 20000;
@@ -47,12 +47,12 @@
 @keyframes side-show
 {
 	from {width: 0px;}
-	to {width: 300px;}
+	to {width: 420px;}
 }
 @-webkit-keyframes side-show /*Safari and Chrome*/
 {
 	from {width: 0px;}
-	to {width: 300px;}
+	to {width: 420px;}
 }
 
 .notification-side-view > .heading
@@ -63,7 +63,7 @@
 	height: 60px;
 	margin: 0;
 	padding: 0;
-	width: 300px;
+	width: 420px;
 	border-bottom: 1px solid #dedede;
 }
 
@@ -86,7 +86,7 @@
 	border-radius: 50%;
 }
 
-.notification-side-view > .msg-list
+.notification-side-view > .notifications
 {
 	position: absolute;
 	top: 60px;
@@ -94,10 +94,10 @@
 	right: 0;
 	margin: 0;
 	padding: 0;
-	width: 300px;
+	width: 420px;
 }
 
-.notification-side-view > .msg-list > .placeholder
+.notification-side-view > .notifications > .placeholder
 {
 	position: absolute;
     top: 120px;
@@ -107,7 +107,7 @@
     height: 100px;
 }
 
-.notification-side-view > .msg-list > .placeholder > h4 
+.notification-side-view > .notifications > .placeholder > h4 
 {
 	margin: 0 auto;
     padding: 0;
@@ -116,6 +116,102 @@
     line-height: 100px;
     color: #afb6ba;
     text-align: center;
+}
+
+.notification-side-view > .notifications > .notification
+{
+	padding: 0px 10px;
+	bottom: 1px solid #bcbcbc;
+	background-color: #dddddd;
+	border-bottom: 1px solid #f1f6f8;
+	cursor: pointer;
+}
+
+.notification-side-view > .notifications > .notification.read
+{
+	color: #afb6ba;
+	background-color: #f2f2f4;
+}
+
+.notification-side-view > .notifications > .notification > .timeline-icon
+{
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 40px;
+	height: 40px;
+	line-height: 38px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.notification-side-view > .notifications > .notification > .content
+{
+	padding: 5px;
+	margin-left: 52px;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-header
+{
+	margin-top: 5px;
+	width: 100%;
+	height: 40px;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-header > .operator
+{
+	max-width: 200px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-header > .operator > img
+{
+	float: left;
+	width: 30px;
+	height: 30px;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-header > .operator > .name
+{
+	margin-left: 40px;
+	line-height: 35px;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-header > .time
+{
+	font-size: 12px;
+	float: right;
+	line-height: 18px;
+	margin-top: -25px;
+	color: #afb6ba;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-project
+{
+	width: 100%;
+	height: 40px;
+	line-height: 40px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-project > .in
+{
+	font-size: 14;
+	color: #23a8f5;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-title
+{
+	width: 100%;
+	height: 40px;
 }
 
 .notification-view-cover

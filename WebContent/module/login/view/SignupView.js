@@ -35,7 +35,7 @@ define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbo
 		                        message: 'The username is required'
 		                    },
 		                    regexp: {
-		                        regexp: /^[a-z1-9]+$/i,
+		                        regexp: '^[a-z0-9]+$',
 		                        message: 'The username can consist of lowercase letters and numbers only'
 		                    },
 		                    stringLength: {

@@ -87,7 +87,7 @@ public class ProjectApplicationService extends BaseService {
 		
 		//查询结果
 		sql = "select " +
-					 "	T1.applicationid, " + 
+					 "	T1.id, " + 
 					 "	T1.projectid, " + 
 					 "	T1.proposer, " + 
 					 "	T2.nickname as proposerNickname, " +
@@ -101,7 +101,9 @@ public class ProjectApplicationService extends BaseService {
 					 "	ideaworks.user T2 " +
 					 "where " +
 					 "	T1.projectid = ? and " + 
-					 "	T1.proposer = T2.id ";
+					 "	T1.proposer = T2.id " + 
+					 "order by " + 
+					 "	T1.id desc ";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
 		rs_stmt = stmt.executeQuery();
 		JSONArray applications = new JSONArray();
@@ -168,7 +170,7 @@ public class ProjectApplicationService extends BaseService {
 		
 		//查询结果
 		sql = "select " +
-			 "	T1.applicationid, " + 
+			 "	T1.id, " + 
 			 "	T1.projectid, " + 
 			 "	T1.proposer, " + 
 			 "	T2.nickname as proposerNickname, " +
@@ -212,7 +214,7 @@ public class ProjectApplicationService extends BaseService {
 	public Response createApplications(
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
-			@FormParam("proposer") String p_proposer,
+			@FormParam("proposer[userid]") String p_proposer,
 			@FormParam("projectid") int p_applyprojectid,
 			@FormParam("msg") String p_msg ) throws Exception
 	{
@@ -261,9 +263,9 @@ public class ProjectApplicationService extends BaseService {
 					 "		projectid, " + 
 					 "		proposer, " + 
 					 "		msg, " + 
-					 "		status " + 
-					 "	) values ( ?, ?, ?, ?)";
-			stmt = DBUtil.getInstance().createSqlStatement(sql_search, p_applyprojectid, p_proposer, p_msg, 0);
+					 "		createtime " + 
+					 "	) values ( ?, ?, ?, ? )";
+			stmt = DBUtil.getInstance().createSqlStatement(sql_search, p_applyprojectid, p_proposer, p_msg, new Date());
 			stmt.execute();
 			
 			//通知该project中的所有成员
@@ -288,9 +290,9 @@ public class ProjectApplicationService extends BaseService {
 			@PathParam("userid") String p_userid,
 			@PathParam("projectid") int p_projectid,
 			@PathParam("applicationid") int p_applicationid,
-			@FormParam("proposer") String p_proposer,
+			@FormParam("proposer[userid]") String p_proposer,
 			@FormParam("projectid") int p_applyprojectid,
-			@FormParam("isagree") int p_isagree ) throws Exception
+			@FormParam("status") int p_status ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -300,7 +302,7 @@ public class ProjectApplicationService extends BaseService {
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
-		   (p_proposer == null || p_proposer.equals("")) || p_applyprojectid <= 0 || p_isagree > 2 || p_isagree <= 0 ) {
+		   (p_proposer == null || p_proposer.equals("")) || p_applyprojectid <= 0 || p_status > 2 || p_status < 0 ) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -313,11 +315,11 @@ public class ProjectApplicationService extends BaseService {
 				 "	status = ? " + 
 				 "where " + 
 				 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_isagree, p_applicationid);
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_status, p_applicationid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		if(p_isagree == 1) {
+		if(p_status == 1) {
 			//更新project_member表
 			sql = "insert into " +
 				 "	ideaworks.project_member (" + 
@@ -332,7 +334,7 @@ public class ProjectApplicationService extends BaseService {
 		
 		//返回结果
 		sql = "select " +
-			 "	T1.applicationid, " + 
+			 "	T1.id, " + 
 			 "	T1.projectid, " + 
 			 "	T1.proposer, " + 
 			 "	T2.nickname as proposerNickname, " +

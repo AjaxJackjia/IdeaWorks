@@ -66,22 +66,61 @@ public class ProjectNotificationService extends BaseService {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
-		String sql = "select * from ideaworks.notification where userid = ? limit 200 ";
+		String sql = "select " + 
+					 "	T1.id, " + 
+					 "	T1.userid as userid, " + 
+					 "	T2.nickname as userNickname, " + 
+					 "	T2.logo as userLogo, " + 
+					 "	T1.projectid, " + 
+					 "	T4.title as projectTitle, " + 
+					 "	T1.operator as operatorid, " +
+					 "	T3.nickname as operatorNickname, " + 
+					 "	T3.logo as operatorLogo, " +
+					 "	T1.action, " + 
+					 "	T1.entity, " + 
+					 "	T1.title, " + 
+					 "	T1.time, " + 
+					 "	T1.isRead " + 
+					 "from " +
+					 "	ideaworks.notification T1, " + 
+					 "	ideaworks.user T2, " + 
+					 "	ideaworks.user T3, " +
+					 "	ideaworks.project T4 " +
+					 "where " + 
+					 "	T1.userid = ? and " + 
+					 "	T1.userid = T2.id and " + 
+					 "	T1.operator = T3.id and " +
+					 "	T1.projectid = T4.id " +
+					 "order by " + 
+					 "	T1.time desc " + 
+					 "limit 200 ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		JSONArray notifications = new JSONArray();
 		while(rs_stmt.next()) {
 			JSONObject notification = new JSONObject();
 			notification.put("notificationid", rs_stmt.getInt("id"));
-			notification.put("userid", rs_stmt.getString("userid"));
+			
+			JSONObject user = new JSONObject();
+			user.put("userid", rs_stmt.getString("userid"));
+			user.put("nickname", rs_stmt.getString("userNickname"));
+			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("userLogo"));
+			notification.put("user", user);
+			
+			JSONObject operator = new JSONObject();
+			operator.put("userid", rs_stmt.getString("operatorid"));
+			operator.put("nickname", rs_stmt.getString("operatorNickname"));
+			operator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("operatorLogo"));
+			notification.put("operator", operator);
+			
 			notification.put("projectid", rs_stmt.getInt("projectid"));
-			notification.put("operator", rs_stmt.getString("operator"));
+			notification.put("projectTitle", rs_stmt.getString("projectTitle"));
 			notification.put("action", rs_stmt.getInt("action"));
 			notification.put("entity", rs_stmt.getInt("entity"));
 			notification.put("title", rs_stmt.getString("title"));
 			notification.put("time", rs_stmt.getTimestamp("time").getTime());
 			notification.put("isRead", rs_stmt.getInt("isRead"));
-
+			
 			notifications.put(notification);
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
@@ -107,15 +146,51 @@ public class ProjectNotificationService extends BaseService {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
-		String sql = "select * from ideaworks.notification where id = ? ";
+		String sql = "select " + 
+					 "	T1.id, " + 
+					 "	T1.userid as userid, " + 
+					 "	T2.nickname as userNickname, " + 
+					 "	T2.logo as userLogo, " + 
+					 "	T1.projectid, " + 
+					 "	T4.title as projectTitle, " + 
+					 "	T1.operator as operatorid, " +
+					 "	T3.nickname as operatorNickname, " + 
+					 "	T3.logo as operatorLogo, " + 
+					 "	T1.action, " + 
+					 "	T1.entity, " + 
+					 "	T1.title, " + 
+					 "	T1.time, " + 
+					 "	T1.isRead " + 
+					 "from " +
+					 "	ideaworks.notification T1, " + 
+					 "	ideaworks.user T2, " + 
+					 "	ideaworks.user T3, " +
+					 "	ideaworks.project T4 " +
+					 "where " + 
+					 "	T1.id = ? and " + 
+					 "	T1.userid = T2.id and " + 
+					 "	T1.operator = T3.id and " + 
+					 "	T1.projectid = T4.id ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_notificationid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		JSONObject notification = new JSONObject();
 		while(rs_stmt.next()) {
 			notification.put("notificationid", rs_stmt.getInt("id"));
-			notification.put("userid", rs_stmt.getString("userid"));
+			
+			JSONObject user = new JSONObject();
+			user.put("userid", rs_stmt.getString("userid"));
+			user.put("nickname", rs_stmt.getString("userNickname"));
+			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("userLogo"));
+			notification.put("user", user);
+			
+			JSONObject operator = new JSONObject();
+			operator.put("userid", rs_stmt.getString("operatorid"));
+			operator.put("nickname", rs_stmt.getString("operatorNickname"));
+			operator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("operatorLogo"));
+			notification.put("operator", operator);
+			
 			notification.put("projectid", rs_stmt.getInt("projectid"));
-			notification.put("operator", rs_stmt.getString("operator"));
+			notification.put("projectTitle", rs_stmt.getString("projectTitle"));
 			notification.put("action", rs_stmt.getInt("action"));
 			notification.put("entity", rs_stmt.getInt("entity"));
 			notification.put("title", rs_stmt.getString("title"));
@@ -297,7 +372,7 @@ public class ProjectNotificationService extends BaseService {
 	@PUT
 	@Path("/{notificationid}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSearchPersonsById(
+	public Response updateNotificationById(
 			@PathParam("userid") String p_userid,
 			@PathParam("notificationid") int p_notificationid,
 			@FormParam("isRead") int p_isRead ) throws Exception
@@ -327,15 +402,47 @@ public class ProjectNotificationService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//返回结果
-		sql = "select * from ideaworks.notification where id = ? ";
+		sql = "select " + 
+			 "	T1.id, " + 
+			 "	T1.userid as userid, " + 
+			 "	T2.nickname as userNickname, " + 
+			 "	T2.logo as userLogo, " + 
+			 "	T1.projectid, " + 
+			 "	T1.operator as operatorid, " +
+			 "	T3.nickname as operatorNickname, " + 
+			 "	T3.logo as operatorLogo, " + 
+			 "	T1.action, " + 
+			 "	T1.entity, " + 
+			 "	T1.title, " + 
+			 "	T1.time, " + 
+			 "	T1.isRead " + 
+			 "from " +
+			 "	ideaworks.notification T1, " + 
+			 "	ideaworks.user T2, " + 
+			 "	ideaworks.user T3 " + 
+			 "where " + 
+			 "	T1.id = ? and " + 
+			 "	T1.userid = T2.id and " + 
+			 "	T1.operator = T3.id ";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_notificationid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		JSONObject notification = new JSONObject();
 		while(rs_stmt.next()) {
 			notification.put("notificationid", rs_stmt.getInt("id"));
-			notification.put("userid", rs_stmt.getString("userid"));
+			
+			JSONObject user = new JSONObject();
+			user.put("userid", rs_stmt.getString("userid"));
+			user.put("nickname", rs_stmt.getString("userNickname"));
+			user.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("userLogo"));
+			notification.put("user", user);
+			
+			JSONObject operator = new JSONObject();
+			operator.put("userid", rs_stmt.getString("operatorid"));
+			operator.put("nickname", rs_stmt.getString("operatorNickname"));
+			operator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("operatorLogo"));
+			notification.put("operator", operator);
+			
 			notification.put("projectid", rs_stmt.getInt("projectid"));
-			notification.put("operator", rs_stmt.getString("operator"));
 			notification.put("action", rs_stmt.getInt("action"));
 			notification.put("entity", rs_stmt.getInt("entity"));
 			notification.put("title", rs_stmt.getString("title"));

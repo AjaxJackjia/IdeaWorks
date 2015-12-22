@@ -6,6 +6,7 @@ public class Config {
 	public static final String PROJECT_FILE_BASE_DIR = "/uploads/files/";
 	
 	public static final String WEBCONTENT_DIR = "/home/jackjia/workspace_cityu/IdeaWorks/WebContent";
+//	public static final String WEBCONTENT_DIR = "E:/jackjia/apache-tomcat-7.0.67/webapps/IdeaWorks";
 	
 	//后台的操作码以及实体码,前端与后台需要统一
 	public static enum Action {

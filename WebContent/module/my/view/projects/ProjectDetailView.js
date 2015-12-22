@@ -14,7 +14,8 @@ define([
  		'model/project/MilestoneCollection',
  		'model/project/TopicCollection',
  		'model/project/FileCollection',
- 		'model/project/ActivityCollection'
+ 		'model/project/ActivityCollection',
+ 		'model/project/ApplicationCollection'
        ], 
     function(Backbone, util, CheckLib, iCheck_css,
     		//view
@@ -30,7 +31,8 @@ define([
     		MilestoneCollection,
     		TopicCollection,
     		FileCollection,
-    		ActivityCollection) {
+    		ActivityCollection,
+    		ApplicationCollection) {
 	var ProjectDetailView = Backbone.View.extend({
 		
 		className: 'project-detail-view',
@@ -246,7 +248,17 @@ define([
 		},
 		
 		applicationProject: function() {
-			alert('application');
+			var projectApplicationSubView = new ProjectApplicationSubView({
+				model: this.model
+			});
+			var $applicationView = $('#project_application_sub_view');
+			if($applicationView.length > 0) {
+				$('#project_application_sub_view').remove();
+			}
+			$('.content-panel').append($(projectApplicationSubView.render().el));
+			
+			//显示view
+			$('#project_application_sub_view').modal('toggle');
 		},
 		
 		exitProject: function() {
@@ -817,6 +829,218 @@ define([
 			'</div> '
 		return tpl;
 	}
+	
+	/*
+	 * Project application sub view
+	 * */
+	var ProjectApplicationSubView = Backbone.View.extend({
+		
+		id: 'project_application_sub_view',
+		
+		className: 'project-application-sub-view modal fade',
+		
+		initialize: function(){
+			//确保在正确作用域
+			_.bindAll(this, 'render', 'unrender', 'addApplicationItem');
+			
+			//applications
+			this.applications = new ApplicationCollection();
+			this.applications.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + this.model.get('projectid') + '/applications';
+		},
+		
+		render: function(){
+			var $modalDialog = $('<div class="modal-dialog" role="document">');
+			var $modalDialogContent = $('<div class="modal-content">');
+			$modalDialog.append($modalDialogContent);
+			
+			var header = ApplicationModalHeader();
+			$modalDialogContent.append(header);
+			
+			var body = ApplicationModalBody();
+			$modalDialogContent.append(body);
+			
+			var footer = ApplicationModalFooter();
+			$modalDialogContent.append(footer);
+			
+			$(this.el).append($modalDialog);
+			
+			//绑定modal事件
+			var self = this;
+			
+			$(this.el).on('show.bs.modal', function (event) {
+				self.applications.fetch({
+					wait: true,
+					success: function() {
+						_.each(self.applications.models, function(application, index) {
+							self.addApplicationItem(application);
+						});
+					},
+					error: function(model, response, options) {
+			    		var alertMsg = 'Fetch project applications failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+		    		}
+				});
+			});
+			
+			$(this.el).on('hide.bs.modal', function (event) {
+				self.unrender();
+			});
+			
+		    return this;
+		},
+		
+		unrender: function() {
+			$(this.el).remove();
+		},
+		
+		addApplicationItem: function(application) {
+			//设置每个application model的url
+			application.url = this.applications.url + '/' + application.get('applicationid');
+			
+			var $placeholder = $('.applications > tbody > .place-holder', this.el);
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			
+			var applicationItemView = new ApplicationItemView({
+				model: application
+			});
+			$('.applications > tbody', this.el).append($(applicationItemView.render().el));
+		}
+	});
+	
+	var ApplicationModalHeader = function() {
+		var tpl = 
+			'<div class="modal-header"> ' + 
+			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
+			'	<h3 class="modal-title">Project Application</h3> ' + 
+			'</div>';
+		return tpl;
+	};
+	
+	var ApplicationModalFooter = function() {
+		var tpl = 
+			'<div class="modal-footer"> ' + 
+			'</div> ';
+		return tpl;
+	};
+	
+	var ApplicationModalBody = function() {
+		var tpl = 
+			'<div class="modal-body"> ' +
+			'	<table class="applications table table-hover table-striped"> ' + 
+			'		<thead> ' + 
+			'			<tr> ' + 
+			'				<td class="applicationid">#</td> ' + 
+			'				<td class="application_proposer">Proposer</td> ' + 
+			'				<td class="application_msg">Message</td> ' + 
+			'				<td class="application_createtime">Apply time</td> ' + 
+			'				<td class="application_status">Status</td> ' + 
+			'				<td class="application_action">Action</td> ' + 
+			'			</tr> ' + 
+			'		</thead> ' + 
+			'		<tbody> ' + 
+			'			<tr class="place-holder"> ' + 
+			'				<td colspan="6">No applications</td> ' + 
+			'			</tr> ' + 
+			'		</tbody> ' + 
+			'	</table> ' + 
+			'</div> '
+		return tpl;
+	};
+	
+	var ApplicationItemView = Backbone.View.extend({
+		tagName: 'tr',
+		
+		className: 'application application-item-view',
+		
+		events: {
+			'click .agree': 'agree',
+			'click .reject': 'reject'
+		},
+		
+		initialize: function(){
+			_.bindAll(this, 'render', 'agree', 'reject');
+			
+			//监听model变化
+			this.model.bind('change', this.render);
+			
+			//0 - 已发送; 1 - 已同意; 2 - 已拒绝;
+			this.APPLIED_FLAG  = 0;
+			this.PASSED_FLAG   = 1;
+			this.REJECTED_FLAG = 2;
+		},
+		
+		render: function(){
+			var application = this.model;
+			
+			//cid
+			$(this.el).attr('cid', this.model.cid);
+			
+			//status and action
+			var status = '';
+			switch(application.get('status')) {
+				case this.APPLIED_FLAG: status = 'applied';break;
+				case this.PASSED_FLAG: status = 'passed';break;
+				case this.REJECTED_FLAG: status = 'rejected';break;
+				default: status = 'unknown';break;
+			}
+			var actions = '';
+			if(application.get('status') == 0) { //待审核状态
+				actions = '<a class="agree btn btn-success">Agree</a><a class="reject btn btn-danger">Rejct</a>';
+			}
+			
+			//proposer
+			var proposer = application.get('proposer');
+			//根据模板生成dom
+			var application_item_tpl = 
+						'<td class="applicationid">' + application.get('applicationid') + '</td> ' + 
+						'<td class="application_proposer">' + proposer.nickname + '</td> ' + 
+						'<td class="application_msg" title="' + application.get('msg') + '">' + application.get('msg') + '</td> ' + 
+						'<td class="application_createtime">' + util.timeformat(new Date(application.get('createtime')), 'smart') + '</td> ' + 
+						'<td class="application_status">' + status + '</td> ' + 
+						'<td class="application_action">' + actions + '</td> ';
+			$(this.el).html(application_item_tpl);
+			
+		    return this;
+		},
+		
+		agree: function(event) {
+			if(confirm('Do you want to pass this application?')) {
+				var self = this;
+				this.model.save('status', this.PASSED_FLAG, {
+					success: function() {
+						
+					},
+					error: function(model, response, options) {
+						var alertMsg = 'Update application failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+						
+						//reset state
+						self.model.set('status', 0);
+					}
+				});
+			}
+		},
+		
+		reject: function(event) {
+			if(confirm('Do you want to reject this application?')) {
+				var self = this;
+				this.model.save('status', this.REJECTED_FLAG, {
+					success: function() {
+						
+					},
+					error: function(model, response, options) {
+						var alertMsg = 'Update application failed. Please try again later!';
+						util.commonErrorHandler(response.responseJSON, alertMsg);
+						
+						//reset state
+						self.model.set('status', 0);
+					}
+				});
+			}
+		}
+	});
 	
 	return ProjectDetailView;
 });
