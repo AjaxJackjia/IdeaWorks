@@ -202,16 +202,17 @@
 	overflow: hidden;
 }
 
-.notification-side-view > .notifications > .notification > .content > .notification-project > .in
-{
-	font-size: 14;
-	color: #23a8f5;
-}
-
 .notification-side-view > .notifications > .notification > .content > .notification-title
 {
 	width: 100%;
 	height: 40px;
+}
+
+.notification-side-view > .notifications > .notification > .content > .notification-project > .foci,
+.notification-side-view > .notifications > .notification > .content > .notification-title > .foci
+{
+	font-size: 14;
+	color: #23a8f5;
 }
 
 .notification-view-cover

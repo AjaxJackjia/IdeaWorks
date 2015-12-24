@@ -59,7 +59,6 @@ define([
 	
 	var Item = function(notification) {
 		var operator = notification.get('operator');
-		var msg = notification.get('action') + ' ' + notification.get('entity') + ' ' + notification.get('title');
 		var $tpl = 
 				'<div class="timeline-icon"> ' + 
 			    '	<i class="fa fa-envelope-o"></i> ' + 
@@ -72,8 +71,8 @@ define([
 			    '		</div>' + 
 			    '		<div class="time">' + util.timeformat(new Date(notification.get('time')), "smart") + '</div>' + 
 			    '	</div>' + 
-			    '	<div class="notification-project" title="' + notification.get('projectTitle') + '"><span class="in">in project </span>' + notification.get('projectTitle') + '</div>' + 
-			    '	<div class="notification-title">' + msg + '</div>' + 
+			    '	<div class="notification-project" title="' + notification.get('projectTitle') + '"><span class="foci">in project </span>' + notification.get('projectTitle') + '</div>' + 
+			    '	<div class="notification-title">' + notification.get('title') + '</div>' + 
 			    '</div>';
 		return $tpl;
 	};

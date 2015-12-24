@@ -355,12 +355,13 @@ public class ProjectFileService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = filename;
+		JSONObject info = new JSONObject();
+		info.put("title", filename);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPLOAD, Config.Entity.FILE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.FILE, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.FILE, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.FILE, info);
 		
 		return null;
 	}
@@ -414,12 +415,13 @@ public class ProjectFileService extends BaseService {
 		FileUtil.delete(fileLocation);
 		
 		//record activity
-		String msg = filename;
+		JSONObject info = new JSONObject();
+		info.put("title", filename);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.FILE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.FILE, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.FILE, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.FILE, info);
 				
 		return null;
 	}

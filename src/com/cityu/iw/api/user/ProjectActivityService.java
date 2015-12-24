@@ -40,11 +40,11 @@ public class ProjectActivityService extends BaseService {
 	 * params:
 	 * 	projectid是操作的project
 	 * 	operator是产生这条activity的用户;
-	 * 	title是操作对象的备注信息
 	 * 	action是操作类型;
 	 * 	entity是操作的对象;
+	 * 	title是操作对象的备注信息
 	 * */
-	public static void recordActivity(int projectid, String operator, String title, Config.Action action, Config.Entity entity) {
+	public static void recordActivity(int projectid, String operator, Config.Action action, Config.Entity entity, JSONObject info) {
 		String sql = "insert into " +
 					 "	ideaworks.activity (" + 
 					 "		projectid, " + 
@@ -55,7 +55,7 @@ public class ProjectActivityService extends BaseService {
 					 "		time " + 
 					 "	) values ( ?, ?, ?, ?, ?, ? )";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-										projectid, operator, action.getValue(), entity.getValue(), title, new Date());
+										projectid, operator, action.getValue(), entity.getValue(), info.toString(), new Date());
 		try {
 			stmt.execute();
 		} catch (SQLException e) {

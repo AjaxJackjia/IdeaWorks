@@ -14,6 +14,7 @@
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
 			'util': '../common/util',
+			'mappingUtil': '../common/mappingUtil',
 			'jxExt': '../common/javascript-extensions'
 		},
 		

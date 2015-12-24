@@ -1074,6 +1074,17 @@
     cursor: pointer;
 }
 
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message-count
+{
+	float: right;
+	display: inline-block;
+	max-width: 80px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
 .project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-text
 {
 	clear: both;
@@ -1525,6 +1536,13 @@
 .project-application-sub-view .applications td.application_msg
 {
 	max-width: 90px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-application-sub-view .applications td.application_action
+{
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;

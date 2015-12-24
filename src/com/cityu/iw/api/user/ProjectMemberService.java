@@ -192,17 +192,19 @@ public class ProjectMemberService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		ArrayList<String> nicknames = new ArrayList<String>();
+		ArrayList<String> users = new ArrayList<String>();
 		for(int index = 0;index<members.length();index++) {
 			JSONObject member = (JSONObject) members.get(index);
-			nicknames.add((String) member.get("nickname"));
+			users.add((String) member.get("nickname") + "(" + (String) member.get("userid") + ")");
 		}
-		String msg = StringUtils.join(nicknames, ", ");
+		JSONObject info = new JSONObject();
+		info.put("title", StringUtils.join(users, ", "));
+		
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.ADD, Config.Entity.MEMEBER);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, info);
 		
 		return buildResponse(OK, members);
 	}

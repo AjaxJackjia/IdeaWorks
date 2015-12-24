@@ -290,7 +290,7 @@ define([
 			'			<h4 class="project-title">' + project.get('title') + '</h4>' + 
 			'			<p class="project-advisor">Advisor: ' + advisor.nickname + '</p>' + 
 			'			<p class="project-creator">Creator: ' + creator.nickname + '</p>' + 
-			'			<p class="project-createtime">Create time: ' + util.timeformat(new Date(project.get('createtime')), 'smart') + '</p>' + 
+			'			<p class="project-createtime">Create time: ' + util.timeformat(new Date(project.get('createtime'))) + '</p>' + 
 			'		</div>' +
 			'	</div>' + 
 			'</div>';
@@ -997,7 +997,7 @@ define([
 						'<td class="applicationid">' + application.get('applicationid') + '</td> ' + 
 						'<td class="application_proposer">' + proposer.nickname + '</td> ' + 
 						'<td class="application_msg" title="' + application.get('msg') + '">' + application.get('msg') + '</td> ' + 
-						'<td class="application_createtime">' + util.timeformat(new Date(application.get('createtime')), 'smart') + '</td> ' + 
+						'<td class="application_createtime">' + util.timeformat(new Date(application.get('createtime'))) + '</td> ' + 
 						'<td class="application_status">' + status + '</td> ' + 
 						'<td class="application_action">' + actions + '</td> ';
 			$(this.el).html(application_item_tpl);

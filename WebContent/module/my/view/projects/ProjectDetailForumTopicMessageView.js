@@ -200,6 +200,11 @@ define([
 			/*	显示回复消息按钮	*/
 			$action.append('<div class="reply-message"><i class="fa fa-reply"></i></div>');
 			
+			/*	显示回复消息数量	*/
+			if(message.get('replyCount') != 0) {
+				$action.append('<div class="reply-message-count">' + message.get('replyCount') + '</div>');
+			}
+			
 			$target.append($action);
 		},
 		
@@ -310,7 +315,7 @@ define([
 			var header = Header();
 			$modalDialogContent.append(header);
 			
-			var body = Body(message);
+			var body = Body();
 			$modalDialogContent.append(body);
 			$('.original-message', $modalDialogContent).html(OriginalMessage(message));
 			
@@ -339,6 +344,11 @@ define([
 					var $actionWithReply = $('<div class="message-action"><div class="reply-message-action"><i class="fa fa-reply"></i></div></div>');
 					var $originMessageTarget = $($('.message-origin', this.el)[0]).find('.message-text');
 					$originMessageTarget.append($actionWithReply);
+					
+					//设置回复消息的数量
+					if(self.replyList.length != 0) {
+						$('.reply-count', self.el).html(" (total " + self.replyList.length + ") ");
+					}
 				},
 				error: function(model, response, options) {
 					var alertMsg = 'Get message reply list failed. Please try again later!';
@@ -404,12 +414,16 @@ define([
 		 * 新建reply
 		 * */
 		createReply: function(reply) {
+			var self = this;
 			var replyList = this.replyList;
 			replyList.create(reply, {
 				 wait: true, 
 				 success: function() {
 					 //清空message box
 					 $('#reply_msg').val("");
+					 
+					 //更新回复数量
+					 self.model.set('replyCount', self.model.get('replyCount') + 1);
 				 },
 				 error: function(model, response, options) {
 					 var alertMsg = 'Create reply failed. Please try again later!';
@@ -503,7 +517,7 @@ define([
 		return tpl;
 	}
 	
-	var Body = function(message) {
+	var Body = function() {
 		var tpl = 
 			'<div class="modal-body"> ' + 
 			'	<div class="form-group"> ' + 
@@ -511,7 +525,7 @@ define([
 			' 		<div class="original-message"></div>' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="reply_title" class="control-label">Replies:</label> ' + 
+			'		<label for="reply_title" class="control-label">Replies: <span class="reply-count"></span></label> ' + 
 			'		<div class="reply-messages"><div class="placeholder"><h4>No reply...</h4></div></div>' + 
 			'	</div> ' + 
 			'	<div class="reply-msg-container form-group"> ' + 

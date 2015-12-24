@@ -26,6 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -269,7 +270,9 @@ public class ProjectApplicationService extends BaseService {
 			stmt.execute();
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectManagers(p_projectid, p_proposer, Config.Action.APPLY, Config.Entity.APPLICATION, p_msg);
+			JSONObject info = new JSONObject();
+			info.put("msg", p_msg);
+			ProjectNotificationService.notifyProjectManagers(p_projectid, p_proposer, Config.Action.APPLY, Config.Entity.APPLICATION, info);
 			
 			JSONObject normal = new JSONObject();
 			normal.put("ret", "0");
@@ -319,7 +322,7 @@ public class ProjectApplicationService extends BaseService {
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		if(p_status == 1) {
+		if(p_status == 1) {//同意加入
 			//更新project_member表
 			sql = "insert into " +
 				 "	ideaworks.project_member (" + 
@@ -330,6 +333,22 @@ public class ProjectApplicationService extends BaseService {
 			stmt = DBUtil.getInstance().createSqlStatement(sql, p_applyprojectid, p_proposer, new Date());
 			stmt.execute();
 			DBUtil.getInstance().closeStatementResource(stmt);
+			
+			//获取member的基本信息
+			JSONObject info = new JSONObject();
+			sql = "select * from ideaworks.user where id = ? ";
+			stmt = DBUtil.getInstance().createSqlStatement(sql, p_proposer);
+			ResultSet rs_stmt = stmt.executeQuery();
+			while(rs_stmt.next()) {
+				info.put("title", rs_stmt.getString("nickname") + "(" + rs_stmt.getString("id") + ")");
+			}
+			DBUtil.getInstance().closeStatementResource(stmt);
+			
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, info);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, info);
 		}
 		
 		//返回结果
@@ -368,6 +387,17 @@ public class ProjectApplicationService extends BaseService {
 			application.put("modifytime", rs_stmt.getTimestamp("modifytime").getTime());
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//通知该proposer申请结果
+		JSONObject info = new JSONObject();
+		info.put("touser", p_proposer);
+		if(p_status == 1) //告知proposer已同意请求
+		{
+			ProjectNotificationService.notifyProjectCertainMember(p_projectid, p_userid, Config.Action.AGREE, Config.Entity.APPLICATION, info);
+		}else if(p_status == 2) //告知proposer已拒绝请求
+		{
+			ProjectNotificationService.notifyProjectCertainMember(p_projectid, p_userid, Config.Action.REJECT, Config.Entity.APPLICATION, info);
+		}
 		
 		return buildResponse(OK, application);
 	}

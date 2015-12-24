@@ -34,7 +34,6 @@ define([
 	
 	var ActivityItem = function(activity) {
 		var operator = activity.get('operator');
-		var msg = activity.get('action') + ' ' + activity.get('entity') + ' ' + activity.get('title');
 		var $tpl = 
 			'<div class="activity"> ' +
 			'  <div class="timeline-icon"> ' +
@@ -46,7 +45,7 @@ define([
 			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span> ' + 
 			'		<div class="user">' + operator.nickname + '</div> ' +
 			'	</div>' +
-			'	<div class="body">'+ msg +'</div> ' +
+			'	<div class="body">'+ activity.get('title') +'</div> ' +
 			'  </div> ' +
 			'</div>';
 		return $tpl;

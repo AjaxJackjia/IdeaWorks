@@ -296,7 +296,7 @@ public class ProjectNotificationService extends BaseService {
 	}
 	
 	//通知project组内的所有成员
-	public static void notifyProjectAllMembers(int projectid, String operator, Config.Action action, Config.Entity entity, String title) throws SQLException, JSONException {
+	public static void notifyProjectAllMembers(int projectid, String operator, Config.Action action, Config.Entity entity, JSONObject info) throws SQLException, JSONException {
 		//获取该project中所有成员
 		String sql = "select " + 
 					 "	distinct userid " +
@@ -313,11 +313,20 @@ public class ProjectNotificationService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//对每个成员创建notification
-		createNotifications(userids, projectid, operator, action, entity, title);
+		createNotifications(userids, projectid, operator, action, entity, info.toString());
+	}
+	
+	//通知project组内的特定成员
+	public static void notifyProjectCertainMember(int projectid, String operator, Config.Action action, Config.Entity entity, JSONObject info) throws SQLException, JSONException {
+		List<String> userids = new ArrayList<String>();
+		userids.add(info.getString("touser"));
+		
+		//对每个成员创建notification
+		createNotifications(userids, projectid, operator, action, entity, info.toString());
 	}
 	
 	//通知project组内的所有成员
-	public static void notifyProjectManagers(int projectid, String operator, Config.Action action, Config.Entity entity, String title) throws SQLException, JSONException {
+	public static void notifyProjectManagers(int projectid, String operator, Config.Action action, Config.Entity entity, JSONObject info) throws SQLException, JSONException {
 		//获取该project中管理员: 默认creator和advisor为管理员
 		String sql = "select " + 
 					 "	creator, " +
@@ -330,13 +339,21 @@ public class ProjectNotificationService extends BaseService {
 		ResultSet rs_stmt = stmt.executeQuery();
 		List<String> userids = new ArrayList<String>();
 		while(rs_stmt.next()) {
-			userids.add(rs_stmt.getString("creator"));
-			userids.add(rs_stmt.getString("advisor"));
+			//需要检测creator与advisor是否为同一个人,防止发送相同的两条notification
+			String creator = rs_stmt.getString("creator");
+			String advisor = rs_stmt.getString("advisor");
+			if(creator.equals(advisor)) {
+				userids.add(creator);
+			}else{
+				userids.add(creator);
+				userids.add(advisor);
+			}
+			
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//对每个成员创建notification
-		createNotifications(userids, projectid, operator, action, entity, title);
+		createNotifications(userids, projectid, operator, action, entity, info.toString());
 	}
 	
 	//通知project组内的所有成员
@@ -348,7 +365,7 @@ public class ProjectNotificationService extends BaseService {
 					 "	ideaworks.topic_discussion " +
 					 "where " + 
 					 "	topicid = ? and " + 
-					 "	touser = null ";
+					 "	pid = 0 "; //直接参与topic讨论的一级消息发送者
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, topicInfo.getInt("topicid"));
 		ResultSet rs_stmt = stmt.executeQuery();
 		List<String> userids = new ArrayList<String>();
@@ -361,10 +378,24 @@ public class ProjectNotificationService extends BaseService {
 		createNotifications(userids, projectid, operator, action, entity, topicInfo.toString());
 	}
 	
-	//通知project组内的特定成员
+	//通知project组内topic下的特定成员
 	public static void notifyProjectTopicCertainMember(int projectid, String operator, Config.Action action, Config.Entity entity, JSONObject topicInfo) throws SQLException, JSONException {
+		//获取该话题下该条评论的所有成员
+		String sql = "select " + 
+					 "	distinct fromuser " +
+					 "from " + 
+					 "	ideaworks.topic_discussion " +
+					 "where " + 
+					 "	id = ? or pid = ? "; //发送一级消息的作者, 以及参与topic讨论的二级消息发送者
+		
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, topicInfo.getInt("pmessageid"), topicInfo.getInt("pmessageid"));
+		ResultSet rs_stmt = stmt.executeQuery();
 		List<String> userids = new ArrayList<String>();
-		userids.add(topicInfo.getString("touser"));
+		while(rs_stmt.next()) {
+			userids.add(rs_stmt.getString("fromuser"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
 		//对每个成员创建notification
 		createNotifications(userids, projectid, operator, action, entity, topicInfo.toString());
 	}

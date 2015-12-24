@@ -21,6 +21,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -229,13 +230,13 @@ public class ProjectMilestoneService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 
 		//record activity
-		String msg = p_title;
+		JSONObject info = new JSONObject();
+		info.put("title", p_title);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.MILESTONE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.MILESTONE, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.MILESTONE, msg);
-		
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.MILESTONE, info);
 		
 		return buildResponse(OK, milestone);
 	}
@@ -266,6 +267,7 @@ public class ProjectMilestoneService extends BaseService {
 		//0. 拉取project,用以对比属性是否发生变化
 		boolean isTitleChanged = false,
 				isdescriptionChanged = false;
+		String originalTitle = ""; //milestone原主题
 		String sql = "select " + 
 					 "	title, " + 
 					 "	description " + 
@@ -276,6 +278,7 @@ public class ProjectMilestoneService extends BaseService {
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_mielstoneid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
+			originalTitle = rs_stmt.getString("title");
 			isTitleChanged = !rs_stmt.getString("title").equals(p_title);
 			isdescriptionChanged = !rs_stmt.getString("description").equals(p_description);
 		}
@@ -333,22 +336,22 @@ public class ProjectMilestoneService extends BaseService {
 		//需要区分哪些属性是变化的;
 		JSONObject info = new JSONObject();
 		if(isTitleChanged) {
-			info.put("milestoneid", milestone.getString("milestoneid"));
-			info.put("milestone_title", milestone.getString("title"));
+			info.put("original", originalTitle);
+			info.put("current", milestone.getString("title"));
+			info.put("title", milestone.getString("title"));
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, milestone.getString("milestoneid"), Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE, info.toString());
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_TITLE, info);
 		}
 		if(isdescriptionChanged) {
-			info.put("milestoneid", milestone.getString("milestoneid"));
-			info.put("milestone_title", milestone.getString("title"));
+			info.put("title", milestone.getString("title"));
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, milestone.getString("milestoneid"), Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION, info.toString());
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION, info);
 		}
 		
 		return buildResponse(OK, milestone);
@@ -399,11 +402,13 @@ public class ProjectMilestoneService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
+		JSONObject info = new JSONObject();
+		info.put("title", msg);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.MILESTONE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.MILESTONE, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.MILESTONE, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.MILESTONE, info);
 		
 		return null;
 	}

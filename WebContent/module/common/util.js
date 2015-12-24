@@ -136,7 +136,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 	{
 	    if (isEmpty(p_value))
 	    {
-	        return "";
+	        return "";prop
 	    }
 	    if (typeof (p_formatString) === "undefiend")
 	    {

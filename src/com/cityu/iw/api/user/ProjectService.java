@@ -43,6 +43,10 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 public class ProjectService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ProjectService.class);
 	private static final String DEFAULT_PROJECT_LOGO = "default_prj_logo.png";
+	private static final int STATUS_ONGOING_FLAG = 0;	//项目正在进行
+	private static final int STATUS_COMPLETE_FLAG = 1;	//项目已经结束
+	private static final int SECURITY_PUBLIC_FLAG = 0;	//项目对外公开
+	private static final int SECURITY_PRIVATE_FLAG = 0;	//项目仅对组内公开
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -230,20 +234,22 @@ public class ProjectService extends BaseService {
 		}
 		
 		//1. create project
-		int security = 0; //默认为public
 		String sql = "insert into " +
 					 "	ideaworks.project (" + 
 					 "		title, " + 
 					 "		creator, " + 
 					 "		advisor, " + 
 					 "		abstract, " + 
+					 "		status, " + 
 					 "		security, " + 
 					 "		logo, " + 
 					 "		createtime, " + 
 					 "		modifytime " + 
-					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ? )";
+					 "	) values ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, 
-									p_title, p_creator, p_advisor, "", security, DEFAULT_PROJECT_LOGO, new Date(), new Date());
+									p_title, p_creator, p_advisor, "", 
+									STATUS_ONGOING_FLAG, SECURITY_PUBLIC_FLAG, 
+									DEFAULT_PROJECT_LOGO, new Date(), new Date());
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -333,12 +339,13 @@ public class ProjectService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = p_title;
+		JSONObject info = new JSONObject();
+		info.put("title", p_title);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.PROJECT);
+		ProjectActivityService.recordActivity(projectid, p_userid, Config.Action.CREATE, Config.Entity.PROJECT, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(projectid, p_userid, Config.Action.CREATE, Config.Entity.PROJECT, msg);
+		ProjectNotificationService.notifyProjectAllMembers(projectid, p_userid, Config.Action.CREATE, Config.Entity.PROJECT, info);
 				
 		return buildResponse(OK, project);
 	}
@@ -413,11 +420,12 @@ public class ProjectService extends BaseService {
 		logoObj.put("logo", Config.PROJECT_IMG_BASE_DIR + filename);
 		
 		//记录activity
+		JSONObject info = new JSONObject();
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, "", Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, "");
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, info);
 		
 		return buildResponse(OK, logoObj);
 	}
@@ -453,6 +461,9 @@ public class ProjectService extends BaseService {
 				isAbstractChanged = false,
 				isStatusChanged = false,
 				isSecurityChanged = false;
+		String originalTitle = "", originalAdvisor = "";
+		int	originalStatus = 0, originalSecurity = 0;
+		
 		String sql = "select " + 
 					 "	title, " + 
 					 "	advisor, " + 
@@ -471,6 +482,11 @@ public class ProjectService extends BaseService {
 			isAbstractChanged = !rs_stmt.getString("abstract").equals(p_abstract);
 			isStatusChanged = rs_stmt.getInt("status") != p_status;
 			isSecurityChanged = rs_stmt.getInt("security") != p_security;
+			
+			originalTitle = rs_stmt.getString("title");
+		    originalAdvisor = rs_stmt.getString("advisor");
+		    originalStatus = rs_stmt.getInt("status");
+		    originalSecurity = rs_stmt.getInt("security");
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -552,41 +568,56 @@ public class ProjectService extends BaseService {
 		//需要区分哪些属性是变化的;
 		String msg = "";
 		if(isTitleChanged) {
-			msg = project.getString("title");
+			JSONObject info = new JSONObject();
+			info.put("original", originalTitle);
+			info.put("current", project.getString("title"));
+			
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE, msg);
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_TITLE, info);
 		}
 		if(isAdvisorChanged) {
-			msg = project.getJSONObject("advisor").getString("nickname") + " (" + project.getJSONObject("advisor").getString("userid") + ")";
+			JSONObject info = new JSONObject();
+			info.put("original", originalAdvisor);
+			info.put("current", project.getJSONObject("advisor").getString("userid"));
+			
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR, msg);
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ADVISOR, info);
 		}
 		if(isAbstractChanged) {
+			JSONObject info = new JSONObject();
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT, msg);
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_ABSTRACT, info);
 		}
 		if(isStatusChanged) {
+			JSONObject info = new JSONObject();
+			info.put("original", originalStatus);
+			info.put("current", project.getInt("status"));
+			
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS, msg);
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_STATUS, info);
 		}
 		if(isSecurityChanged) {
+			JSONObject info = new JSONObject();
+			info.put("original", originalSecurity);
+			info.put("current", project.getInt("security"));
+			
 			//param: projectid, operator, action, entity, title
-			ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY);
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, info);
 			
 			//通知该project中的所有成员
-			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, msg);
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, info);
 		}
 		
 		return buildResponse(OK, project);
@@ -637,12 +668,13 @@ public class ProjectService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = project_title;
+		JSONObject info = new JSONObject();
+		info.put("title", project_title);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.PROJECT_TITLE);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.PROJECT_TITLE, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.PROJECT_TITLE, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.PROJECT_TITLE, info);
 		
 		return buildResponse(OK, null);
 	}
@@ -691,12 +723,13 @@ public class ProjectService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
-		String msg = nickname + " (" + p_userid + ")";
+		JSONObject info = new JSONObject();
+		info.put("title", nickname + " (" + p_userid + ")");
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.LEAVE, Config.Entity.PROJECT);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.LEAVE, Config.Entity.PROJECT, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.LEAVE, Config.Entity.PROJECT, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.LEAVE, Config.Entity.PROJECT, info);
 		
 		return buildResponse(OK, null);
 	}

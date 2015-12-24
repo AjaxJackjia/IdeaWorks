@@ -47,16 +47,15 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 	
 	var Activity = function(activity) {
 		var operator = activity.get('operator');
-		var msg = activity.get('activity_action') + ' ' + activity.get('activity_entity') + ' ' + activity.get('activity_title');
 		var tpl = 
 			'<div class="activity">' + 
 			'	<div class="heading">' + 
 			'		<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '"> ' + 
 			'		<div class="user">' + operator.nickname + '</div> ' +
 			'		<div class="project"> [ ' + activity.get('porject_title') + ' ] </div> ' +
-			'		<span class="time">' + util.timeformat(new Date(activity.get('activity_time')), "smart") + '</span>' +
+			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span>' +
 			'	</div>' + 
-			'	<div class="content">' + msg + '</div>' + 
+			'	<div class="content">' + activity.get('title') + '</div>' + 
 			'</div>';
 		
 		return tpl;

@@ -235,12 +235,13 @@ public class ProjectTopicService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 
 		//record activity
-		String msg = p_title;
+		JSONObject info = new JSONObject();
+		info.put("title", p_title);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.CREATE, Config.Entity.TOPIC);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.TOPIC, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.TOPIC, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.TOPIC, info);
 		
 		return buildResponse(OK, topic);
 	}
@@ -269,16 +270,31 @@ public class ProjectTopicService extends BaseService {
 		   (p_creator == null || p_creator.equals("")) ) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
+		
+		//0. 拉取topic,用以对比属性是否发生变化
+		boolean isTitleChanged = false, isDescriptionChanged = false;
+		String originalTitle = "";
+		
+		String sql = "select * from ideaworks.topic where id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			isTitleChanged = !rs_stmt.getString("title").equals(p_title);
+			isDescriptionChanged = !rs_stmt.getString("description").equals(p_description);
+			
+			originalTitle = rs_stmt.getString("title");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
 				
 		//1. update topic
-		String sql = "update " +
-					 "	ideaworks.topic " + 
-					 "set " + 
-					 "	title = ?, " + 
-					 "	description = ? " + 
-					 "where " + 
-					 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_title, p_description, p_topicid);
+		sql = "update " +
+			 "	ideaworks.topic " + 
+			 "set " + 
+			 "	title = ?, " + 
+			 "	description = ? " + 
+			 "where " + 
+			 "	id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_title, p_description, p_topicid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -301,7 +317,7 @@ public class ProjectTopicService extends BaseService {
 			 "	T1.creator = T2.id and " + 
 			 "	T1.id = ? ";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_topicid);
-		ResultSet rs_stmt = stmt.executeQuery();
+		rs_stmt = stmt.executeQuery();
 		
 		JSONObject topic = new JSONObject();
 		
@@ -321,13 +337,29 @@ public class ProjectTopicService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 
 		//record activity
-		String msg = p_title;
-		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.UPDATE, Config.Entity.TOPIC);
+		if(isTitleChanged) {
+			JSONObject info = new JSONObject();
+			info.put("original", originalTitle);
+			info.put("current", p_title);
+			info.put("title", p_title);
+			
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC_TITLE, info);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC_TITLE, info);
+		}
+		if(isDescriptionChanged) {
+			JSONObject info = new JSONObject();
+			info.put("title", p_title);
+			
+			//param: projectid, operator, action, entity, title
+			ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC_DESCRIPTION, info);
+			
+			//通知该project中的所有成员
+			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC_DESCRIPTION, info);
+		}
 		
-		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC, msg);
-				
 		return buildResponse(OK, topic);
 	}
 	
@@ -376,11 +408,13 @@ public class ProjectTopicService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
+		JSONObject info = new JSONObject();
+		info.put("title", msg);
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, msg, Config.Action.DELETE, Config.Entity.TOPIC);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.TOPIC, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.TOPIC, msg);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.TOPIC, info);
 		
 		return null;
 	}
@@ -627,29 +661,31 @@ public class ProjectTopicService extends BaseService {
 		}
 				
 		String sql = "select " + 
-			 "	T1.id, " + 
-			 "	T1.pid, " + 
-			 "	T1.topicid, " + 
-			 "	T1.msg, " + 
-			 "	T1.fromuser, " + 
-			 "	T1.touser, " + 
-			 "	T1.time, " + 
-			 "	T2.nickname as fromuserNickname, " + 
-			 "	T2.logo as fromuserLogo, " + 
-			 "	T3.nickname as touserNickname, " + 
-			 "	T3.logo as touserLogo " + 
-			 "from " +
-			 "	( " + 
-			 "		ideaworks.user as T2 " +
-			 "	 		right join " + 
-			 "		ideaworks.topic_discussion T1 " + 
-			 "			on T1.fromuser = T2.id" + 
-			 "	) left join " + 
-			 "		ideaworks.user T3 " + 
-			 "	  on T1.touser = T3.id " + 
-			 "where " + 
-			 "	T1.pid = ? and " + 
-			 "	T1.topicid = ? ";
+					 "	T1.id, " + 
+					 "	T1.pid, " + 
+					 "	T1.topicid, " + 
+					 "	T1.msg, " + 
+					 "	T1.fromuser, " + 
+					 "	T1.touser, " + 
+					 "	T1.time, " + 
+					 "	T2.nickname as fromuserNickname, " + 
+					 "	T2.logo as fromuserLogo, " + 
+					 "	T3.nickname as touserNickname, " + 
+					 "	T3.logo as touserLogo " + 
+					 "from " +
+					 "	( " + 
+					 "		ideaworks.user as T2 " +
+					 "	 		right join " + 
+					 "		ideaworks.topic_discussion T1 " + 
+					 "			on T1.fromuser = T2.id" + 
+					 "	) left join " + 
+					 "		ideaworks.user T3 " + 
+					 "	  on T1.touser = T3.id " + 
+					 "where " + 
+					 "	T1.pid = ? and " + 
+					 "	T1.topicid = ? " + 
+					 "order by " + 
+					 "	T1.time asc ";
 	
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_messageid, p_topicid);
 		ResultSet rs_stmt = stmt.executeQuery();
@@ -711,6 +747,10 @@ public class ProjectTopicService extends BaseService {
 		   (p_from == null || p_from.equals("")) ||
 		   (p_msg == null || p_msg.equals("")) ) {
 			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		if(p_to == null) {
+			p_to = "";
 		}
 		
 		//1. create message
@@ -795,11 +835,22 @@ public class ProjectTopicService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		String operator = p_from;
-		if(p_to == null || p_to.equals("")) { //p_to为空说明为父消息,需要通知该topic下的所有一级消息发送者
+		if(p_to.equals("")) { //p_to为空说明为父消息,需要通知该topic下的所有一级消息发送者
+			info.put("msg", message.getString("msg"));
 			ProjectNotificationService.notifyProjectTopicAllMembers(
 					p_projectid, operator, Config.Action.REPLY, Config.Entity.MESSAGE, info);
 		}else{ //p_to不为空说明为子消息,需要通知该topic下的特定消息发送者
-			info.put("touser", message.getJSONObject("to").getString("userid"));
+			//获取回复的父消息msg
+			sql = "select msg from ideaworks.topic_discussion where id = ? ";
+			stmt = DBUtil.getInstance().createSqlStatement(sql, message.getInt("pmessageid"));
+			rs_stmt = stmt.executeQuery();
+			while(rs_stmt.next()) {
+				info.put("pmessageid", message.getInt("pmessageid"));
+				info.put("pmsg", rs_stmt.getString("msg")); //查询的父消息内容
+				info.put("msg", message.getString("msg"));
+			}
+			DBUtil.getInstance().closeStatementResource(stmt);
+			
 			ProjectNotificationService.notifyProjectTopicCertainMember(
 					p_projectid, operator, Config.Action.REPLY, Config.Entity.MESSAGE, info);
 		}

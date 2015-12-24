@@ -252,16 +252,16 @@ public class DashboardService extends BaseService {
 		while(rs_stmt.next()) {
 			JSONObject activity = new JSONObject();
 			activity.put("activityid", rs_stmt.getInt("activityid"));
-			activity.put("activity_action", rs_stmt.getInt("activity_action"));
-			activity.put("activity_entity", rs_stmt.getInt("activity_entity"));
-			activity.put("activity_title", rs_stmt.getString("activity_title"));
+			activity.put("action", rs_stmt.getInt("activity_action"));
+			activity.put("entity", rs_stmt.getInt("activity_entity"));
+			activity.put("title", rs_stmt.getString("activity_title"));
 			activity.put("porject_title", rs_stmt.getString("porject_title"));
 			JSONObject operator = new JSONObject();
 			operator.put("userid", rs_stmt.getString("userid"));
 			operator.put("nickname", rs_stmt.getString("nickname"));
 			operator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
 			activity.put("operator", operator);
-			activity.put("activity_time", rs_stmt.getTimestamp("activity_time").getTime());
+			activity.put("time", rs_stmt.getTimestamp("activity_time").getTime());
 
 			list.put(activity);
 		}

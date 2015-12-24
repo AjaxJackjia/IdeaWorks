@@ -19,7 +19,9 @@ public class Config {
 		LEAVE(700),		//离开
 		UPLOAD(800),	//上传
 		REPLY(900),		//回复
-		APPLY(1000);	//申请
+		APPLY(1000),	//申请
+		REJECT(2000),	//拒绝
+		AGREE(3000);	//同意
 		
 		//attributes
 		private int code;
