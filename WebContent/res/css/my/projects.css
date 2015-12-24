@@ -160,20 +160,20 @@
 .project-detail-view > .project-header > .content > img
 {
 	float: left;
-	width: 90px;
-	height: 90px;
+	width: 100px;
+	height: 100px;
 }
 
 .project-detail-view > .project-header > .content > .info
 {
-	margin-left: 100px;
+	margin-left: 110px;
 	color: #7b898d;
 }
 
 .project-detail-view > .project-header > .content > .info > .project-title
 {
 	display: block;
-	font-size: 14px;
+	font-size: 18px;
 	font-weight: 600;
 	line-height: 18px;
 	max-width: 600px;
@@ -901,6 +901,7 @@
 .project-detail-forum-topic-view .meta-container > .topic-action > .btn.btn-default
 {
 	display: inline-block;
+	margin: 0px 5px;
 	border-radius: 40px;
   	color: #7c8589;
 	border-color: #d8e3e7;
