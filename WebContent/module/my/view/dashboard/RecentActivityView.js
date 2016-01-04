@@ -50,7 +50,7 @@ define([ 'backbone', 'util', 'i18n!../../../../nls/translation' ], function(Back
 		var tpl = 
 			'<div class="activity">' + 
 			'	<div class="heading">' + 
-			'		<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '"> ' + 
+			'		<img class="img-circle" title="' + operator.nickname + '" src="' + operator.logo + '"> ' + 
 			'		<div class="user">' + operator.nickname + '</div> ' +
 			'		<div class="project"> [ ' + activity.get('porject_title') + ' ] </div> ' +
 			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span>' +

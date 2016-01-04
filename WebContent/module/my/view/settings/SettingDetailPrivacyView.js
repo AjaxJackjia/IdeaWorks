@@ -60,7 +60,7 @@ define([
 					}
 					
 					$.ajax({
-					    url: util.baseUrl + '/api/users/' + util.currentUser() + '/privacy',
+					    url: 'api/users/' + util.currentUser() + '/privacy',
 					    data: {'privacy' : self.model.get('privacy')},
 					    type: 'POST',
 					    success: function(result){

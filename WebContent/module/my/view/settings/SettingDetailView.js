@@ -35,7 +35,7 @@ define([
 			var self = this;
 			//user model
 			this.model = new UserModel();
-			this.model.url = util.baseUrl + '/api/users/' + util.currentUser();
+			this.model.url = 'api/users/' + util.currentUser();
 			this.model.fetch({
 				wait: true,
 				success: function() {

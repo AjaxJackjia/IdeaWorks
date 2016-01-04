@@ -125,7 +125,7 @@ define([
 					
 					//注册成功
 					alert(i18n.login.SignupView.SIGN_UP_SUCCESS);
-					window.location.href = util.baseUrl + "/login.html";
+					window.location.href = "login.html";
 				}
 			}); 
 		},

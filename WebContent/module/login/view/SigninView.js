@@ -89,7 +89,7 @@ define([
 					if(urlParams.hasOwnProperty('from')) {
 						window.location.href = urlParams.from;
 					}else{
-						window.location.href = util.baseUrl + "/my.html";
+						window.location.href = "my.html";
 					}
 				}
 			}); 

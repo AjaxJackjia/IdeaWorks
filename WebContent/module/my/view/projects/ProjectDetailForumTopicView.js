@@ -119,7 +119,7 @@ define([
 				'	<div class="heading"> ' +
 				'		<div class="expand-icon" title="' + i18n.my.projects.ProjectDetailForumTopicView.SHOW_DETAIL + '"><i class="fa fa-angle-down"></i></div>' + 
 				'		<span class="create-time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</span> ' + 
-				'		<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"> ' +
+				'		<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + creator.logo + '"> ' +
 				'		<div class="title" cid="'+ topic.cid +'" title="'+ topic.get('title') + '">'+ topic.get('title') + '</div> ' +
 				'	</div>' +
 				'	<div class="body"> ' + 
@@ -138,7 +138,7 @@ define([
 		
 		var meta_tpl = 
 			'<div class="meta-container">' + 
-	        '	<img class="creator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '">' + 
+	        '	<img class="creator img-circle" title="' + creator.nickname + '" src="' + creator.logo + '">' + 
 	        '	<div class="creator-nickname">' + creator.nickname + '</div>' + 
 	        '	<div class="create-title">' + i18n.my.projects.ProjectDetailForumTopicView.CREATE_AT + '</div>' + 
 	        '	<div class="time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</div> ' + 

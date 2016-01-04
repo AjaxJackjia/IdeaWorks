@@ -63,8 +63,8 @@
 			render: function(){
 				//logo
 				var $logo = $('<div id="logo">');
-				$logo.append('<a href="'+ util.baseUrl +'">');
-				$logo.find('a').append('<img alt="IdeaWorks" src="'+ util.baseUrl +'/res/images/portal/logo.png">');
+				$logo.append('<a href="index.html">');
+				$logo.find('a').append('<img alt="IdeaWorks" src="res/images/portal/logo.png">');
 				
 				//tabs-container
 				var $well = $('<div class="tabs-container">');

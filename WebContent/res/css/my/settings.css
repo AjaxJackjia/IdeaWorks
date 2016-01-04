@@ -254,6 +254,7 @@
 .setting-detail-profile-view > .profile-container > .base-info > img
 {
 	width: 100px;
+	height: 100px;
 	float: left;
 }
 

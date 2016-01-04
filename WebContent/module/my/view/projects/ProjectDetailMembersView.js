@@ -104,7 +104,7 @@ define([
 		var $tpl = 
 			'<a class="member" cid="'+ member.cid +'"> ' + 
         	'	<div class="member-photo"> ' +
-        	'		<img class="img-circle" src="' + util.baseUrl + member.get('logo') + '"> ' +
+        	'		<img class="img-circle" src="' + member.get('logo') + '"> ' +
         	'	</div> ' +
 		    '    <div class="info"> ' +
 		    '      <h4> ' +
@@ -255,7 +255,7 @@ define([
 		var $tpl = 
 			'<a class="candidate" cid="' + candidate.cid + '"> ' + 
         	'	<div class="candidate-photo"> ' +
-        	'		<img class="img-circle" src="' + util.baseUrl + candidate.get('logo') + '"> ' +
+        	'		<img class="img-circle" src="' + candidate.get('logo') + '"> ' +
         	'	</div> ' +
 		    '    <div class="info"> ' +
 		    '      <h4> ' +
@@ -364,7 +364,7 @@ define([
 	
 	var generateDetailedInfo = function(person) {
 		//basic info
-		$('#person_logo').attr('src', util.baseUrl + person.get('logo'));
+		$('#person_logo').attr('src', person.get('logo'));
 		$('#person_nickname').html(person.get('nickname'));
 		$('#person_userid').html(person.get('userid'));
 		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):i18n.my.projects.ProjectDetailMembersView.DETAIL_SIGNATURE_EMPTY);

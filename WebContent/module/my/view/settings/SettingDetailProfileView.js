@@ -118,7 +118,7 @@ define([
 			'			</ul> ' + 
 			'		</div>' +
 			'	</div>' + 
-			'	<img class="img-circle" src="'+ util.baseUrl + user.get('logo') +'">' + 
+			'	<img class="img-circle" src="'+ user.get('logo') +'">' + 
 			'	<div class="info">' + 
 			'		<h3 class="user">' + user.get('nickname') + ' (' + user.get('userid') + ') </h3>' + 
 	        '		<div class="signature">' + 
@@ -382,7 +382,7 @@ define([
 		
 		//检查logo上传
 		validate: function() {
-			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
+			var maxsize = 300 * 1024; //文件大小最大300k
 			var emptyMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_EMPTY;
 			var errMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_MAX_SIZE;
 			var fileTypeMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_FILE_TYPE;
@@ -771,7 +771,7 @@ define([
 			data.newpassword = md5($('#new_pwd_input').val());
 			
 			$.ajax({
-			    url: util.baseUrl + '/api/auth/password',
+			    url: 'api/auth/password',
 			    data: data,
 			    type: 'POST',
 			    success: function(result){

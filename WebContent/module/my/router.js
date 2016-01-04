@@ -13,7 +13,7 @@ define([ 'backbone', 'util',
 		var topPanel = new TopPanelView();
 		$('body > .content-panel').before(topPanel.render().el);
 	}else{
-		window.location.href = util.baseUrl + '/login.html';
+		window.location.href = 'login.html';
 	}
 	
 	// router basic settings
@@ -34,7 +34,7 @@ define([ 'backbone', 'util',
     router.on('route', function (route, params) {
     	//check user login status when change router
     	if(!util.isLogin()) {
-    		window.location.href = util.baseUrl + '/login.html';
+    		window.location.href = 'login.html';
     	}
     	
         require([route], function (controller) {

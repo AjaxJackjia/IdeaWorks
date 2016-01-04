@@ -90,7 +90,7 @@ define([
 		
 		updateProfile: function() {
 			var $profile = $('.profile', this.el);
-			$profile.find('img').attr('src', util.baseUrl + $.cookie('userlogo'));
+			$profile.find('img').attr('src', $.cookie('userlogo'));
 			$profile.find('img').attr('alt', $.cookie('nickname'));
 			$profile.find('h4').attr('title', $.cookie('nickname'));
 			$profile.find('h4').html($.cookie('nickname'));
@@ -103,7 +103,7 @@ define([
 		var $user = $('<div class="profile">');
 		var user_tpl = 
 			'<a class="avatar" href="#settings"> ' + 
-			'	<img src="'+ util.baseUrl + $.cookie('userlogo') + '" class="img-circle" alt="' + $.cookie('nickname') + '"> ' +
+			'	<img src="' + $.cookie('userlogo') + '" class="img-circle" alt="' + $.cookie('nickname') + '"> ' +
 			'</a> ' +
 			'<a class="username" href="#settings"> ' + 
             '	<h4 title="' + $.cookie('nickname') + '">' + $.cookie('nickname') + '</h4> ' +

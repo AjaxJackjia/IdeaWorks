@@ -26,9 +26,9 @@ define([ 'backbone', 'util', 'i18n!../../../nls/translation' ], function(Backbon
 			var $more = $('<a class="btn btn-info" href="http://www.cityu.edu.hk/provost/dec/" target="_blank">' + i18n.portal.IntroductionView.DETAIL_INFORMATION + '</a>');
 			
 			var imagesContent = 
-				'<div class="row"><img class="img-thumbnail" src="'+ util.baseUrl +'/res/images/portal/introduction/discovery_1.png"></div>' + 
-				'<div class="row"><img class="img-thumbnail" src="'+ util.baseUrl +'/res/images/portal/introduction/discovery_2.png"></div>' +
-				'<div class="row"><img class="img-thumbnail" src="'+ util.baseUrl +'/res/images/portal/introduction/discovery_3.png"></div>';
+				'<div class="row"><img class="img-thumbnail" src="res/images/portal/introduction/discovery_1.png"></div>' + 
+				'<div class="row"><img class="img-thumbnail" src="res/images/portal/introduction/discovery_2.png"></div>' +
+				'<div class="row"><img class="img-thumbnail" src="res/images/portal/introduction/discovery_3.png"></div>';
 			var $images = $(imagesContent);
 			
 			$(this.el).append($mainTitle);

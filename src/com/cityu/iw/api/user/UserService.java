@@ -221,15 +221,27 @@ public class UserService extends BaseService {
 		}
 		
 		/*
-		 * Step 3. 将logo写入server
+		 * Step 3. 将logo写入server,并删除之前的logo
 		 * */
 		String suffix = filename.substring(filename.lastIndexOf("."));
 		filename = p_userid + suffix; //修改文件名使其更符合规范(命名规范为userid.xxx)
-	    String fileLocation = Config.WEBCONTENT_DIR + Config.USER_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
+	    String fileLocation = getWebAppAbsolutePath() + Config.USER_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
 			return null;
 		}
+	    
+	    String sqlSelect = "select logo from ideaworks.user where id = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sqlSelect, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			String logo = rs_stmt.getString("logo");
+			String preLogoPath = getWebAppAbsolutePath() + Config.USER_IMG_BASE_DIR + logo;
+			if(!logo.equals(filename)) {
+				FileUtil.delete(preLogoPath); //删除之前的logo
+			}
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
 	    
 		/*
 		 * Step 4. 将logo更新到DB
@@ -240,7 +252,7 @@ public class UserService extends BaseService {
 							 "	logo = ? " + 
 							 "where " + 
 							 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, filename, p_userid);
+		stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, filename, p_userid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		

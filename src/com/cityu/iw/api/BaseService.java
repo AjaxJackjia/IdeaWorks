@@ -1,5 +1,6 @@
 package com.cityu.iw.api;
 
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -85,4 +86,12 @@ public class BaseService
     	
     	return genToken == null ? false : genToken.equals(p_token);
     }
+    
+	//获取webapp的绝对路径, 通过class所在的目录推断而得
+    //例如: xxxx/Ideaworks/
+	public String getWebAppAbsolutePath() {
+		URL resource = getClass().getResource("/");
+		String path = resource.getPath();
+		return path.replace("WEB-INF/classes/", "");
+	}
 }

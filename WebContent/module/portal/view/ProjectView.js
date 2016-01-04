@@ -20,7 +20,7 @@ define([ 'backbone', 'util', 'i18n!../../../nls/translation' ], function(Backbon
 				var $description = $('<p>' + this.project.get('content') + '</p>');
 				var $more = $('<a href="' + this.project.get('directUrl') + '" target="_blank">' + i18n.portal.ProjectView.DETAIL_INFORMATION + '</a>');
 				var imagesContent = 
-					'<div class="row"><img class="img-thumbnail" src="'+ util.baseUrl +'/res/images/portal/projects/' + this.project.get('img') + '"></div>';
+					'<div class="row"><img class="img-thumbnail" src="res/images/portal/projects/' + this.project.get('img') + '"></div>';
 				var $images = $(imagesContent);
 				
 				$(this.el).append($title);

@@ -53,6 +53,12 @@ create option中的参数顺序为 ？；
 
 调用save方法的话(直接降级为一个ajax调用)，option中的参数顺序为 response， error，type，例：error中参数返回 Object，error，Unauthorized
 
+# 网站部署
 
+1. mysql数据恢复;
+2. 备份根目录下的uploads文件夹(注明日期);
+3. 打包war并上传到网站;
+4. 使用之前备份的uploads文件夹恢复内容;
+5. 测试网站可用性;
 
 

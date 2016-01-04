@@ -47,7 +47,7 @@ define([
 			data.language = this.model.get('language');
 			
 			$.ajax({
-			    url: util.baseUrl + '/api/users/' + util.currentUser() + '/advancedsetting',
+			    url: 'api/users/' + util.currentUser() + '/advancedsetting',
 			    data: data,
 			    type: 'POST',
 			    success: function(result){

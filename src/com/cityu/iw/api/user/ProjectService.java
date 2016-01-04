@@ -1,6 +1,7 @@
 package com.cityu.iw.api.user;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -48,6 +50,7 @@ public class ProjectService extends BaseService {
 	private static final int SECURITY_PUBLIC_FLAG = 0;	//项目对外公开
 	private static final int SECURITY_PRIVATE_FLAG = 0;	//项目仅对组内公开
 	@Context HttpServletRequest request;
+	@Context ServletContext context;
 	
 	@GET
 	@Path("")
@@ -384,7 +387,7 @@ public class ProjectService extends BaseService {
 		 * Step 3. 将logo写入server,并删除之前的logo
 		 * */
 		filename = "prj_" + p_projectid + "_" + filename; //修改文件名使其更符合规范
-	    String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
+	    String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
 			return null;
@@ -395,8 +398,8 @@ public class ProjectService extends BaseService {
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
 			String logo = rs_stmt.getString("logo");
-			String preLogoPath = Config.WEBCONTENT_DIR + Config.PROJECT_IMG_BASE_DIR + logo;
-			if(!logo.equals(DEFAULT_PROJECT_LOGO)) {
+			String preLogoPath = getWebAppAbsolutePath() + Config.PROJECT_IMG_BASE_DIR + logo;
+			if(!logo.equals(DEFAULT_PROJECT_LOGO) || !logo.equals(filename)) {
 				FileUtil.delete(preLogoPath); //删除之前的logo
 			}
 		}
@@ -422,10 +425,10 @@ public class ProjectService extends BaseService {
 		//记录activity
 		JSONObject info = new JSONObject();
 		//param: projectid, operator, action, entity, title
-		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, info);
+		ProjectActivityService.recordActivity(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_LOGO, info);
 		
 		//通知该project中的所有成员
-		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPLOAD, Config.Entity.PROJECT_LOGO, info);
+		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_LOGO, info);
 		
 		return buildResponse(OK, logoObj);
 	}

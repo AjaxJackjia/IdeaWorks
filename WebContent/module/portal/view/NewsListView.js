@@ -27,13 +27,13 @@ define([
 		var _itemHeader_tpl = 
 			'<div class="header-wrap"> ' + 
 			'	<h2 class="item-title"> ' +
-			'		<a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '">' + news.get('title') + '</a> ' + 
+			'		<a href="index.html#news?id='+ news.get('newsid') + '">' + news.get('title') + '</a> ' + 
 			'	</h2> ' + 
 			'	<div class="item-time">' + news.get('time') + '</div> ' +
 			'	<div class="line"></div> ' +
 			'	<div class="item-description">' + news.get('abstractContent') + '</div> ' +
 			'	<div class="item-action"> ' +
-            '		<a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '" class="read-more">' + i18n.portal.NewsListView.READ_MORE + '<i class="fa fa-angle-right"></i></a> ' +
+            '		<a href="index.html#news?id='+ news.get('newsid') + '" class="read-more">' + i18n.portal.NewsListView.READ_MORE + '<i class="fa fa-angle-right"></i></a> ' +
             '	</div> ' +
             '</div>';
 		

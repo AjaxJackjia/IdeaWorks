@@ -30,9 +30,9 @@ define([ 'backbone', 'headroom', 'util', 'i18n!../../../nls/translation' ], func
 				$nav.append('<li><a href="'+ item.url +'">' + item.index + '</a></li>');
 			});
 			
-			var brandUrl = util.baseUrl + '/index.html';
+			var brandUrl = 'index.html';
 			var $brand = $('<a class="brand" href="'+ brandUrl + '">');
-			$brand.append('<img alt="IdeaWorks" src="'+ util.baseUrl +'/res/images/portal/logo.png">');
+			$brand.append('<img alt="IdeaWorks" src="res/images/portal/logo.png">');
 			
 			var $headerWrapper = $('<div class="wrapper">');
 			

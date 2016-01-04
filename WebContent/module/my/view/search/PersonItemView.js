@@ -49,7 +49,7 @@ define([
 			'	<a class="view-profile btn btn-default">' + i18n.my.search.PersonItemView.DETAIL + '</a>' + 
 			'</div>' + 
         	'<div class="person-photo"> ' +
-        	'	<img class="img-circle" src="' + util.baseUrl + person.get('logo') + '"> ' +
+        	'	<img class="img-circle" src="' + person.get('logo') + '"> ' +
         	'</div> ' +
 		    '<div class="person-info"> ' +
 		    '   <h4> ' +
@@ -157,7 +157,7 @@ define([
 	
 	var generateDetailedInfo = function(person) {
 		//basic info
-		$('#person_logo').attr('src', util.baseUrl + person.get('logo'));
+		$('#person_logo').attr('src', person.get('logo'));
 		$('#person_nickname').html(person.get('nickname'));
 		$('#person_userid').html(person.get('userid'));
 		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):i18n.my.search.PersonItemView.DETAIL_SIGNATURE_EMPTY);

@@ -70,7 +70,7 @@ define([
 		status_tpl = '<div class="project-status ' + status_class + '">'+ status_content +'</div>';
 		
 		//logo view dom
-		var logo_tpl = '<img src="'+ util.baseUrl + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';
+		var logo_tpl = '<img src="' + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';
 	
 		//info view dom
 		var advisor = project.get('advisor');

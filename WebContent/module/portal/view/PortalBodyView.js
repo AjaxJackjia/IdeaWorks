@@ -32,7 +32,7 @@ define([
 			   '		<div class="carousel-content">The Discovery-enriched Curriculum (DEC) has the goal of giving all students the opportunity to make an original discovery while at City University of Hong Kong. The DEC has been set as the academic blueprint in CityU Academic Development Proposal 2012-15 that was endorsed by the UGC.</div>' + 
 			   '		<div class="carousel-link"><a class="btn" href="index.html#introduction" target="_blank">' + i18n.portal.PortalBodyView.READ_MORE + '<i class="fa fa-angle-right"></i></a></div>  					   ' + 
 			   '	  </div>							 										       ' +
-			   '      <img src="'+ util.baseUrl +'/res/images/portal/portal1.png" alt="First slide">   ' + 
+			   '      <img src="res/images/portal/portal1.png" alt="First slide">   ' + 
 			   '   </div>																			   ' + 
 			   '   <div class="item">																   ' + 
 			   '	  <div class="carousel-fg">														   ' +
@@ -40,7 +40,7 @@ define([
 			   '		<div class="carousel-content">The Discovery-enriched Curriculum (DEC) has the goal of giving all students the opportunity to make an original discovery while at City University of Hong Kong. The DEC has been set as the academic blueprint in CityU Academic Development Proposal 2012-15 that was endorsed by the UGC.</div>' + 
 			   '		<div class="carousel-link"><a class="btn" href="index.html#introduction" target="_blank">' + i18n.portal.PortalBodyView.READ_MORE + '<i class="fa fa-angle-right"></i></a></div>  					   ' + 
 			   '	  </div>					            									       ' +
-			   '      <img src="'+ util.baseUrl +'/res/images/portal/portal2.jpg" alt="Second slide">  ' + 
+			   '      <img src="res/images/portal/portal2.jpg" alt="Second slide">  ' + 
 			   '   </div>							  												   ' + 
 			   '</div>								  												   ' + 
 			   '<!-- 轮播（Carousel）导航 -->							  								   ' + 
@@ -70,7 +70,7 @@ define([
 			$(this.el).append($reason);
 			
 			//Part #3: latest news (three items with thumbnail style)
-			var moreNewsUrl = util.baseUrl + '/index.html#news';
+			var moreNewsUrl = 'index.html#news';
 			var $newsTitle = $('<div class="row limit-width latest-news-title"><h1><span>' + i18n.portal.PortalBodyView.LATEST_NEWS + '<a class="title-more" href="'+ moreNewsUrl +'">      ' + i18n.portal.PortalBodyView.READ_MORE + '>></a></span></h1></div>');
 			var $news = $('<div class="row limit-width latest-news">');
 			var news_tpl = '';
@@ -97,7 +97,7 @@ define([
 			$(this.el).append($microscope);
 			
 			//Part #5: popular projects (three items with thumbnail style)
-			var morePorjectsUrl = util.baseUrl + '/index.html#projects';
+			var morePorjectsUrl = 'index.html#projects';
 			var $projectsTitle = $('<div class="row limit-width popular-projects-title"><h1><span>' + i18n.portal.PortalBodyView.POPULAR_PROJECTS + '<a class="title-more" href="'+ morePorjectsUrl +'">      ' + i18n.portal.PortalBodyView.READ_MORE + '>></a></span></h1></div>');
 			var $projects = $('<div class="row limit-width popular-projects">');
 			var projects_tpl = '';
@@ -115,7 +115,7 @@ define([
 				'<div class="container padded text-center">' +
 				'	<h1>' + i18n.portal.PortalBodyView.JOINUS_TITLE + '</h1>' +
 				'	<h3>IdeaWorks captures the DEC approach to teaching and learning, which is to motivate and ignite a passion for knowledge and discovery in our students, prepare them to practice professionally at and beyond international standards, and promote a culture of knowledge and innovation that spurs local and global advancements in professional practice.</h3>' +
-				'	<a href="'+ util.baseUrl +'/login.html" class="btn btn-transparent btn-huge" id="try-now-btn">' + i18n.portal.PortalBodyView.TRY_NOW + '</a>' +
+				'	<a href="login.html" class="btn btn-transparent btn-huge" id="try-now-btn">' + i18n.portal.PortalBodyView.TRY_NOW + '</a>' +
 				'</div>';
 			$joinus.html(joinus_tpl);
 
@@ -129,11 +129,11 @@ define([
 		var tpl = 
 				'<div class="latest-news-item">' +
 				'	<div class="thumbnail">' + 
-				'		<img src="'+ util.baseUrl +'/res/images/portal/news/' + news.get('img') + '">' + 
+				'		<img src="res/images/portal/news/' + news.get('img') + '">' + 
 				'		<div class="caption">' + 
 				'			<h3 title="' + news.get('title') + '">' + news.get('title') + '</h3>' + 
 				'			<p class="news_abstract">'+ news.get('abstractContent') +'</p>' + 
-				'			<p><a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '" target="_blank" class="btn btn-primary">' + i18n.portal.PortalBodyView.READ_MORE + ' >></a></p>' +
+				'			<p><a href="index.html#news?id='+ news.get('newsid') + '" target="_blank" class="btn btn-primary">' + i18n.portal.PortalBodyView.READ_MORE + ' >></a></p>' +
 				'		</div>' +
 				'	</div>' + 
 				'</div>';
@@ -144,11 +144,11 @@ define([
 		var tpl = 
 				'<div class="popular-projects-item">' +
 				'	<div class="thumbnail">' + 
-				'		<img src="'+ util.baseUrl +'/res/images/portal/projects/' + project.get('img') + '">' + 
+				'		<img src="res/images/portal/projects/' + project.get('img') + '">' + 
 				'		<div class="caption">' + 
 				'			<h3 title="' + project.get('title') + '">' + project.get('title') + '</h3>' + 
 				'			<p class="project_abstract">' + project.get('content') + '</p>' + 
-				'			<p><a href="'+ util.baseUrl +'/index.html#projects?id='+ project.get('projectid') + '" target="_blank" class="btn btn-primary">' + i18n.portal.PortalBodyView.READ_MORE + ' >></a></p>' +
+				'			<p><a href="index.html#projects?id='+ project.get('projectid') + '" target="_blank" class="btn btn-primary">' + i18n.portal.PortalBodyView.READ_MORE + ' >></a></p>' +
 				'		</div>' +
 				'	</div>' + 
 				'</div>';

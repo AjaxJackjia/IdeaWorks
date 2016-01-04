@@ -152,15 +152,11 @@ define(['jquery', 'cookie', 'i18n!../../nls/translation' ], function($, cookie, 
 		}
 		else if(response.entity == entity.PROJECT_ABSTRACT)
 		{
-			return kv.MODIFY + ' ' + kv.PROJECT + kv.OF + ' ' + kv.ABSTRACT + ' ' + 
-				kv.emphasize(kv.FROM) + ' ' + originInfo.original + ' ' + 
-				kv.emphasize(kv.TO) + ' ' + originInfo.current;
+			return kv.MODIFY + ' ' + kv.PROJECT + kv.OF + ' ' + kv.ABSTRACT;
 		}
 		else if(response.entity == entity.PROJECT_LOGO)
 		{
-			return kv.MODIFY + ' ' + kv.PROJECT + kv.OF + ' ' + kv.LOGO + ' ' + 
-				kv.emphasize(kv.FROM) + ' ' + originInfo.original + ' ' + 
-				kv.emphasize(kv.TO) + ' ' + originInfo.current;
+			return kv.MODIFY + ' ' + kv.PROJECT + kv.OF + ' ' + kv.LOGO;
 		}
 		else if(response.entity == entity.PROJECT_STATUS)
 		{
@@ -285,7 +281,7 @@ define(['jquery', 'cookie', 'i18n!../../nls/translation' ], function($, cookie, 
 	var rejectActionMapping = function(response) {
 		if(response.entity == entity.APPLICATION)
 		{
-			return kv.REJECT + ' ' + kv.YOU + ' ' + kv.TO + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
+			return kv.REJECT + ' ' + kv.YOU + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
 		}
 		else
 		{
@@ -295,7 +291,7 @@ define(['jquery', 'cookie', 'i18n!../../nls/translation' ], function($, cookie, 
 	var agreeActionMapping = function(response) {
 		if(response.entity == entity.APPLICATION)
 		{
-			return kv.AGREE + ' ' + kv.YOU + ' ' + kv.TO + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
+			return kv.AGREE + ' ' + kv.YOU + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
 		}
 		else
 		{

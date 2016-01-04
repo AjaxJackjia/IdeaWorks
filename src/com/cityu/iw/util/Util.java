@@ -1,5 +1,6 @@
 package com.cityu.iw.util;
 
+import java.net.URL;
 import java.security.MessageDigest;
 
 public class Util {

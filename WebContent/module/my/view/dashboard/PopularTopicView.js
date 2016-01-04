@@ -49,11 +49,11 @@ define([ 'backbone', 'util', 'i18n!../../../../nls/translation' ], function(Back
 		var message = '';
 		if(topic.get('msg_count') > 1) 
 		{
-			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSG;
+			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSGS;
 		}
 		else
 		{
-			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSGS;
+			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSG;
 		}
 		
 		var tpl = 

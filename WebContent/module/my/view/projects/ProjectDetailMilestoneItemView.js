@@ -114,7 +114,7 @@ define([
 			'	</div>' +
 			'	<div class="body"> ' + 
 			'		<div class="meta">' + 
-			'			<img class="creator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"/> ' + 
+			'			<img class="creator img-circle" title="' + creator.nickname + '" src="' + creator.logo + '"/> ' + 
 			'			<div class="time">' + util.timeformat(new Date(milestone.get('time')), "smart") + '</div> ' + 
 			'		</div> ' +
 			'		<div class="description" title="'+ milestone.get('description') + '">'+ milestone.get('description') + '</div> ' +
@@ -140,7 +140,7 @@ define([
 			'	<div class="body"> ' + 
 			'		<div class="detail">' +
 			'			<div class="meta-info"> ' + 
-			'				<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"> ' +
+			'				<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + creator.logo + '"> ' +
 			'				<span class="create-operator-nickname">' + creator.nickname + '</span>' +
 			'				<span class="create-title">' + i18n.my.projects.ProjectDetailMilestoneItemView.CREATE_AT + '</span>' + 
 			'				<span class="create-time">' + util.timeformat(new Date(milestone.get('time')), "smart") + '</span> ' + 

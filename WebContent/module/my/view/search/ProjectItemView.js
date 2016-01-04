@@ -49,7 +49,7 @@ define([
 		joinProject: function() {
 			var project = this.model;
 			$.ajax({
-			    url: util.baseUrl + '/api/users/' + util.currentUser() + '/projects/' + project.get('projectid') + '/applications',
+			    url: 'api/users/' + util.currentUser() + '/projects/' + project.get('projectid') + '/applications',
 			    data: {'proposer[userid]' : util.currentUser(), 'projectid' : project.get('projectid')},
 			    type: 'POST',
 			    success: function(result){
@@ -96,7 +96,7 @@ define([
 			  			  '</div>';
 		}
 						 
-		var logo_tpl = '<img src="'+ util.baseUrl + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';
+		var logo_tpl = '<img src="' + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';
 		
 		var info_tpl = 
 					'<div class="info"> ' + 

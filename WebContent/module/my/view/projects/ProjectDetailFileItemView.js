@@ -59,7 +59,7 @@ define([
 			'			<a class="delete" title="' + i18n.my.projects.ProjectDetailFileItemView.DELETE_FILE_TIPS + '"><i class="fa fa-trash-o"></i></a>'+	
 			'		</div>' +
 			'		<div class="action">' +
-			'			<a class="btn btn-default btn-long" href="' + util.baseUrl + file.get('url') + '" target="_blank">' + i18n.my.projects.ProjectDetailFileItemView.DOWNLOAD_FILE + '</a>' + 
+			'			<a class="btn btn-default btn-long" href="' + file.get('url') + '" target="_blank">' + i18n.my.projects.ProjectDetailFileItemView.DOWNLOAD_FILE + '</a>' + 
 			'		</div>' +
 			'	</div>' +
 			'</div>' +
@@ -67,7 +67,7 @@ define([
 			'	<a class="filename truncate" title="' + file.get('filename') + '">' + file.get('filename') + '</a>' + 
 			'	<a class="filedescription truncate" title="' + file.get('description') + '">' + file.get('description') + '</a>' + 
 			'	<div class="user">' + 
-		    '		<img class="img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '">' +
+		    '		<img class="img-circle" title="' + creator.nickname + '" src="' + creator.logo + '">' +
 		    '		<div class="name truncate">' + creator.nickname + '</div>' +
 		    '	</div>' + 
 			'</div>';

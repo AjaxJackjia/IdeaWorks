@@ -121,7 +121,7 @@ public class ProjectFileService extends BaseService {
 			file.put("filename", rs_stmt.getString("filename"));
 			file.put("filesize", rs_stmt.getString("filesize"));
 			file.put("filetype", rs_stmt.getString("filetype"));
-			String fileUrl = "/api/users/" + p_userid + "/projects/" + p_projectid + "/files/" + rs_stmt.getInt("id") + "/download";
+			String fileUrl = "api/users/" + p_userid + "/projects/" + p_projectid + "/files/" + rs_stmt.getInt("id") + "/download";
 			file.put("url", fileUrl);
 			JSONObject creator = new JSONObject();
 			creator.put("userid", rs_stmt.getString("creator"));
@@ -186,7 +186,7 @@ public class ProjectFileService extends BaseService {
 			file.put("filename", rs_stmt.getString("filename"));
 			file.put("filesize", rs_stmt.getString("filesize"));
 			file.put("filetype", rs_stmt.getString("filetype"));
-			String fileUrl = "/api/users/" + p_userid + "/projects/" + p_projectid + "/files/" + rs_stmt.getInt("id") + "/download";
+			String fileUrl = "api/users/" + p_userid + "/projects/" + p_projectid + "/files/" + rs_stmt.getInt("id") + "/download";
 			file.put("url", fileUrl);
 			JSONObject creator = new JSONObject();
 			creator.put("userid", rs_stmt.getString("creator"));
@@ -245,9 +245,10 @@ public class ProjectFileService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		if(fileName.length() > 0) {
-			String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(fileName, "utf-8");
-			FileInputStream fis = new FileInputStream(new File(fileLocation));
+		String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(fileName, "utf-8");
+		File file = new File(fileLocation);
+		if(fileName.length() > 0 && file.exists()) {
+			FileInputStream fis = new FileInputStream(file);
 			byte[] byteArray = new byte[fis.available()];
 			fis.read(byteArray);
 			response.setHeader("Content-Disposition","attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));//为文件命名
@@ -307,7 +308,7 @@ public class ProjectFileService extends BaseService {
 		/*
 		 * Step 3. 将文件写入server
 		 * */
-	    String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
+	    String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
 			return null;
@@ -411,7 +412,7 @@ public class ProjectFileService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//删除file文件
-		String fileLocation = Config.WEBCONTENT_DIR + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
+		String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
 		FileUtil.delete(fileLocation);
 		
 		//record activity

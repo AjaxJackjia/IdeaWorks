@@ -66,7 +66,7 @@ define([
 			    '<div class="content"> ' + 
 			    '	<div class="notification-header"> ' + 
 			    '		<div class="operator"> ' +
-			    '			<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '">' +
+			    '			<img class="img-circle" title="' + operator.nickname + '" src="' + operator.logo + '">' +
 			    '			<div class="name truncate" title="' + operator.nickname + '">' + operator.nickname + '</div>' +
 			    '		</div>' + 
 			    '		<div class="time">' + util.timeformat(new Date(notification.get('time')), "smart") + '</div>' + 

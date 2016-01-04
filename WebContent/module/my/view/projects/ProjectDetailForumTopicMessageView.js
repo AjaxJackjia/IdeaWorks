@@ -263,7 +263,7 @@ define([
 			tpl = '<div class="message other" cid="'+ message.cid +'">';
 		}
 		tpl += 
-			'	<img class="img-circle" title="' + from.nickname + '" src="' + util.baseUrl + from.logo + '">' + 
+			'	<img class="img-circle" title="' + from.nickname + '" src="' + from.logo + '">' + 
 			'	<div class="message-body"> ' +
 			'		<div class="message-title"> ' + 
 			'			<span class="message-from">'+ from.nickname +'</span>' + 
@@ -542,7 +542,7 @@ define([
 		
 		var tpl = 
 				'<div class="message-origin" cid="'+ message.cid +'">'+
-				'	<img class="img-circle" title="' + from.nickname + '" src="' + util.baseUrl + from.logo + '">' + 
+				'	<img class="img-circle" title="' + from.nickname + '" src="' + from.logo + '">' + 
 				'	<div class="message-body"> ' +
 				'		<div class="message-title"> ' + 
 				'			<span class="message-from">'+ from.nickname +'</span>' + 
@@ -561,7 +561,7 @@ define([
 		
 		var tpl = 
 				'<div class="reply-message" cid="'+ message.cid +'">'+
-				'	<img class="img-circle" title="' + from.nickname + '" src="' + util.baseUrl + from.logo + '">' + 
+				'	<img class="img-circle" title="' + from.nickname + '" src="' + from.logo + '">' + 
 				'	<div class="message-body"> ' +
 				'		<div class="message-title"> ' + 
 				'			<span class="message-from">'+ from.nickname +' <b>' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_TO + '</b> ' + to.nickname + '</span>' + 

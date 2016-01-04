@@ -285,7 +285,7 @@ define([
 			'	<div class="actions">' + ProjectDetailMenu_templete(project) +
 			'	</div>' + 
 			'	<div class="content">' + 
-			'		<img src="' + util.baseUrl + project.get('logo') + '" alt="' + project.get('title') + '" class="img-rounded" />' +
+			'		<img src="' + project.get('logo') + '" alt="' + project.get('title') + '" class="img-rounded" />' +
 			'		<div class="info"> ' + 
 			'			<h4 class="project-title">' + project.get('title') + '</h4>' + 
 			'			<p class="project-advisor">' + i18n.my.projects.ProjectDetailView.ADVISOR + ': ' + advisor.nickname + '</p>' + 
@@ -467,7 +467,7 @@ define([
 		
 		//检查logo上传
 		validate: function() {
-			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
+			var maxsize = 300 * 1024; //头像文件 - 文件大小最大300k
 			var emptyMsg	 = i18n.my.projects.ProjectDetailView.CHECK_ALERT_EMPTY;
 			var errMsg		 = i18n.my.projects.ProjectDetailView.CHECK_ALERT_MAX_SIZE;
 			var fileTypeMsg  = i18n.my.projects.ProjectDetailView.CHECK_ALERT_FILE_TYPE;

@@ -41,7 +41,7 @@ define([
 			'  </div> ' +
 			'  <div class="content"> ' +
 			'	<div class="heading"> ' +
-			'		<img class="img-circle" title="' + operator.nickname + '" src="' + util.baseUrl + operator.logo + '"> ' +
+			'		<img class="img-circle" title="' + operator.nickname + '" src="' + operator.logo + '"> ' +
 			'		<span class="time">' + util.timeformat(new Date(activity.get('time')), "smart") + '</span> ' + 
 			'		<div class="user">' + operator.nickname + '</div> ' +
 			'	</div>' +
