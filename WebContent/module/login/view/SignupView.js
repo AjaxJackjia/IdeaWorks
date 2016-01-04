@@ -20,7 +20,7 @@ define([
 			var $signup_items = $(SiupItems());
 			
 			var $signup = $('<div class="actions">');
-			$signup.append($('<input class="sign-up btn btn-primary" type="button" value="' + i18n.login.SignupView.SIGN_UP + '">'));
+			$signup.append($('<button class="sign-up btn btn-primary" type="button">' + i18n.login.SignupView.SIGN_UP + '</button>'));
 			
 			//form validator
 			$signup_items.bootstrapValidator({
@@ -35,51 +35,51 @@ define([
 		        	username: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The username is required'
+		                        message: i18n.login.SignupView.CHECK_USERNAME_EMPTY
 		                    },
 		                    regexp: {
 		                        regexp: '^[a-z0-9]+$',
-		                        message: 'The username can consist of lowercase letters and numbers only'
+		                        message: i18n.login.SignupView.CHECK_USERNAME_VALID
 		                    },
 		                    stringLength: {
 		                    	max: 30,
-		                        message: 'The username must be smaller than 30 characters'
+		                        message: i18n.login.SignupView.CHECK_USERNAME_LENGTH
 		                    }
 		                }
 		            },
 		            pwd: {
 		                validators: {
 		                	notEmpty: {
-		                        message: 'The password is required'
+		                        message: i18n.login.SignupView.CHECK_PWD_EMPTY
 		                    },
 		                    identical: {
 		                        field: 'pwd_confirm',
-		                        message: 'The password twice input are not the same'
+		                        message: i18n.login.SignupView.CHECK_PWD_CONFIRM
 		                    },
 		                    stringLength: {
 		                    	min: 6,
-		                        message: 'The password must be larger than 6 characters'
+		                        message: i18n.login.SignupView.CHECK_PWD_LENGTH
 		                    }
 		                }
 		            },
 		            pwd_confirm: {
 		                validators: {
 		                	notEmpty: {
-		                        message: 'The confirm password is required'
+		                        message: i18n.login.SignupView.CHECK_PWD_EMPTY
 		                    },
 		                    identical: {
 		                        field: 'pwd',
-		                        message: 'The password twice input are not the same'
+		                        message: i18n.login.SignupView.CHECK_PWD_CONFIRM
 		                    }
 		                }
 		            },
 		            email: {
 		                validators: {
 		                	notEmpty: {
-		                        message: 'The email address is required'
+		                        message: i18n.login.SignupView.CHECK_EMAIL_EMPTY
 		                    },
 		                	emailAddress: {
-		                        message: 'The value is not a valid email address'
+		                        message: i18n.login.SignupView.CHECK_EMAIL_VALID
 		                    }
 		                }
 		            }
@@ -93,12 +93,17 @@ define([
 		},
 		
 		signup: function() {
+			var self = this;
+			
 			//validate
 			$('#signupAttribute').data('bootstrapValidator').validateField('username');
 			$('#signupAttribute').data('bootstrapValidator').validateField('pwd');
 			$('#signupAttribute').data('bootstrapValidator').validateField('pwd_confirm');
 			$('#signupAttribute').data('bootstrapValidator').validateField('email');
 			if(!$('#signupAttribute').data('bootstrapValidator').isValid()) return;
+			
+			//禁用按钮
+			self.disableBtn();
 			
 			var signupModel = new SignupModel();
 			signupModel.save({
@@ -111,14 +116,28 @@ define([
 					//注册失败
 					if(signupModel.get('msg') != 'ok') {
 						alert(signupModel.get('msg'));
+						
+						//恢复按钮
+						self.activeBtn();
+						
 						return;
 					}
 					
 					//注册成功
-					alert("Sign up success! Please login in use your username and password! Enjoy~")
+					alert(i18n.login.SignupView.SIGN_UP_SUCCESS);
 					window.location.href = util.baseUrl + "/login.html";
 				}
 			}); 
+		},
+		
+		disableBtn: function() {
+			$('.sign-up', this.el).attr('disabled', 'disabled');
+			$('.sign-up', this.el).html(i18n.login.SignupView.SIGNING_UP);
+		},
+		
+		activeBtn: function() {
+			$('.sign-up', this.el).removeAttr('disabled');
+			$('.sign-up', this.el).html(i18n.login.SignupView.SIGN_UP);
 		}
 	});
 	
@@ -140,9 +159,9 @@ define([
 			'	<div class="form-group"> ' + 
 			'		<label for="usertype" class="control-label">' + i18n.login.SignupView.USERTYPE_TITLE + '</label> ' + 
 			'		<select id="usertype" class="form-control"> ' + 
-			'			<option value="0">Student</option>' +
-			'			<option value="1">Teacher</option>' +
-			'			<option value="2">Other</option>' +
+			'			<option value="0">' + i18n.login.SignupView.STUDENT + '</option>' +
+			'			<option value="1">' + i18n.login.SignupView.TEACHER + '</option>' +
+			'			<option value="2">' + i18n.login.SignupView.SOCIAL + '</option>' +
 			'		</select> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 

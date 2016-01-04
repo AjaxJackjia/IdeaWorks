@@ -68,15 +68,18 @@ define({
     		'SIGNIN_TITLE': '登录',
     		'SIGNUP_TITLE': '注册',
     		'SIGNIN_HTML_TITLE': '登录 :: IdeaWorks',
-    		'SIGNUP_HTML_TITLE': '注册 :: IdeaWorks',
+    		'SIGNUP_HTML_TITLE': '注册 :: IdeaWorks'
     	},
     	'SigninView': {
     		'USERNAME': '请输入用户名...',
     		'PASSWORD': '请输入密码...',
-    		'SIGN_IN': '登&nbsp;&nbsp;录'
+    		'CHECK_USERNAME_OR_PWD_EMPTY': '用户名或密码不能为空.',
+    		'SIGN_IN': '登&nbsp;&nbsp;录',
+    		'SIGNING_IN': '登录中...'
     	},
     	'SignupView': {
     		'SIGN_UP': '注&nbsp;&nbsp;册',
+    		'SIGNING_UP': '注册中...',
     		'USERNAME_TITLE': '用户名:',
     		'USERNAME_HOLDER': '请输入用户名...',
     		'PASSWORD_TITLE': '密码:',
@@ -86,6 +89,18 @@ define({
     		'USERTYPE_TITLE': '用户类型:',
     		'EMAIL_TITLE': '邮箱:',
     		'EMAIL_HOLDER': '请输入邮箱...',
+    		'CHECK_USERNAME_EMPTY': '用户名为必填项',
+    		'CHECK_USERNAME_VALID': '用户名必须只能包含小写字母和数字',
+    		'CHECK_USERNAME_LENGTH': '用户名长度必须小于30个字符',
+    		'CHECK_PWD_EMPTY': '密码为必填项',
+    		'CHECK_PWD_CONFIRM': '密码两次输入不一致',
+    		'CHECK_PWD_LENGTH': '密码必须大于6个字符',
+    		'CHECK_EMAIL_EMPTY': '邮箱为必填项',
+    		'CHECK_EMAIL_VALID': '不是有效邮箱',
+    		'STUDENT': '学生',
+    		'TEACHER': '教师',
+    		'SOCIAL': '社会人士',
+    		'SIGN_UP_SUCCESS': '注册成功!请使用刚才注册的用户名密码登录.',
     	}
     },
     

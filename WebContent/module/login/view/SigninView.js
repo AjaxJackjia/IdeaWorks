@@ -13,7 +13,7 @@ define([
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'login', 'validate', 'keypress');
+			_.bindAll(this, 'render', 'login', 'validate', 'keypress', 'disableBtn', 'activeBtn');
 		},
 		
 		render: function(){
@@ -28,7 +28,7 @@ define([
 			$pwd.append('<input id="password" class="form-control ng-valid-minlength valid ng-dirty ng-valid ng-valid-required" type="password" placeholder="' + i18n.login.SigninView.PASSWORD + '" required="" ng-minlength="6">');
 			
 			var $signin = $('<div class="actions">');
-			$signin.append($('<input class="sign-in btn btn-primary" type="button" value="' + i18n.login.SigninView.SIGN_IN + '">'));
+			$signin.append($('<button class="sign-in btn btn-primary" type="button">' + i18n.login.SigninView.SIGN_IN + '</button>'));
 			
 			$(this.el).append($username);
 			$(this.el).append($pwd);
@@ -48,6 +48,8 @@ define([
 	    },
 		
 		login: function() {
+			var self = this;
+			
 			//get params
 			var userid = $("#userid").val();
 			var password = $("#password").val();
@@ -55,6 +57,9 @@ define([
 			if(!this.validate(userid, password)) {
 				return;
 			}
+			
+			//点击登录之后,禁用button
+			self.disableBtn();
 			
 			var loginModel = new LoginModel();
 			loginModel.save({
@@ -66,6 +71,10 @@ define([
 					if(loginModel.get('msg') != 'ok') {
 						$(".actions").find(".login-	").remove();
 						$(".sign-in").before('<div class="login-check alert alert-danger" role="alert">'+ loginModel.get('msg') +'</div>');
+						
+						//恢复按钮状态
+						self.activeBtn();
+						
 						return;
 					}
 					
@@ -89,12 +98,22 @@ define([
 		validate: function(id, pwd) {
 			$(".actions").find(".login-check").remove();
 			if(id == "" || pwd == "") {
-				$(".sign-in").before('<div class="login-check alert alert-danger" role="alert">Username or password can\'t be empty!</div>');
+				$(".sign-in").before('<div class="login-check alert alert-danger" role="alert">' + i18n.login.SigninView.CHECK_USERNAME_OR_PWD_EMPTY + '</div>');
 				
 				return false;
 			}else{
 				return true;
 			}
+		},
+		
+		disableBtn: function() {
+			$('.sign-in', this.el).attr('disabled', 'disabled');
+			$('.sign-in', this.el).html(i18n.login.SigninView.SIGNING_IN);
+		},
+		
+		activeBtn: function() {
+			$('.sign-in', this.el).removeAttr('disabled');
+			$('.sign-in', this.el).html(i18n.login.SigninView.SIGN_IN);
 		}
 	});
 	

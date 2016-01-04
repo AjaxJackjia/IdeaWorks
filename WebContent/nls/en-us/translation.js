@@ -70,15 +70,18 @@ define({
     		'SIGNIN_TITLE': 'Sign In',
     		'SIGNUP_TITLE': 'Sign Up',
     		'SIGNIN_HTML_TITLE': 'Sign In :: IdeaWorks',
-    		'SIGNUP_HTML_TITLE': 'Sign Up :: IdeaWorks',
+    		'SIGNUP_HTML_TITLE': 'Sign Up :: IdeaWorks'
     	},
     	'SigninView': {
     		'USERNAME': 'please enter your username...',
     		'PASSWORD': 'please enter your password...',
-    		'SIGN_IN': 'Sign In'
+    		'CHECK_USERNAME_OR_PWD_EMPTY': 'Username or password can\'t be empty!',
+    		'SIGN_IN': 'Sign In',
+    		'SIGNING_IN': 'Signing in...'
     	},
     	'SignupView': {
     		'SIGN_UP': 'Sign Up',
+    		'SIGNING_UP': 'Signing up...',
     		'USERNAME_TITLE': 'User Name:',
     		'USERNAME_HOLDER': 'user name...',
     		'PASSWORD_TITLE': 'Password:',
@@ -88,6 +91,18 @@ define({
     		'USERTYPE_TITLE': 'User Type:',
     		'EMAIL_TITLE': 'Email:',
     		'EMAIL_HOLDER': 'email...',
+    		'CHECK_USERNAME_EMPTY': 'The username is required',
+    		'CHECK_USERNAME_VALID': 'The username can consist of lowercase letters and numbers only',
+    		'CHECK_USERNAME_LENGTH': 'The username must be smaller than 30 characters',
+    		'CHECK_PWD_EMPTY': 'The password is required',
+    		'CHECK_PWD_CONFIRM': 'The password twice input are not the same',
+    		'CHECK_PWD_LENGTH': 'The password must be larger than 6 characters',
+    		'CHECK_EMAIL_EMPTY': 'The email address is required',
+    		'CHECK_EMAIL_VALID': 'The value is not a valid email address',
+    		'STUDENT': 'Student',
+    		'TEACHER': 'Teacher',
+    		'SOCIAL': 'Social',
+    		'SIGN_UP_SUCCESS': 'Sign up success! Please login in use your username and password! Enjoy~',
     	}
     },
     
