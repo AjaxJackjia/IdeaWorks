@@ -1,4 +1,4 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'i18n!../../../../nls/translation' ], function(Backbone, util, i18n) {
 	var PopularTopicView = Backbone.View.extend({
 		
 		className: 'popular-topic-view',
@@ -17,11 +17,11 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			//container
 			var $container = $('<div class="well">');
 			//title
-			var $title = $('<h4 class="heading">Popular topics</h4>');
+			var $title = $('<h4 class="heading">' + i18n.my.dashboard.PopularTopicView.POPULAR_TOPICS + '</h4>');
 			
 			//content
 			var $content = $('<div class="topics">');
-			$content.append('<div class="topics-placeholder"><h4>No popular topics...</h4></div>');
+			$content.append('<div class="topics-placeholder"><h4>' + i18n.my.dashboard.PopularTopicView.NO_TOPICS + '</h4></div>');
 			
 			//add to container and view
 			$container.append($title);
@@ -46,6 +46,16 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 	});
 	
 	var Topic = function(topic) {
+		var message = '';
+		if(topic.get('msg_count') > 1) 
+		{
+			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSG;
+		}
+		else
+		{
+			message = topic.get('msg_count') + i18n.my.dashboard.PopularTopicView.MSGS;
+		}
+		
 		var tpl = 
 			'<div class="topic">' + 
 			'	<div class="heading">' + 
@@ -54,7 +64,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			'		<span class="time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</span>' +
 			'	</div>' + 
 			'	<div class="content">' + 
-			'		<div class="message">' + topic.get('msg_count') + ' messages </div> ' +
+			'		<div class="message">' + message + ' </div> ' +
 			'		<div class="project"> [ ' + topic.get('project_title') + ' ] </div> ' +
 			'	</div>' + 
 			'</div>';

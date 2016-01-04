@@ -1,5 +1,5 @@
 define([ 
-         'backbone', 'util', 'CheckLib',
+         'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
  		 'css!../../../../lib/iCheck/skins/square/blue.css',
          //view
          'view/projects/ProjectDetailAbstractView',
@@ -17,7 +17,7 @@ define([
  		'model/project/ActivityCollection',
  		'model/project/ApplicationCollection'
        ], 
-    function(Backbone, util, CheckLib, iCheck_css,
+    function(Backbone, util, CheckLib, i18n, iCheck_css,
     		//view
     		ProjectDetailAbstractView,
     		ProjectDetailMembersView,
@@ -67,7 +67,7 @@ define([
 		render: function(){
 			if(this.initFlag == true || this.model == null) {
 				var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
-				$emtpy_placeholder.append('<h4>No project selected...</h4>');
+				$emtpy_placeholder.append('<h4>' + i18n.my.projects.ProjectDetailView.NO_PROJECT_SELECT + '</h4>');
 				$(this.el).html($emtpy_placeholder);
 				
 				//reset init flag
@@ -89,7 +89,7 @@ define([
 		
 		unrender: function() {
 			var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
-			$emtpy_placeholder.append('<h4>No project selected...</h4>');
+			$emtpy_placeholder.append('<h4>' + i18n.my.projects.ProjectDetailView.NO_PROJECT_SELECT + '</h4>');
 			$(this.el).html($emtpy_placeholder);
 		},
 		
@@ -108,13 +108,13 @@ define([
 			var target = $(event.target).html();
 			
 			//第一次点击tab时创建页面并加载(abstract tab页除外)
-			if(target == 'Members' && $('#members').html() == "") {
+			if(target == i18n.my.projects.ProjectDetailView.MEMBERS && $('#members').html() == "") {
 				//members model
 				var members = new MemberCollection();
 				members.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/members';
 				members.fetch({
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project members failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_MEMBERS_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -123,13 +123,13 @@ define([
 					model: members
 				});
 				$(this.el).find('#members').html(membersView.render().el);
-			}else if(target == 'Milestone' && $('#milestone').html() == "") {
+			}else if(target == i18n.my.projects.ProjectDetailView.MILESTONE && $('#milestone').html() == "") {
 				//milestone model
 				var milestones = new MilestoneCollection();
 				milestones.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/milestones';
 				milestones.fetch({
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project milestones failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_MILESTONES_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -138,13 +138,13 @@ define([
 					model: milestones
 				});
 				$(this.el).find('#milestone').html(milestoneView.render().el);
-			}else if(target == 'Forum' && $('#forum').html() == "") {
+			}else if(target == i18n.my.projects.ProjectDetailView.FORUM && $('#forum').html() == "") {
 				//topic model
 				var topics = new TopicCollection();
 				topics.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/topics';
 				topics.fetch({
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project topics failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_TOPICS_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -153,13 +153,13 @@ define([
 					model: topics
 				});
 				$(this.el).find('#forum').html(forumView.render().el);
-			}else if(target == 'Files' && $('#files').html() == "") {
+			}else if(target == i18n.my.projects.ProjectDetailView.FILES && $('#files').html() == "") {
 				//file model
 				var files = new FileCollection();
 				files.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/files';
 				files.fetch({
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project files failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_FILES_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -168,13 +168,13 @@ define([
 					model: files
 				});
 				$(this.el).find('#files').html(filesView.render().el);
-			}else if(target == 'Activity') {//每次点击activity tab的时候都刷新
+			}else if(target == i18n.my.projects.ProjectDetailView.ACTIVITY) {//每次点击activity tab的时候都刷新
 				//activity model
 				var activities = new ActivityCollection();
 				activities.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/activities';
 				activities.fetch({
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project activities failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_ACTIVITIES_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -262,14 +262,14 @@ define([
 		},
 		
 		exitProject: function() {
-			if(confirm('Do you want to exit this project?')) {
+			if(confirm(i18n.my.projects.ProjectDetailView.EXIT_PROJECT_CONFIRM)) {
 				Backbone.trigger('ProjectListView:exitProject', this.model);
 			}
 		},
 		
 		//删除project
 		deleteProject: function() {
-			if(confirm('Do you want to delete this project?')) {
+			if(confirm(i18n.my.projects.ProjectDetailView.DELETE_PROJECT_CONFIRM)) {
 				Backbone.trigger('ProjectListView:deleteProject', this.model);
 			}
 		}
@@ -288,9 +288,9 @@ define([
 			'		<img src="' + util.baseUrl + project.get('logo') + '" alt="' + project.get('title') + '" class="img-rounded" />' +
 			'		<div class="info"> ' + 
 			'			<h4 class="project-title">' + project.get('title') + '</h4>' + 
-			'			<p class="project-advisor">Advisor: ' + advisor.nickname + '</p>' + 
-			'			<p class="project-creator">Creator: ' + creator.nickname + '</p>' + 
-			'			<p class="project-createtime">Create time: ' + util.timeformat(new Date(project.get('createtime'))) + '</p>' + 
+			'			<p class="project-advisor">' + i18n.my.projects.ProjectDetailView.ADVISOR + ': ' + advisor.nickname + '</p>' + 
+			'			<p class="project-creator">' + i18n.my.projects.ProjectDetailView.CREATOR + ': ' + creator.nickname + '</p>' + 
+			'			<p class="project-createtime">' + i18n.my.projects.ProjectDetailView.CREATE_TIME + ': ' + util.timeformat(new Date(project.get('createtime'))) + '</p>' + 
 			'		</div>' +
 			'	</div>' + 
 			'</div>';
@@ -299,22 +299,22 @@ define([
 		var menu_tpl = 
 			'<ul class="project-menu nav nav-tabs" role="tablist">' + 
 			'  <li role="presentation" class="active">' + 
-			'		<a href="#abstract" aria-controls="abstract" role="tab" data-toggle="tab">Abstract</a>' + 
+			'		<a href="#abstract" aria-controls="abstract" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.ABSTRACT + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'  		<a href="#members" aria-controls="members" role="tab" data-toggle="tab">Members</a>' + 
+			'  		<a href="#members" aria-controls="members" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.MEMBERS + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'		<a href="#milestone" aria-controls="milestone" role="tab" data-toggle="tab">Milestone</a>' + 
+			'		<a href="#milestone" aria-controls="milestone" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.MILESTONE + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'		<a href="#forum" aria-controls="forum" role="tab" data-toggle="tab">Forum</a>' + 
+			'		<a href="#forum" aria-controls="forum" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.FORUM + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'		<a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a>' + 
+			'		<a href="#files" aria-controls="files" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.FILES + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'		<a href="#activity" aria-controls="activity" role="tab" data-toggle="tab">Activity</a>' + 
+			'		<a href="#activity" aria-controls="activity" role="tab" data-toggle="tab">' + i18n.my.projects.ProjectDetailView.ACTIVITY + '</a>' + 
 			'  </li>' + 
 			'</ul>';
 		
@@ -342,23 +342,23 @@ define([
 		var isProjectManager = util.currentUser() == creator.userid || util.currentUser() == advisor.userid;
 		
 		//构造menu
-		var build_menu_tpl = ProjectDetailMenuItem_templete("modify-project", "pencil", "Edit") + 
-							 ProjectDetailMenuItem_templete("logo-project", "picture-o", "Logo") + 
+		var build_menu_tpl = ProjectDetailMenuItem_templete("modify-project", "pencil", i18n.my.projects.ProjectDetailView.PROJECT_MENU_EDIT) + 
+							 ProjectDetailMenuItem_templete("logo-project", "picture-o", i18n.my.projects.ProjectDetailView.PROJECT_MENU_LOGO) + 
 							 '<li class="divider"></li>';
 		if(isProjectManager) {
-			build_menu_tpl += ProjectDetailMenuItem_templete("status-project", "paper-plane", "Status") + 
-							  ProjectDetailMenuItem_templete("security-project", "user-secret", "Security") +
-							  ProjectDetailMenuItem_templete("application-project", "envelope", "Application") + 
+			build_menu_tpl += ProjectDetailMenuItem_templete("status-project", "paper-plane", i18n.my.projects.ProjectDetailView.PROJECT_MENU_STATUS) + 
+							  ProjectDetailMenuItem_templete("security-project", "user-secret", i18n.my.projects.ProjectDetailView.PROJECT_MENU_SECURITY) +
+							  ProjectDetailMenuItem_templete("application-project", "envelope", i18n.my.projects.ProjectDetailView.PROJECT_MENU_APPLICATION) + 
 							  '<li class="divider"></li>' + 
-							  ProjectDetailMenuItem_templete("delete-project", "trash", "Delete project");
+							  ProjectDetailMenuItem_templete("delete-project", "trash", i18n.my.projects.ProjectDetailView.PROJECT_MENU_DELETE_PROJECT);
 		}else{
-			build_menu_tpl += ProjectDetailMenuItem_templete("exit-project", "sign-out", "Exit project");
+			build_menu_tpl += ProjectDetailMenuItem_templete("exit-project", "sign-out", i18n.my.projects.ProjectDetailView.PROJECT_MENU_EXIT_PROJECT);
 		}
 			
 		var menu_tpl = 
 			'<div class="project-action-menu"> ' + 
 			'	<a class="btn btn-default dropdown-toggle" type="button" id="project_menu_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + 
-		    '		<i class="fa fa-cogs"></i> Menu <span class="caret"></span> ' + 
+		    '		<i class="fa fa-cogs"></i> ' + i18n.my.projects.ProjectDetailView.PROJECT_MENU + ' <span class="caret"></span> ' + 
 			'	</a> ' + 
 			'	<ul class="dropdown-menu" aria-labelledby="project_menu_dropdown"> ' + build_menu_tpl + 
 			'	</ul> ' + 
@@ -448,7 +448,7 @@ define([
 			    processData: false,
 			    type: 'POST',
 			    success: function(data){
-			    	alert("Upload complete!");
+			    	alert(i18n.my.projects.ProjectDetailView.UPLOAD_SUCCESS);
 			    	
 			    	//更新project
 			    	projectModel.set('logo', data.logo);
@@ -457,7 +457,7 @@ define([
 					$('#logo_upload_sub_view').modal('toggle');
 			    },
 			    error: function(response){
-					var alertMsg = 'Upload logo failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailView.UPLOAD_LOGO_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 			    	//隐藏窗口
 			    	$('#logo_upload_sub_view').modal('toggle');
@@ -468,10 +468,10 @@ define([
 		//检查logo上传
 		validate: function() {
 			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
-			var emptyMsg = "Please select your upload logo image!";
-			var errMsg = "The maxsize of upload file is 1M!";
-			var fileTypeMsg = "The file type doesn't support!";
-			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
+			var emptyMsg	 = i18n.my.projects.ProjectDetailView.CHECK_ALERT_EMPTY;
+			var errMsg		 = i18n.my.projects.ProjectDetailView.CHECK_ALERT_MAX_SIZE;
+			var fileTypeMsg  = i18n.my.projects.ProjectDetailView.CHECK_ALERT_FILE_TYPE;
+			var tipMsg 		 = i18n.my.projects.ProjectDetailView.CHECK_ALERT_BROWSER;
 			var ua = window.navigator.userAgent;
 			var browserCfg = {};
 			if(ua.indexOf("Firefox")>=1){
@@ -521,7 +521,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Change Project Logo</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailView.CHANGE_PROJECT_LOGO + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -529,7 +529,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="upload-logo btn btn-primary">Upload</a> ' + 
+			'	<a type="submit" class="upload-logo btn btn-primary">' + i18n.my.projects.ProjectDetailView.UPLOAD + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -545,11 +545,11 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="fileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="upload_logo_input" class="control-label">File:</label> ' + 
+			'			<label for="upload_logo_input" class="control-label">' + i18n.my.projects.ProjectDetailView.UPLOAD_FILE + '</label> ' + 
 			'			<input id="upload_logo_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label class="control-label">(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)</label> ' + 
+			'			<label class="control-label">' + i18n.my.projects.ProjectDetailView.UPLOAD_TIPS + '</label> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '
@@ -645,7 +645,7 @@ define([
 			this.model.save('status', this.currentStatus, {
 				wait: true,
 				error: function(model, response, options) {
-					var alertMsg = 'Update project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailView.UPDATE_STATUS_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -658,7 +658,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Project Status</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailView.PROJECT_STATUS + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -666,8 +666,8 @@ define([
 	var StatusModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailView.PROJECT_STATUS_CANCEL + '</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">' + i18n.my.projects.ProjectDetailView.PROJECT_STATUS_SAVE + '</a> ' + 	
 			'</div> ';
 		return tpl;
 	}
@@ -680,11 +680,11 @@ define([
 			'			<div class="status-container well"> ' + 
 			'				<div class="project-ongoing status-item"  name="iCheck">' + 
 		    '					<input type="radio" />' + 
-			'					<div class="option truncate">Ongoing</div>' + 
+			'					<div class="option truncate">' + i18n.my.projects.ProjectDetailView.PROJECT_STATUS_ONGOING + '</div>' + 
 			'				</div>' + 
 			'				<div class="project-complete status-item"  name="iCheck">' + 
 		    '					<input type="radio" />' + 
-			'					<div class="option truncate">Complete</div>' + 
+			'					<div class="option truncate">' + i18n.my.projects.ProjectDetailView.PROJECT_STATUS_COMPLETE + '</div>' + 
 			'				</div>' + 
 			'			</div>' + 
 			'		</div> ' + 
@@ -782,7 +782,7 @@ define([
 			this.model.save('security', this.currentSecurity, {
 				wait: true,
 				error: function(model, response, options) {
-					var alertMsg = 'Update project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailView.UPDATE_SECURITY_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -795,7 +795,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Project Security</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailView.PROJECT_SECURITY + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -803,8 +803,8 @@ define([
 	var SecurityModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailView.PROJECT_SECURITY_CANCEL + '</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">' + i18n.my.projects.ProjectDetailView.PROJECT_SECURITY_SAVE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -817,11 +817,11 @@ define([
 			'			<div class="security-container well"> ' + 
 			'				<div class="project-public security-item"  name="iCheck">' + 
 		    '					<input type="radio" />' + 
-			'					<div class="option truncate">Project details are visible for everyone</div>' + 
+			'					<div class="option truncate">' + i18n.my.projects.ProjectDetailView.PROJECT_SECURITY_PUBLIC + '</div>' + 
 			'				</div>' + 
 			'				<div class="project-group security-item"  name="iCheck">' + 
 		    '					<input type="radio" />' + 
-			'					<div class="option truncate">Project details are only visible for group members</div>' + 
+			'					<div class="option truncate">' + i18n.my.projects.ProjectDetailView.PROJECT_SECURITY_GROUP + '</div>' + 
 			'				</div>' + 
 			'			</div>' + 
 			'		</div> ' + 
@@ -876,7 +876,7 @@ define([
 						});
 					},
 					error: function(model, response, options) {
-			    		var alertMsg = 'Fetch project applications failed. Please try again later!';
+			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_APPLICATIONS_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 		    		}
 				});
@@ -913,7 +913,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Project Application</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION + '</h3> ' + 
 			'</div>';
 		return tpl;
 	};
@@ -932,16 +932,16 @@ define([
 			'		<thead> ' + 
 			'			<tr> ' + 
 			'				<td class="applicationid">#</td> ' + 
-			'				<td class="application_proposer">Proposer</td> ' + 
-			'				<td class="application_msg">Message</td> ' + 
-			'				<td class="application_createtime">Apply time</td> ' + 
-			'				<td class="application_status">Status</td> ' + 
-			'				<td class="application_action">Action</td> ' + 
+			'				<td class="application_proposer">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_PROPOSER + '</td> ' + 
+			'				<td class="application_msg">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_MESSAGE + '</td> ' + 
+			'				<td class="application_createtime">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_APPLY_TIME + '</td> ' + 
+			'				<td class="application_status">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_STATUS + '</td> ' + 
+			'				<td class="application_action">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_ACTION + '</td> ' + 
 			'			</tr> ' + 
 			'		</thead> ' + 
 			'		<tbody> ' + 
 			'			<tr class="place-holder"> ' + 
-			'				<td colspan="6">No applications</td> ' + 
+			'				<td colspan="6">' + i18n.my.projects.ProjectDetailView.PROJECT_NO_APPLICATIONS + '</td> ' + 
 			'			</tr> ' + 
 			'		</tbody> ' + 
 			'	</table> ' + 
@@ -980,14 +980,16 @@ define([
 			//status and action
 			var status = '';
 			switch(application.get('status')) {
-				case this.APPLIED_FLAG: status = 'applied';break;
-				case this.PASSED_FLAG: status = 'passed';break;
-				case this.REJECTED_FLAG: status = 'rejected';break;
-				default: status = 'unknown';break;
+				case this.APPLIED_FLAG: status = i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_APPLIED;break;
+				case this.PASSED_FLAG: status = i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_PASSED;break;
+				case this.REJECTED_FLAG: status = i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_REJECTED;break;
+				default: status = i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_UNKNOWN;break;
 			}
 			var actions = '';
 			if(application.get('status') == 0) { //待审核状态
-				actions = '<a class="agree btn btn-success">Agree</a><a class="reject btn btn-danger">Rejct</a>';
+				actions = 
+					'<a class="agree btn btn-success">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_AGREE + '</a>' + 
+					'<a class="reject btn btn-danger">' + i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_REJECT + '</a>';
 			}
 			
 			//proposer
@@ -1006,14 +1008,14 @@ define([
 		},
 		
 		agree: function(event) {
-			if(confirm('Do you want to pass this application?')) {
+			if(confirm(i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_AGREE_CONFIRM)) {
 				var self = this;
 				this.model.save('status', this.PASSED_FLAG, {
 					success: function() {
 						
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Update application failed. Please try again later!';
+						var alertMsg = i18n.my.projects.ProjectDetailView.UPDATE_APPLICATIONS_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 						
 						//reset state
@@ -1024,14 +1026,14 @@ define([
 		},
 		
 		reject: function(event) {
-			if(confirm('Do you want to reject this application?')) {
+			if(confirm(i18n.my.projects.ProjectDetailView.PROJECT_APPLICATION_REJECT_CONFIRM)) {
 				var self = this;
 				this.model.save('status', this.REJECTED_FLAG, {
 					success: function() {
 						
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Update application failed. Please try again later!';
+						var alertMsg = i18n.my.projects.ProjectDetailView.UPDATE_APPLICATIONS_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 						
 						//reset state

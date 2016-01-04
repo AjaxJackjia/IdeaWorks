@@ -156,6 +156,73 @@ p, li
 {
 	font-weight: 800;
 }
+
+.footer > .copyright > .switch-lang
+{
+	display: inline-block;
+	margin-left: 15px;
+	height: 25px;
+}
+
+.footer > .copyright > .switch-lang
+{
+	display: inline-block;
+	margin-left: 15px;
+	height: 25px;
+}
+
+.footer > .copyright > .switch-lang .lang-item
+{
+	background-size: 16px 80px;
+	color: #45474b;
+	display: inline-block;
+	padding: 0 10px 0 24px;
+	height: 30px;
+	line-height: 32px;
+}
+
+.footer > .copyright > .switch-lang > button
+{
+	width: 120px;
+	padding: 0px 10px;
+	background-color: #eee;
+	border: none;
+}
+
+.footer > .copyright > .switch-lang > ul.dropdown-menu
+{
+	width: 120px;
+	min-width: 120px;
+	padding: 0;
+}
+
+.footer > .copyright > .switch-lang > ul.dropdown-menu > li
+{
+	width: 120px;
+	padding: 0px 14px;
+	cursor: pointer;
+}
+
+.footer > .copyright > .switch-lang > ul.dropdown-menu > li > span
+{
+	width: 100%;
+}
+
+.footer > .copyright > .switch-lang .lang-item.en-us
+{
+	background: url(../../images/portal/lang.png) 0 -22px no-repeat;
+}
+
+.footer > .copyright > .switch-lang .lang-item.zh-cn
+{
+	background: url(../../images/portal/lang.png) 0 8px no-repeat;
+}
+
+.footer > .copyright > .switch-lang > button > .caret
+{
+	display: inline-block;
+}
+
 /* footer format end */
 
 /* portal body format begin */

@@ -1,4 +1,4 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'i18n!../../../../nls/translation' ], function(Backbone, util, i18n) {
 	var RecentActivityView = Backbone.View.extend({
 		
 		className: 'recent-activity-view',
@@ -18,11 +18,11 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			var $container = $('<div class="well">');
 			
 			//title
-			var $title = $('<h4 class="heading">Recent activities</h4>');
+			var $title = $('<h4 class="heading">' + i18n.my.dashboard.RecentActivityView.RECENT_ACTIVITIES + '</h4>');
 			
 			//content
 			var $content = $('<div class="activities">');
-			$content.append('<div class="activities-placeholder"><h4>No recent activities...</h4></div>');
+			$content.append('<div class="activities-placeholder"><h4>' + i18n.my.dashboard.RecentActivityView.NO_ACTIVITIES + '</h4></div>');
 			
 			//add to container and view
 			$container.append($title);

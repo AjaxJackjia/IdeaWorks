@@ -1,5 +1,7 @@
 (function(win){
 	require.config({
+		locale: $.cookie('userlang') || 'en-us', //设置用户预设的语言
+		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
 			'backbone': '../../lib/backbone/backbone',
@@ -13,6 +15,7 @@
 			'MD5' : '../../lib/js-md5/build/md5.min',
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
+			'i18n': '../../lib/i18n/i18n',
 			'util': '../common/util',
 			'mappingUtil': '../common/mappingUtil',
 			'jxExt': '../common/javascript-extensions'

@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util) {
+    function(Backbone, util, i18n) {
 	var SettingListView = Backbone.View.extend({
 		
 		tagName: 'ul', 
@@ -16,10 +16,10 @@ define([
 			_.bindAll(this, 'render', 'select');
 			
 			this.list = [
-			    {icon: 'user', title: 'Profile'},
-			    {icon: 'bell', title: 'Notification'},
-			    {icon: 'user-secret', title: 'Privacy settings'},
-			    {icon: 'cog', title: 'Advanced settings'}
+			    {icon: 'user', title: i18n.my.settings.SettingListView.PROFILE},
+			    {icon: 'bell', title: i18n.my.settings.SettingListView.NOTIFICATION},
+			    {icon: 'user-secret', title: i18n.my.settings.SettingListView.PRIVACY_SETTINGS},
+			    {icon: 'cog', title: i18n.my.settings.SettingListView.ADVANCED_SETTINGS}
 			];
 			
 			this.render();

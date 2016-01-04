@@ -1,5 +1,5 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../nls/translation',
          //view
          'view/search/SearchMainView',
          'view/notification/NotificationSideView',
@@ -7,7 +7,7 @@ define([
          'css!../../../res/css/my/search.css',
          'css!../../../res/css/my/notification.css'
        ], 
-    function(Backbone, util, 
+    function(Backbone, util, i18n,
     		//view
     		SearchMainView, NotificationSideView,
     		//css
@@ -96,7 +96,7 @@ define([
 		},
 		
 		logout: function() {
-			if(confirm("Are you sure to logout?")) {
+			if(confirm(i18n.my.TopPanelView.LOGOUT_CONFIRM)) {
 				util.logout();
 			}
 		}
@@ -108,11 +108,11 @@ define([
 	var SearchItem = function() {
 		var tpl = 
 				'<div class="search-box"> ' + 
-				'	<div class="search-btn btn btn-default">' +
+				'	<div class="search-btn btn btn-default" title="' + i18n.my.TopPanelView.SEARCH_TITLE + '">' +
 				'		<i class="fa fa-search"></i>' +
 				'	</div>' + 
 				'	<div class="search-input input-group">' +
-				'		<input class="form-control" type="text" placeholder="Search...">' +
+				'		<input class="form-control" type="text" placeholder="' + i18n.my.TopPanelView.SEARCH_INPUT_TITLE + '">' +
 				'	</div>' + 
 				'</div>';
 		return tpl;
@@ -124,10 +124,10 @@ define([
 	var ToolBoxItem = function() {
 		var tpl = 
 				'<div class="tool-box">' +
-				'	<div class="signout-btn btn btn-default">' +
+				'	<div class="signout-btn btn btn-default" title="' + i18n.my.TopPanelView.LOGOUT_TITLE + '">' +
 				'		<i class="fa fa-sign-out"></i>' +
 				'	</div>' + 
-				'	<div class="msg-btn btn btn-default">' +
+				'	<div class="msg-btn btn btn-default" title="' + i18n.my.TopPanelView.NOTIFICATION_TITLE + '">' +
 				'		<i class="fa fa-bell-o"></i>' +
 				'	</div>' +
 				'</div>';

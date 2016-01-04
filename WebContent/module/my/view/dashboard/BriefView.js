@@ -1,4 +1,4 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'i18n!../../../../nls/translation' ], function(Backbone, util, i18n) {
 	var BriefView = Backbone.View.extend({
 		
 		className: 'brief-view',
@@ -14,10 +14,10 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 		},
 		
 		render: function(){
-			$(this.el).append(BriefItem('suitcase', this.model.get('projectNo'), 'projects'));
-			$(this.el).append(BriefItem('thumbs-up', this.model.get('activityNo'), 'activities'));
-			$(this.el).append(BriefItem('users', this.model.get('relatedMemberNo'), 'related members'));
-			$(this.el).append(BriefItem('history', this.model.get('forumParticipationNo'), 'forum participations'));
+			$(this.el).append(BriefItem('suitcase', this.model.get('projectNo'), i18n.my.dashboard.BriefView.PROJECTS));
+			$(this.el).append(BriefItem('thumbs-up', this.model.get('activityNo'), i18n.my.dashboard.BriefView.ACTIVITIES));
+			$(this.el).append(BriefItem('users', this.model.get('relatedMemberNo'), i18n.my.dashboard.BriefView.RELATED_MEMBERS));
+			$(this.el).append(BriefItem('history', this.model.get('forumParticipationNo'), i18n.my.dashboard.BriefView.FORUM_PARTICIPATIONS));
 			
 			return this;
 		},

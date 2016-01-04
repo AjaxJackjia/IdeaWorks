@@ -5,6 +5,9 @@ define([ 'backbone' ], function(Backbone) {
 		defaults: {
 			userid: '',
 			password: '',
+			nickname: '',
+			userlogo: '',
+			userlang: '',
 			msg: ''
 		}
 	});

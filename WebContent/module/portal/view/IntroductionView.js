@@ -1,4 +1,4 @@
-define([ 'backbone', 'util' ], function(Backbone, util) {
+define([ 'backbone', 'util', 'i18n!../../../nls/translation' ], function(Backbone, util, i18n) {
 	var IntroductionView = Backbone.View.extend({
 		
 		className: 'introduction-container',
@@ -23,7 +23,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 				'</ul>';
 			var $points = $(pointsContent);
 			
-			var $more = $('<a class="btn btn-info" href="http://www.cityu.edu.hk/provost/dec/" target="_blank">Detail Information</a>');
+			var $more = $('<a class="btn btn-info" href="http://www.cityu.edu.hk/provost/dec/" target="_blank">' + i18n.portal.IntroductionView.DETAIL_INFORMATION + '</a>');
 			
 			var imagesContent = 
 				'<div class="row"><img class="img-thumbnail" src="'+ util.baseUrl +'/res/images/portal/introduction/discovery_1.png"></div>' + 

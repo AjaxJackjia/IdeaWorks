@@ -1,5 +1,7 @@
 (function(win){
 	require.config({
+		locale: $.cookie('lang') || 'en-us',
+		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
 			'backbone': '../../lib/backbone/backbone-min',
@@ -9,6 +11,7 @@
 			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
 			'css': '../../lib/require-css/css.min',
 			'text': '../../lib/text/text',
+			'i18n': '../../lib/i18n/i18n',
 			'util': '../common/util',
 			'jxExt': '../common/javascript-extensions'
 		},
@@ -46,9 +49,8 @@
 		];
 
 	require(portalDependencies, function(Backbone, bootstrap, util, router, css) {
-		
+
 		//start monitoring
 	    Backbone.history.start();
-	
 	});
 })(window);

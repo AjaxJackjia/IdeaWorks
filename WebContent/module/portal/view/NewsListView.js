@@ -1,4 +1,7 @@
-define([ 'backbone', 'headroom', 'util', 'model/NewsCollection' ], function(Backbone, Headroom, util, NewsCollection) {
+define([ 
+         'backbone', 'util', 'i18n!../../../nls/translation', 
+         'model/NewsCollection' 
+       ], function(Backbone, util, i18n, NewsCollection) {
 	var NewsListView = Backbone.View.extend({
 		
 		className: 'item-list',
@@ -30,7 +33,7 @@ define([ 'backbone', 'headroom', 'util', 'model/NewsCollection' ], function(Back
 			'	<div class="line"></div> ' +
 			'	<div class="item-description">' + news.get('abstractContent') + '</div> ' +
 			'	<div class="item-action"> ' +
-            '		<a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '" class="read-more">Read More <i class="fa fa-angle-right"></i></a> ' +
+            '		<a href="'+ util.baseUrl +'/index.html#news?id='+ news.get('newsid') + '" class="read-more">' + i18n.portal.NewsListView.READ_MORE + '<i class="fa fa-angle-right"></i></a> ' +
             '	</div> ' +
             '</div>';
 		

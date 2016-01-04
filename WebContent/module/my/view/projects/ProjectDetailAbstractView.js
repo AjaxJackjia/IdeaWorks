@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util) {
+    function(Backbone, util, i18n) {
 	var ProjectDetailAbstractView = Backbone.View.extend({
 		
 		className: 'project-detail-abstract-view',
@@ -22,13 +22,13 @@ define([
 			
 			var $abstract = $('<div class="abstract-container well">');
 			if(project.get('abstractContent') == "") {
-				$abstract.append('<div class="placeholder"><h4>No abstract...</h4></div>');
+				$abstract.append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailAbstractView.NO_ABSTRACT + '</h4></div>');
 			}else{
 				$abstract.append('<p>' + project.get('abstractContent') + '</p>');
 			}
 			
 			var $actions = $('<div class="action">');
-			$actions.append('<div class="edit-btn btn btn-default"><i class="fa fa-pencil"></i>     Edit Abstract</div>');
+			$actions.append('<div class="edit-btn btn btn-default"><i class="fa fa-pencil"></i>' + i18n.my.projects.ProjectDetailAbstractView.EDIT_ABSTRACT + '</div>');
 			
 			$(this.el).append($abstract);
 			$(this.el).append($actions);
@@ -109,7 +109,7 @@ define([
 			var project = this.model;
 			var content = $('.abstract-area').val();
 			if(content == "") {
-				alert("Please wirte something about your project...");
+				alert(i18n.my.projects.ProjectDetailAbstractView.EDIT_ABSTRACT_TIPS);
 				return;
 			}
 			
@@ -118,7 +118,7 @@ define([
 				project.save('abstractContent', content, {
 					wait: true,
 					error: function(model, response, options) {
-						var alertMsg = "Update project abstract error! Please try again later...";
+						var alertMsg = i18n.my.projects.ProjectDetailAbstractView.UPDATE_ABSTRACT_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
@@ -131,7 +131,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Modify Project Abstract</h3> ' + 
+			'	<h3 class="modal-title">' +  i18n.my.projects.ProjectDetailAbstractView.MODIFY_ABSTRACT_TITLE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -139,8 +139,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' +  i18n.my.projects.ProjectDetailAbstractView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">' +  i18n.my.projects.ProjectDetailAbstractView.SAVE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}

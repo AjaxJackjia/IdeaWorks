@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
        //view
          'view/search/PersonItemView',
          //model
          'model/search/PersonCollection'
        ], 
-    function(Backbone, util, PersonItemView, PersonCollection) {
+    function(Backbone, util, i18n, PersonItemView, PersonCollection) {
 	var PersonSearchView = Backbone.View.extend({
 		
 		className: 'person-search-view',
@@ -40,14 +40,14 @@ define([
 				data: { key: searchTxt},
 				success: this.render,
 				error: function(model, response, options) {
-					var alertMsg = 'Search person failed. Please try again later!';
+					var alertMsg = i18n.my.search.PersonSearchView.SEARCH_PERSON_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},
 		
 		clean: function() {
-			$(this.el).html(Placeholder('Search Person No result...'));
+			$(this.el).html(Placeholder(i18n.my.search.PersonSearchView.SEARCH_NO_PERSON));
 		},
 		
 		addPersons: function() {

@@ -1,4 +1,7 @@
-define([ 'backbone', 'util', 'MD5', 'cookie', 'model/LoginModel' ], function(Backbone, util, MD5, cookie, LoginModel) {
+define([ 
+         'backbone', 'util', 'MD5', 'cookie', 'i18n!../../../nls/translation',
+         'model/LoginModel' 
+       ], function(Backbone, util, MD5, cookie, i18n, LoginModel) {
 
 	var SigninView = Backbone.View.extend({
 		tagName: 'div',
@@ -17,15 +20,15 @@ define([ 'backbone', 'util', 'MD5', 'cookie', 'model/LoginModel' ], function(Bac
 			var $username = $('<div class="input-group">');
 			$username.append($('<span class="input-group-addon">'));
 			$username.find('.input-group-addon').append('<span class="glyphicon glyphicon-user">');
-			$username.append('<input id="userid" class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="please enter your username">');
+			$username.append('<input id="userid" class="form-control valid ng-dirty ng-valid ng-valid-required" type="text" placeholder="' + i18n.login.SigninView.USERNAME + '">');
 
 			var $pwd = $('<div class="input-group">');
 			$pwd.append($('<span class="input-group-addon">'));
 			$pwd.find('.input-group-addon').append('<i class="glyphicon glyphicon-lock">');
-			$pwd.append('<input id="password" class="form-control ng-valid-minlength valid ng-dirty ng-valid ng-valid-required" type="password" placeholder="please enter your password" required="" ng-minlength="6">');
+			$pwd.append('<input id="password" class="form-control ng-valid-minlength valid ng-dirty ng-valid ng-valid-required" type="password" placeholder="' + i18n.login.SigninView.PASSWORD + '" required="" ng-minlength="6">');
 			
 			var $signin = $('<div class="actions">');
-			$signin.append($('<input class="sign-in btn btn-primary" type="button" value="Sign In">'));
+			$signin.append($('<input class="sign-in btn btn-primary" type="button" value="' + i18n.login.SigninView.SIGN_IN + '">'));
 			
 			$(this.el).append($username);
 			$(this.el).append($pwd);
@@ -55,7 +58,7 @@ define([ 'backbone', 'util', 'MD5', 'cookie', 'model/LoginModel' ], function(Bac
 			
 			var loginModel = new LoginModel();
 			loginModel.save({
-				'userid': userid, 
+				'userid': userid,
 				'password': md5(password)
 			},{
 				success: function() {
@@ -66,8 +69,12 @@ define([ 'backbone', 'util', 'MD5', 'cookie', 'model/LoginModel' ], function(Bac
 						return;
 					}
 					
-					//登录成功
-					$.cookie('userid', userid);
+					//登录成功,设置登录态
+					$.cookie('userid', loginModel.get('userid'));
+					$.cookie('userlogo', loginModel.get('userlogo'));
+					$.cookie('nickname', loginModel.get('nickname'));
+					$.cookie('userlang', loginModel.get('userlang'));
+					
 					//如果url后面无参数则默认跳转到my.html；否则跳转到参数所指的url
 					var urlParams = util.resolveUrlParams();
 					if(urlParams.hasOwnProperty('from')) {

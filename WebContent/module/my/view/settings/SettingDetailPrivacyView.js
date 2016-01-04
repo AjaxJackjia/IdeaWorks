@@ -1,8 +1,8 @@
 define([ 
-		'backbone', 'util', 'CheckLib',
+		'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
 		'css!../../../../lib/iCheck/skins/square/blue.css'
        ], 
-    function(Backbone, util, CheckLib, iCheck_css) {
+    function(Backbone, util, CheckLib, i18n, iCheck_css) {
 	var SettingDetailPrivacyView = Backbone.View.extend({
 		
 		className: 'setting-detail-privacy-view',
@@ -19,10 +19,10 @@ define([
 		
 		render: function(){
 			var $privacys = $('<div class="privacy-container well">');
-			$privacys.append(PrivacyItem('own', 'Only self visible'));
-			$privacys.append(PrivacyItem('advisor', 'Only project advisor visible'));
-			$privacys.append(PrivacyItem('group', 'Only group member visible'));
-			$privacys.append(PrivacyItem('public', 'Public to everyone'));
+			$privacys.append(PrivacyItem('own', i18n.my.settings.SettingDetailPrivacyView.PRIVACY_SELF));
+			$privacys.append(PrivacyItem('advisor', i18n.my.settings.SettingDetailPrivacyView.PRIVACY_PROJECT_ADVISOR));
+			$privacys.append(PrivacyItem('group', i18n.my.settings.SettingDetailPrivacyView.PRIVACY_GROUP_MEMBER));
+			$privacys.append(PrivacyItem('public', i18n.my.settings.SettingDetailPrivacyView.PRIVACY_PUBLIC));
 			$(this.el).append($privacys);
 			
 			//初始化控件并绑定事件
@@ -65,13 +65,13 @@ define([
 					    type: 'POST',
 					    success: function(result){
 					    	if(result.ret == 0) {
-					    		alert("Set complete!");
+					    		//alert(i18n.my.settings.SettingDetailPrivacyView.SET_COMPLETE);
 					    	}else{
 					    		alert(result.msg);
 					    	}
 					    },
 					    error: function(response) {
-							var alertMsg = 'Set privacy failed. Please try again later!';
+							var alertMsg = i18n.my.settings.SettingDetailPrivacyView.SET_PRIVACY_ERROR;
 							util.commonErrorHandler(response.responseJSON, alertMsg);
 						}
 					});

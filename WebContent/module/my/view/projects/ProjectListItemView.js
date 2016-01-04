@@ -1,7 +1,8 @@
 define([ 
-         'backbone', 'util', 'view/projects/ProjectDetailView'
+         'backbone', 'util', 'i18n!../../../../nls/translation',
+         'view/projects/ProjectDetailView'
        ], 
-    function(Backbone, util, ProjectDetailView) {
+    function(Backbone, util, i18n, ProjectDetailView) {
 	var ProjectListItemView = Backbone.View.extend({
 		
 		tagName: 'li',
@@ -50,13 +51,23 @@ define([
 	var ProjectItem_template = function(project) {
 		//status view dom
 		var status_tpl = '',
+			status_class = '',
 			status_content = '';
 		switch(project.get('status')) {
-			case 0: status_content = 'ongoing';break;
-			case 1: status_content = 'completed';break;
-			default: status_content = 'unclear'; break;
+			case 0: 
+				status_class = 'ongoing';
+				status_content = i18n.my.projects.ProjectListItemView.ONGOING;
+				break;
+			case 1: 
+				status_class = 'completed';
+				status_content = i18n.my.projects.ProjectListItemView.COMPLETE;
+				break;
+			default: 
+				status_class = 'unclear';
+				status_content = i18n.my.projects.ProjectListItemView.UNKNOWN;
+				break;
 		}
-		status_tpl = '<div class="project-status">'+ status_content +'</div>';
+		status_tpl = '<div class="project-status ' + status_class + '">'+ status_content +'</div>';
 		
 		//logo view dom
 		var logo_tpl = '<img src="'+ util.baseUrl + project.get('logo') + '" title="'+ project.get('title') +'" alt="project image" class="img-rounded" />';

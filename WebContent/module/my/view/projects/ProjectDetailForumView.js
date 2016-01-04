@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/projects/ProjectDetailForumTopicView',
          //model
          'model/project/TopicModel'
        ], 
-    function(Backbone, util, ProjectDetailForumTopicView, TopicModel) {
+    function(Backbone, util, i18n, ProjectDetailForumTopicView, TopicModel) {
 	var ProjectDetailForumView = Backbone.View.extend({
 		
 		className: 'project-detail-forum-view',
@@ -81,7 +81,7 @@ define([
 					 
 				 },
 				 error: function(model, response, options) {
-					var alertMsg = 'Create topic failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumView.CERATE_TOPIC_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -99,7 +99,7 @@ define([
 					topics.remove(topic);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete topic failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumView.DELETE_TOPIC_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -129,7 +129,7 @@ define([
 			'    <i class="fa fa-plus"></i> ' +
 			'  </div> ' +
 			'  <div class="content"> ' +
-			'	 <div class="add-topic-title">Add New Topic</div> ' +
+			'	 <div class="add-topic-title">' + i18n.my.projects.ProjectDetailForumView.ADD_NEW_TOPIC + '</div> ' +
 			'  </div> ' +
 			'</div>';
 		return $tpl;
@@ -182,14 +182,14 @@ define([
 		        	topic_title: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The topic title is required'
+		                        message: i18n.my.projects.ProjectDetailForumView.CHECK_TOPIC_TITLE
 		                    }
 		                }
 		            },
 		            topic_description: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The topic description is required'
+		                        message: i18n.my.projects.ProjectDetailForumView.CHECK_TOPIC_DESCRIPTION
 		                    }
 		                }
 		            }
@@ -234,7 +234,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Create Forum Topic</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailForumView.CREATE_TOPIC + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -242,8 +242,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="create btn btn-primary">Create</a> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailForumView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="create btn btn-primary">' + i18n.my.projects.ProjectDetailForumView.CREATE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -253,12 +253,12 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="topicAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="topic_title" class="control-label">Title:</label> ' + 
-			'			<input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="forum topic title..."> ' + 
+			'			<label for="topic_title" class="control-label">' + i18n.my.projects.ProjectDetailForumView.CREATE_TITLE + '</label> ' + 
+			'			<input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="' + i18n.my.projects.ProjectDetailForumView.CREATE_TITLE_HOLDER + '"> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="topic_description" class="control-label">Description:</label> ' + 
-			'			<textarea class="form-control" id="topic_description" name="topic_description" placeholder="topic description..."></textarea> ' + 
+			'			<label for="topic_description" class="control-label">' + i18n.my.projects.ProjectDetailForumView.CREATE_DESCRIPTION + '</label> ' + 
+			'			<textarea class="form-control" id="topic_description" name="topic_description" placeholder="' + i18n.my.projects.ProjectDetailForumView.CREATE_DESCRIPTION_HOLDER + '"></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

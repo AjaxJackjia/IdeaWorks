@@ -1,8 +1,8 @@
 define([ 
-         'backbone', 'util', 'Switch', 
+         'backbone', 'util', 'Switch', 'i18n!../../../../nls/translation',
          'css!../../../../lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css'
        ], 
-    function(Backbone, util, Switch, boostrap_switch_css) {
+    function(Backbone, util, Switch, i18n, boostrap_switch_css) {
 	var SettingDetailNotificationView = Backbone.View.extend({
 		
 		className: 'setting-detail-notification-view',
@@ -13,12 +13,12 @@ define([
 		
 		render: function(){
 			var $notifications = $('<div class="notification-container well">');
-			$notifications.append(Notice('project-notify', 'Notifications about projects'));
-			$notifications.append(Notice('member-notify', 'Notifications about members'));
-			$notifications.append(Notice('milestone-notify', 'Notifications about milestones'));
-			$notifications.append(Notice('forum-notify', 'Notifications about forums'));
-			$notifications.append(Notice('discussion-notify', 'Notifications about forum discussions'));
-			$notifications.append(Notice('file-notify', 'Notifications about files'));
+			$notifications.append(Notice('project-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_PROJECTS));
+			$notifications.append(Notice('member-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_MEMBERS));
+			$notifications.append(Notice('milestone-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_MILESTONES));
+			$notifications.append(Notice('forum-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_FORUMS));
+			$notifications.append(Notice('discussion-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_DISCUSSIONS));
+			$notifications.append(Notice('file-notify', i18n.my.settings.SettingDetailNotificationView.NOTIFICATION_FILES));
 			
 			$(this.el).append($notifications);
 			
@@ -50,13 +50,13 @@ define([
 				    type: 'POST',
 				    success: function(result){
 				    	if(result.ret == 0) {
-				    		alert("Set complete!");
+				    		//alert(i18n.my.settings.SettingDetailNotificationView.SET_COMPLETE);
 				    	}else{
 				    		alert(result.msg);
 				    	}
 				    },
 				    error: function(response) {
-						var alertMsg = 'Set notification failed. Please try again later!';
+						var alertMsg = i18n.my.settings.SettingDetailNotificationView.SET_NOTIFICATION_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});

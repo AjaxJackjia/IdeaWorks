@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/notification/NotificationItemView',
          //model
          'model/notification/NotificationCollection'
        ], 
-    function(Backbone, util, NotificationItemView, NotificationCollection) {
+    function(Backbone, util, i18n, NotificationItemView, NotificationCollection) {
 	var NotificationSideView = Backbone.View.extend({
 		
 		className: 'notification-side-view',
@@ -136,7 +136,7 @@ define([
 					self.updateUnreadState();
 				},
 				error: function(model, response, options) {
-					util.commonErrorHandler(response.responseJSON, 'Get user notifications failed. Please try again later!');
+					util.commonErrorHandler(response.responseJSON, i18n.my.notification.NotificationSideView.FETCH_NOTIFICATION_ERROR);
 				}
 			});
 		},
@@ -157,10 +157,11 @@ define([
 	});
 	
 	var HeaderItem = function() {
+		console.log(i18n.my.notification);
 		var tpl =
 				'<div class="heading">' +
-				'	<h4 class="title">Notifications  <span class="count"></span></h4> ' +
-				'	<div class="close-btn btn btn-default">' +
+				'	<h4 class="title">' + i18n.my.notification.NotificationSideView.NOTIFICATIONS + '<span class="count"></span></h4> ' +
+				'	<div class="close-btn btn btn-default" title="' + i18n.my.notification.NotificationSideView.CLOSE_NOTIFICATION + '">' +
 				'		<i class="fa fa-remove"></i>' +
 				'	</div>' +
 				'</div>';
@@ -173,7 +174,7 @@ define([
 	};
 	
 	var NotificationItem = function() {
-		return '<div class="placeholder"><h4>No notifications...</h4></div>';
+		return '<div class="placeholder"><h4>' + i18n.my.notification.NotificationSideView.NO_NOTIFICATIONS + '</h4></div>';
 	};
 	
 	return NotificationSideView;

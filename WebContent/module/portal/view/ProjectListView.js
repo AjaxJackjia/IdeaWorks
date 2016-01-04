@@ -1,4 +1,7 @@
-define([ 'backbone', 'headroom', 'util', 'model/ProjectCollection' ], function(Backbone, Headroom, util, ProjectCollection) {
+define([ 
+         'backbone', 'util', 'i18n!../../../nls/translation', 
+         'model/ProjectCollection' 
+       ], function(Backbone, util, i18n, ProjectCollection) {
 	var ProjectListView = Backbone.View.extend({
 		
 		className: 'item-list',
@@ -30,7 +33,7 @@ define([ 'backbone', 'headroom', 'util', 'model/ProjectCollection' ], function(B
 			'	<div class="line"></div> ' +
 			'	<div class="item-description">' + project.get('content') + '</div> ' +
 			'	<div class="item-action"> ' +
-            '		<a href="'+ util.baseUrl +'/index.html#projects?id='+ project.get('projectid') + '" class="read-more">Read More <i class="fa fa-angle-right"></i></a> ' +
+            '		<a href="'+ util.baseUrl +'/index.html#projects?id='+ project.get('projectid') + '" class="read-more">' + i18n.portal.ProjectListView.READ_MORE + '<i class="fa fa-angle-right"></i></a> ' +
             '	</div> ' +
             '</div>';
 		

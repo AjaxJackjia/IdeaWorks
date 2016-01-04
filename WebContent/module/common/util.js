@@ -3,6 +3,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 //	var baseUrl = 'http://localhost:8888/IdeaWorks'; 
 	var baseUrl = 'https://localhost:8443/IdeaWorks'; 
 //	var baseUrl = 'https://144.214.55.105:8888/IdeaWorks'; 
+//	var baseUrl = 'https://45.32.20.160:8888/IdeaWorks';
 	
     var resolveUrlParams = function() {
     	var hash = location.hash || location.search;
@@ -53,6 +54,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
     	$.cookie('userid', null);
     	$.cookie('userlogo', null);
     	$.cookie('nickname', null);
+    	$.cookie('nicklang', null);
     	
     	window.location.href = baseUrl + '/login.html';
     };
@@ -72,6 +74,10 @@ define(['jquery', 'cookie' ], function($, cookie) {
 			if(definedMsg != "")
 				alert(data.msg);
 		}
+	};
+	
+	var locale = function() {
+		return 'en_US';
 	};
 	
 	// 判断类型
@@ -450,6 +456,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 		logout: logout,
 		attrIsValid: attrIsValid,
 		timeformat: Date.format,
+		locale: locale,
 		
 		//请求统一错误处理函数
 		commonErrorHandler: commonErrorHandler

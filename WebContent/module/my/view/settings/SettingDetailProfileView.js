@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util', 'MD5'
+         'backbone', 'util', 'MD5', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, MD5) {
+    function(Backbone, util, MD5, i18n) {
 	var SettingDetaiProfilelView = Backbone.View.extend({
 		
 		className: 'setting-detail-profile-view',
@@ -91,28 +91,28 @@ define([
 			'	<div class="actions">' + 
 			'		<div class="profile-action-menu"> ' + 
 			'			<a class="btn btn-default dropdown-toggle" type="button" id="profile_menu_dropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">' + 
-		    '				<i class="fa fa-cogs"></i> More actions <span class="caret"></span> ' + 
+		    '				<i class="fa fa-cogs"></i> ' + i18n.my.settings.SettingDetaiProfilelView.MORE_ACTIONS + ' <span class="caret"></span> ' + 
 			'			</a> ' + 
 			'			<ul class="dropdown-menu" aria-labelledby="profile_menu_dropdown"> ' + 
 			'    			<li> ' + 
 			'					<a class="edit-signature"> ' + 
-			'						<i class="fa fa-edit"></i> Edit Signature ' +
+			'						<i class="fa fa-edit"></i> ' + i18n.my.settings.SettingDetaiProfilelView.EDIT_SIGNATURE + 
 			'					</a>' + 
 			'				</li> ' + 
 			'    			<li> ' + 
 			'					<a class="edit-profile"> ' + 
-			'						<i class="fa fa-pencil"></i> Edit profile' +
+			'						<i class="fa fa-pencil"></i> ' + i18n.my.settings.SettingDetaiProfilelView.EDIT_PROFILE + 
 			'					</a>' + 
 			'				</li> ' + 
 			'    			<li> ' + 
 			'					<a class="change-logo"> ' + 
-			'						<i class="fa fa-picture-o"></i> Logo' +
+			'						<i class="fa fa-picture-o"></i> ' + i18n.my.settings.SettingDetaiProfilelView.LOGO + 
 			'					</a>' + 
 			'				</li> ' + 
 			'				<li class="divider"></li> ' + 
 			'    			<li> ' + 
 			'					<a class="change-password"> ' + 
-			'						<i class="fa fa-lock"></i> Change password' +
+			'						<i class="fa fa-lock"></i> ' + i18n.my.settings.SettingDetaiProfilelView.CHANGE_PWD + 
 			'					</a>' + 
 			'				</li> ' + 
 			'			</ul> ' + 
@@ -123,7 +123,7 @@ define([
 			'		<h3 class="user">' + user.get('nickname') + ' (' + user.get('userid') + ') </h3>' + 
 	        '		<div class="signature">' + 
 			'			<span class="text-color"><i class="fa fa-tag"></i></span> ' + 
-	        '			<h4 class="dark-text-color">' + (user.get('signature') != "" ? user.get('signature') : "Say Something :)") + '</h4>' + 
+	        '			<h4 class="dark-text-color">' + (user.get('signature') != "" ? user.get('signature') : i18n.my.settings.SettingDetaiProfilelView.SAY_STH) + '</h4>' + 
 	        '		</div>' +
 			'	</div>' +
 			'</div>';
@@ -134,59 +134,59 @@ define([
 		var tpl = 
 			'<div class="detail-info">' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">User ID:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_USER_ID + '</label> ' + 
 			'		<span class="dark-text-color" id="userid">' + user.get('userid') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Nickname:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_NICKNAME + '</label> ' + 
 			'		<span class="dark-text-color" id="nickname">' + user.get('nickname') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Real Name:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_REALNAME + '</label> ' + 
 			'		<span class="dark-text-color" id="realname">' + user.get('realname') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Phone:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_PHONE + '</label> ' + 
 			'		<span class="dark-text-color" id="phone">' + user.get('phone') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Email:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_EMAIL + '</label> ' + 
 			'		<span class="dark-text-color" id="email">' + user.get('email') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Skype:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_SKYPE + '</label> ' + 
 			'		<span class="dark-text-color" id="skype">' + user.get('skype') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">WeChat:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_WECHAT + '</label> ' + 
 			'		<span class="dark-text-color" id="wechat">' + user.get('wechat') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">User Type:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_USER_TYPE + '</label> ' + 
 			'		<span class="dark-text-color" id="usertype">' + user.get('usertype') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Major:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_MAJOR + '</label> ' + 
 			'		<span class="dark-text-color" id="major">' + user.get('major') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Department:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_DEPARTMENT + '</label> ' + 
 			'		<span class="dark-text-color" id="department">' + user.get('department') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">College:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_COLLEGE + '</label> ' + 
 			'		<span class="dark-text-color" id="college">' + user.get('college') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Address:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_ADDRESS + '</label> ' + 
 			'		<span class="dark-text-color" id="address">' + user.get('address') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Interests:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_INTERESTS + '</label> ' + 
 			'		<span class="dark-text-color" id="interests">' + user.get('interests') + '</span> ' + 
 			'	</div> ' + 
 			'	<div class="detail-item"> ' + 
-			'		<label class="control-label">Introduction:</label> ' + 
+			'		<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_INTRODUCTION + '</label> ' + 
 			'		<span class="dark-text-color" id="introduction">' + user.get('introduction') + '</span> ' + 
 			'	</div> ' + 
 			'</div>';
@@ -250,7 +250,7 @@ define([
 					$('#edit_signature_sub_view').modal('toggle');
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Update signature failed. Please try again later!';
+					var alertMsg = i18n.my.settings.SettingDetaiProfilelView.UPDATE_SIGNATURE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#edit_signature_sub_view').modal('toggle');
 				}
@@ -262,7 +262,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Edit Signature</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.settings.SettingDetaiProfilelView.EDIT_SIGNATURE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -270,8 +270,8 @@ define([
 	var SigatureModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">' + i18n.my.settings.SettingDetaiProfilelView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">' + i18n.my.settings.SettingDetaiProfilelView.SAVE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -281,8 +281,8 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="signatureAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="signature_input" class="control-label">Signature:</label> ' + 
-			'			<input type="text" class="form-control" id="signature_input" name="signature_input" placeholder="say something..."> ' +
+			'			<label for="signature_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.SIGNATURE_TITLE + '</label> ' + 
+			'			<input type="text" class="form-control" id="signature_input" name="signature_input" placeholder="' + i18n.my.settings.SettingDetaiProfilelView.SAY_STH + '"> ' +
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '
@@ -359,7 +359,7 @@ define([
 			    processData: false,
 			    type: 'POST',
 			    success: function(data){
-			    	alert("Upload complete!");
+			    	alert(i18n.my.settings.SettingDetaiProfilelView.UPLOAD_COMPLETE);
 			    	
 			    	//更新user
 			    	self.model.set('logo', data.logo);
@@ -372,7 +372,7 @@ define([
 					$('#logo_upload_sub_view').modal('toggle');
 			    },
 			    error: function(response){
-					var alertMsg = 'Upload logo failed. Please try again later!';
+					var alertMsg = i18n.my.settings.SettingDetaiProfilelView.UPLOAD_LOGO_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 			    	//隐藏窗口
 			    	$('#logo_upload_sub_view').modal('toggle');
@@ -383,10 +383,10 @@ define([
 		//检查logo上传
 		validate: function() {
 			var maxsize = 1 * 1024 * 1024; //文件大小最大1M
-			var emptyMsg = "Please select your upload logo image!";
-			var errMsg = "The maxsize of upload file is 1M!";
-			var fileTypeMsg = "The file type doesn't support!";
-			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
+			var emptyMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_EMPTY;
+			var errMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_MAX_SIZE;
+			var fileTypeMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_FILE_TYPE;
+			var tipMsg = i18n.my.settings.SettingDetaiProfilelView.CHECK_ALERT_BROWSER;
 			var ua = window.navigator.userAgent;
 			var browserCfg = {};
 			if(ua.indexOf("Firefox")>=1){
@@ -436,7 +436,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Change Project Logo</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.settings.SettingDetaiProfilelView.CHANGE_USER_LOGO + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -444,7 +444,7 @@ define([
 	var LogoModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="upload-logo btn btn-primary">Upload</a> ' + 
+			'	<a type="submit" class="upload-logo btn btn-primary">' + i18n.my.settings.SettingDetaiProfilelView.UPLOAD + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -460,11 +460,11 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="fileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="upload_logo_input" class="control-label">File:</label> ' + 
+			'			<label for="upload_logo_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.FILE + '</label> ' + 
 			'			<input id="upload_logo_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label class="control-label">(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)</label> ' + 
+			'			<label class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.UPLOAD_TIPS + '</label> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '
@@ -518,11 +518,11 @@ define([
 		        	nickname_input: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The nickname is required'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_NICKNAME
 		                    },
 		                    stringLength: {
 		                    	max: 30,
-		                        message: 'The nickname must be smaller than 30 characters'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_NICKNAME_LENGTH
 		                    }
 		                }
 		            }
@@ -582,7 +582,7 @@ define([
 					$('#edit_profile_sub_view').modal('toggle');
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Update profile failed. Please try again later!';
+					var alertMsg = i18n.my.settings.SettingDetaiProfilelView.UPDATE_PROFILE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#edit_profile_sub_view').modal('toggle');
 				}
@@ -594,7 +594,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Edit Profile</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.settings.SettingDetaiProfilelView.EDIT_PROFILE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -602,8 +602,8 @@ define([
 	var ProfileModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">' + i18n.my.settings.SettingDetaiProfilelView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">' + i18n.my.settings.SettingDetaiProfilelView.SAVE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -613,52 +613,52 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="profileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="nickname_input" class="control-label">Nickname:</label> ' + 
-			'			<input type="text" class="form-control" id="nickname_input" name="nickname_input" placeholder="nickname..."> ' +
+			'			<label for="nickname_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_NICKNAME + '</label> ' + 
+			'			<input type="text" class="form-control" id="nickname_input" name="nickname_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="realname_input" class="control-label">Real Name:</label> ' + 
-			'			<input type="text" class="form-control" id="realname_input" name="realname_input" placeholder="realname..."> ' +
+			'			<label for="realname_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_REALNAME + '</label> ' + 
+			'			<input type="text" class="form-control" id="realname_input" name="realname_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="phone_input" class="control-label">Phone:</label> ' + 
-			'			<input type="text" class="form-control" id="phone_input" name="phone_input" placeholder="phone..."> ' +
+			'			<label for="phone_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_PHONE + '</label> ' + 
+			'			<input type="text" class="form-control" id="phone_input" name="phone_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="email_input" class="control-label">Email:</label> ' + 
-			'			<input type="text" class="form-control" id="email_input" name="email_input" placeholder="email..."> ' +
+			'			<label for="email_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_EMAIL + '</label> ' + 
+			'			<input type="text" class="form-control" id="email_input" name="email_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="skype_input" class="control-label">Skype:</label> ' + 
-			'			<input type="text" class="form-control" id="skype_input" name="skype_input" placeholder="skype..."> ' +
+			'			<label for="skype_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_SKYPE + '</label> ' + 
+			'			<input type="text" class="form-control" id="skype_input" name="skype_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="wechat_input" class="control-label">WeChat:</label> ' + 
-			'			<input type="text" class="form-control" id="wechat_input" name="wechat_input" placeholder="wechat..."> ' +
+			'			<label for="wechat_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_WECHAT + '</label> ' + 
+			'			<input type="text" class="form-control" id="wechat_input" name="wechat_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="major_input" class="control-label">Major:</label> ' + 
-			'			<input type="text" class="form-control" id="major_input" name="major_input" placeholder="major..."> ' +
+			'			<label for="major_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_MAJOR + '</label> ' + 
+			'			<input type="text" class="form-control" id="major_input" name="major_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="department_input" class="control-label">Department:</label> ' + 
-			'			<input type="text" class="form-control" id="department_input" name="department_input" placeholder="department..."> ' +
+			'			<label for="department_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_DEPARTMENT + '</label> ' + 
+			'			<input type="text" class="form-control" id="department_input" name="department_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="college_input" class="control-label">College:</label> ' + 
-			'			<input type="text" class="form-control" id="college_input" name="college_input" placeholder="college..."> ' +
+			'			<label for="college_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_COLLEGE + '</label> ' + 
+			'			<input type="text" class="form-control" id="college_input" name="college_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="address_input" class="control-label">Address:</label> ' + 
-			'			<input type="text" class="form-control" id="address_input" name="address_input" placeholder="address..."> ' +
+			'			<label for="address_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_ADDRESS + '</label> ' + 
+			'			<input type="text" class="form-control" id="address_input" name="address_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="interests_input" class="control-label">Interests:</label> ' + 
-			'			<input type="text" class="form-control" id="interests_input" name="interests_input" placeholder="interests..."> ' +
+			'			<label for="interests_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_INTERESTS + '</label> ' + 
+			'			<input type="text" class="form-control" id="interests_input" name="interests_input"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="introduction_input" class="control-label">Introduction:</label> ' + 
-			'			<textarea class="form-control" id="introduction_input" name="introduction_input" placeholder="self Introduction..."></textarea>' +
+			'			<label for="introduction_input" class="control-label">' + i18n.my.settings.SettingDetaiProfilelView.DETAIL_INTRODUCTION + '</label> ' + 
+			'			<textarea class="form-control" id="introduction_input" name="introduction_input"></textarea>' +
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '
@@ -712,33 +712,33 @@ define([
 		        	old_pwd_input: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The old password is required'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_OLD_PWD
 		                    }
 		                }
 		            },
 		            new_pwd_input: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The new password is required'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_NEW_PWD
 		                    },
 		                    identical: {
 		                        field: 'new_pwd_again_input',
-		                        message: 'The password twice input are not the same'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_PWD_CONFIRM
 		                    },
 		                    stringLength: {
 		                    	min: 6,
-		                        message: 'The password must be larger than 6 characters'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_PWD_LENGTH
 		                    }
 		                }
 		            },
 		            new_pwd_again_input: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The new password is required'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_NEW_PWD
 		                    },
 		                    identical: {
 		                        field: 'new_pwd_input',
-		                        message: 'The password twice input are not the same'
+		                        message: i18n.my.settings.SettingDetaiProfilelView.CHECK_PWD_CONFIRM
 		                    }
 		                }
 		            }
@@ -776,14 +776,14 @@ define([
 			    type: 'POST',
 			    success: function(result){
 			    	if(result.ret == 0) {
-			    		alert("Change password successful!");
+			    		alert(i18n.my.settings.SettingDetaiProfilelView.UPDATE_PWD_SUCCESS);
 			    	}else{
 			    		alert(result.msg);
 			    	}
 			    	$('#change_password_sub_view').modal('toggle');
 			    },
 			    error: function(response) {
-					var alertMsg = 'Change password failed. Please try again later!';
+					var alertMsg = i18n.my.settings.SettingDetaiProfilelView.UPDATE_PWD_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 					$('#change_password_sub_view').modal('toggle');
 				}
@@ -795,7 +795,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Chagne Password</h3> ' + 
+			'	<h3 class="modal-title">'+ i18n.my.settings.SettingDetaiProfilelView.CHANGE_PWD +'</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -803,8 +803,8 @@ define([
 	var PasswordModalFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">'+ i18n.my.settings.SettingDetaiProfilelView.CANCEL +'</a> ' + 
+			'	<a type="submit" class="save btn btn-primary">'+ i18n.my.settings.SettingDetaiProfilelView.SAVE +'</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -814,16 +814,16 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="passwordAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="old_pwd_input" class="control-label">Old Password:</label> ' + 
-			'			<input type="password" class="form-control" id="old_pwd_input" name="old_pwd_input" placeholder="Old password..."> ' +
+			'			<label for="old_pwd_input" class="control-label">'+ i18n.my.settings.SettingDetaiProfilelView.OLD_PWD +'</label> ' + 
+			'			<input type="password" class="form-control" id="old_pwd_input" name="old_pwd_input" placeholder="'+ i18n.my.settings.SettingDetaiProfilelView.OLD_PWD_HOLDER +'"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="new_pwd_input" class="control-label">New Password:</label> ' + 
-			'			<input type="password" class="form-control" id="new_pwd_input" name="new_pwd_input" placeholder="New password..."> ' +
+			'			<label for="new_pwd_input" class="control-label">'+ i18n.my.settings.SettingDetaiProfilelView.NEW_PWD +'</label> ' + 
+			'			<input type="password" class="form-control" id="new_pwd_input" name="new_pwd_input" placeholder="'+ i18n.my.settings.SettingDetaiProfilelView.NEW_PWD_HOLDER +'"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="new_pwd_again_input" class="control-label">New Password Again:</label> ' + 
-			'			<input type="password" class="form-control" id="new_pwd_again_input" name="new_pwd_again_input" placeholder="New password again..."> ' +
+			'			<label for="new_pwd_again_input" class="control-label">'+ i18n.my.settings.SettingDetaiProfilelView.NEW_PWD_AGAIN +'</label> ' + 
+			'			<input type="password" class="form-control" id="new_pwd_again_input" name="new_pwd_again_input" placeholder="'+ i18n.my.settings.SettingDetaiProfilelView.NEW_PWD_AGAIN_HOLDER +'"> ' +
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

@@ -102,6 +102,21 @@
 	padding-left: 3px;
 }
 
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.ongoing
+{
+	color: #227700;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.completed
+{
+	color: #ff7744;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.unclear
+{
+	color: #ffff33;
+}
+
 .project-list-view > .project-list-content > .project-list-item-view.active
 {
 	border-left: 4px solid #23a8f5;

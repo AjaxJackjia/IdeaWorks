@@ -2,28 +2,16 @@ define([ 'backbone', 'util',
          'cookie',
          'view/LeftPanelView', 
          'view/TopPanelView',
-         'model/settings/UserModel'
-       ], function (Backbone, util, cookie, LeftPanelView, TopPanelView, UserModel) {
+       ], function (Backbone, util, cookie, LeftPanelView, TopPanelView) {
 	
 	//check login status when load router
 	if(util.isLogin()) {
-		//get current user info
-		var userModel = new UserModel({ 
-			id: $.cookie('userid')
-		});
-		userModel.fetch({
-			success: function() {
-				$.cookie('userlogo', userModel.get('logo'));
-				$.cookie('nickname', userModel.get('nickname'));
-				
-				//create header and footer of portal page
-				var leftPanel = new LeftPanelView();
-				$('body > .content-panel').before(leftPanel.render().el);
-				
-				var topPanel = new TopPanelView();
-				$('body > .content-panel').before(topPanel.render().el);
-			}
-		});
+		//create header and footer of portal page
+		var leftPanel = new LeftPanelView();
+		$('body > .content-panel').before(leftPanel.render().el);
+		
+		var topPanel = new TopPanelView();
+		$('body > .content-panel').before(topPanel.render().el);
 	}else{
 		window.location.href = util.baseUrl + '/login.html';
 	}

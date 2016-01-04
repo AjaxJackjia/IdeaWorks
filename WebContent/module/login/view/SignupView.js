@@ -1,4 +1,7 @@
-define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbone, util, Validator, SignupModel) {
+define([ 
+         'backbone', 'util', 'Validator', 'i18n!../../../nls/translation',
+         'model/SignupModel'
+       ], function(Backbone, util, Validator, i18n, SignupModel) {
 	
 	var SignupView = Backbone.View.extend({
 		tagName: 'div',
@@ -17,7 +20,7 @@ define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbo
 			var $signup_items = $(SiupItems());
 			
 			var $signup = $('<div class="actions">');
-			$signup.append($('<input class="sign-up btn btn-primary" type="button" value="Sign Up">'));
+			$signup.append($('<input class="sign-up btn btn-primary" type="button" value="' + i18n.login.SignupView.SIGN_UP + '">'));
 			
 			//form validator
 			$signup_items.bootstrapValidator({
@@ -123,19 +126,19 @@ define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbo
 		var tpl = 
 			'<form id="signupAttribute"> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="username" class="control-label">User name:</label> ' + 
-			'		<input type="text" class="form-control" id="username" name="username" placeholder="user name..."> ' + 
+			'		<label for="username" class="control-label">' + i18n.login.SignupView.USERNAME_TITLE + '</label> ' + 
+			'		<input type="text" class="form-control" id="username" name="username" placeholder="' + i18n.login.SignupView.USERNAME_HOLDER + '"> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="pwd" class="control-label">Password:</label> ' + 
-			'		<input type="password" class="form-control" id="pwd" name="pwd" placeholder="password..."> ' + 
+			'		<label for="pwd" class="control-label">' + i18n.login.SignupView.PASSWORD_TITLE + '</label> ' + 
+			'		<input type="password" class="form-control" id="pwd" name="pwd" placeholder="' + i18n.login.SignupView.PASSWORD_HOLDER + '"> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="pwd_confirm" class="control-label">Password Confirm:</label> ' + 
-			'		<input type="password" class="form-control" id="pwd_confirm" name="pwd_confirm" placeholder="password confirm..."> ' + 
+			'		<label for="pwd_confirm" class="control-label">' + i18n.login.SignupView.PASSWORD_CONFIRM_TITLE + '</label> ' + 
+			'		<input type="password" class="form-control" id="pwd_confirm" name="pwd_confirm" placeholder="' + i18n.login.SignupView.PASSWORD_CONFIRM_HOLDER + '"> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="usertype" class="control-label">User Type:</label> ' + 
+			'		<label for="usertype" class="control-label">' + i18n.login.SignupView.USERTYPE_TITLE + '</label> ' + 
 			'		<select id="usertype" class="form-control"> ' + 
 			'			<option value="0">Student</option>' +
 			'			<option value="1">Teacher</option>' +
@@ -143,8 +146,8 @@ define([ 'backbone', 'util', 'Validator', 'model/SignupModel' ], function(Backbo
 			'		</select> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="email" class="control-label">Email:</label> ' + 
-			'		<input type="text" class="form-control" id="email" name="email" placeholder="email..."> ' + 
+			'		<label for="email" class="control-label">' + i18n.login.SignupView.EMAIL_TITLE + '</label> ' + 
+			'		<input type="text" class="form-control" id="email" name="email" placeholder="' + i18n.login.SignupView.EMAIL_HOLDER + '"> ' + 
 			'	</div> ' + 
 			'</form> ';
 		return tpl;

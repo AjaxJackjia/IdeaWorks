@@ -1,10 +1,10 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //model
   		 'model/project/MessageCollection',
   		 'model/project/MessageModel',
        ], 
-    function(Backbone, util, MessageCollection, MessageModel) {
+    function(Backbone, util, i18n, MessageCollection, MessageModel) {
 	var ProjectDetailForumTopicMessageView = Backbone.View.extend({
 		
 		className: 'discussion-container well project-detail-forum-topic-message-view',
@@ -41,9 +41,9 @@ define([
 		
 		render: function(){
 			var header = '<h4 class="heading">' + 
-						 '	<span>Discussion</span>' +
+						 '	<span>' + i18n.my.projects.ProjectDetailForumTopicMessageView.DISCUSSION + '</span>' +
 						 '	<div class="message-action">' + 
-						 '		<a class="refresh-topic btn btn-default" title="refresh latest messages"> ' + 
+						 '		<a class="refresh-topic btn btn-default" title="' + i18n.my.projects.ProjectDetailForumTopicMessageView.REFRESH_TIPS + '"> ' + 
 						 '			<i class="fa fa-refresh"></i>' +
 						 '		</a>' + 
 						 '	</div>' +
@@ -51,14 +51,14 @@ define([
 			var content = 
 						'<div class="discussion-content">' + 
 					    '	<div class="placeholder">' +
-					    '		<h4>No discussion...</h4>' + 
+					    '		<h4>' + i18n.my.projects.ProjectDetailForumTopicMessageView.NO_DISCUSSION + '</h4>' + 
 					    '	</div>' + 
 					    '</div>';
 			var sendbox = 
 						'<div class="discussion-sender">' + 
-						'	<textarea class="form-control" id="send_content" placeholder="Say something..."></textarea>' +
+						'	<textarea class="form-control" id="send_content" placeholder="' + i18n.my.projects.ProjectDetailForumTopicMessageView.SAY_STH + '"></textarea>' +
 						'	<div class="send-action"> ' + 
-						'		<a class="send btn btn-primary">Comment</a> ' + 
+						'		<a class="send btn btn-primary">' + i18n.my.projects.ProjectDetailForumTopicMessageView.COMMENT + '</a> ' + 
 						'	</div> ';
 						'</div>';
 			$(this.el).html(header);
@@ -103,7 +103,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.message', this.el).length == 0) {
-				$('.discussion-content', this.el).append('<div class="placeholder"><h4>No discussion...</h4></div>');
+				$('.discussion-content', this.el).append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailForumTopicMessageView.NO_DISCUSSION + '</h4></div>');
 			}
 		},
 		
@@ -119,7 +119,7 @@ define([
 					 $('#send_content').val("");
 				 }, 
 				 error: function(model, response, options) {
-					 var alertMsg = 'Create comment failed. Please try again later!';
+					 var alertMsg = i18n.my.projects.ProjectDetailForumTopicMessageView.CREATE_COMMENT_ERROR;
 					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -137,7 +137,7 @@ define([
 					messages.remove(message);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete comment failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumTopicMessageView.DELETE_COMMENT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -148,11 +148,11 @@ define([
 		 * */
 		comment: function() {
 			var msg = $('#send_content').val();
-			msg += '\n'; //强制换行，兼容删除按钮的位置
 			if(msg == "") {
-				alert('Message can not be emtpy!');
+				alert(i18n.my.projects.ProjectDetailForumTopicMessageView.MSG_CANT_EMPTY);
 				return;
 			}
+			msg += '\n'; //强制换行，兼容删除按钮的位置
 			
 			//创建message model
 			var message = new MessageModel();
@@ -174,7 +174,7 @@ define([
 			//重新拉取信息
 			messages.fetch({
 				error: function(model, response, options) {
-					util.commonErrorHandler(response.responseJSON, 'Fetch messages failed. Please try again later!');
+					util.commonErrorHandler(response.responseJSON, i18n.my.projects.ProjectDetailForumTopicMessageView.FETCH_MSG_ERROR);
 				}
 			});
 		},
@@ -219,7 +219,7 @@ define([
 		 * delete message btn删除信息
 		 * */
 		clickToDelete: function(event) {
-			if(confirm('Do you want to delete this discussion?')) {
+			if(confirm(i18n.my.projects.ProjectDetailForumTopicMessageView.DELETE_MSG_CONFIRM)) {
 				var message_cid = $(event.target).closest('.message').attr('cid');
 				var message = this.messages.get(message_cid);
 				this.deleteMessage(message);
@@ -347,11 +347,11 @@ define([
 					
 					//设置回复消息的数量
 					if(self.replyList.length != 0) {
-						$('.reply-count', self.el).html(" (total " + self.replyList.length + ") ");
+						$('.reply-count', self.el).html(' (' + i18n.my.projects.ProjectDetailForumTopicMessageView.TOTAL + ' '+ self.replyList.length + ') ');
 					}
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Get message reply list failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumTopicMessageView.FETCH_REPLY_MSG_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -368,7 +368,7 @@ define([
 			var msg = $('#reply_msg').val();
 			msg += '\n'; //强制换行，兼容删除按钮的位置
 			if(msg == "") {
-				alert('Reply can not be emtpy!');
+				alert(i18n.my.projects.ProjectDetailForumTopicMessageView.MSG_CANT_EMPTY);
 				return;
 			}
 			
@@ -406,7 +406,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.reply-message', this.el).length == 0) {
-				$('.reply-messages', this.el).append('<div class="placeholder"><h4>No reply...</h4></div>');
+				$('.reply-messages', this.el).append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailForumTopicMessageView.NO_REPLY + '</h4></div>');
 			}
 		},
 		
@@ -426,7 +426,7 @@ define([
 					 self.model.set('replyCount', self.model.get('replyCount') + 1);
 				 },
 				 error: function(model, response, options) {
-					 var alertMsg = 'Create reply failed. Please try again later!';
+					 var alertMsg = i18n.my.projects.ProjectDetailForumTopicMessageView.CREATE_REPLY_MSG_ERROR;
 					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -444,7 +444,7 @@ define([
 					replyList.remove(reply);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete comment failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumTopicMessageView.DELETE_REPLY_MSG_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -492,7 +492,7 @@ define([
 			}
 			
 			this.currentReplyUser = reply.get('from');
-			$('.reply', this.el).html('Reply to : ' + this.currentReplyUser.nickname);
+			$('.reply', this.el).html(i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_TO + this.currentReplyUser.nickname);
 		}
 	});
 	
@@ -500,7 +500,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Reply Discussion Message</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_DISCUSSION_MSG + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -511,8 +511,8 @@ define([
 		
 		var tpl = 
 				'<div class="modal-footer"> ' + 
-				'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-				'	<a type="submit" class="reply btn btn-primary" to="'+ from.userid + '">Reply to : ' + from.nickname +'</a> ' + 
+				'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailForumTopicMessageView.CANCEL + '</a> ' + 
+				'	<a type="submit" class="reply btn btn-primary" to="'+ from.userid + '">' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_TO + from.nickname +'</a> ' + 
 				'</div> ';
 		return tpl;
 	}
@@ -521,15 +521,15 @@ define([
 		var tpl = 
 			'<div class="modal-body"> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label class="control-label">Message:</label>' + 
+			'		<label class="control-label">' + i18n.my.projects.ProjectDetailForumTopicMessageView.MESSAGE + '</label>' + 
 			' 		<div class="original-message"></div>' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 
-			'		<label for="reply_title" class="control-label">Replies: <span class="reply-count"></span></label> ' + 
-			'		<div class="reply-messages"><div class="placeholder"><h4>No reply...</h4></div></div>' + 
+			'		<label for="reply_title" class="control-label">' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLIES + '<span class="reply-count"></span></label> ' + 
+			'		<div class="reply-messages"><div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailForumTopicMessageView.NO_REPLY + '</h4></div></div>' + 
 			'	</div> ' + 
 			'	<div class="reply-msg-container form-group"> ' + 
-			'		<textarea class="form-control" id="reply_msg" name="reply_msg" placeholder="reply something..."></textarea> ' + 
+			'		<textarea class="form-control" id="reply_msg" name="reply_msg" placeholder="' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_STH + '"></textarea> ' + 
 			'	</div> ' + 
 			'</div> ';
 		
@@ -564,10 +564,10 @@ define([
 				'	<img class="img-circle" title="' + from.nickname + '" src="' + util.baseUrl + from.logo + '">' + 
 				'	<div class="message-body"> ' +
 				'		<div class="message-title"> ' + 
-				'			<span class="message-from">'+ from.nickname +' <b>reply to:</b> ' + to.nickname + '</span>' + 
+				'			<span class="message-from">'+ from.nickname +' <b>' + i18n.my.projects.ProjectDetailForumTopicMessageView.REPLY_TO + '</b> ' + to.nickname + '</span>' + 
 				'			<span class="message-time">' + util.timeformat(new Date(message.get('time')), "smart") + '</span>' + 
 				'		</div> ' + 
-				'		<div class="message-text">'+ message.get('msg') + '</div>' + 
+				'		<div class="message-text">'+ message.get('msg') + '</div>' +
 				'	</div>' +
 				'</div>';
 		return tpl;

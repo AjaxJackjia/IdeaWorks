@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, ProjectCollection) {
+    function(Backbone, util, i18n) {
 	var PersonItemView = Backbone.View.extend({
 		
 		className: 'person-item-view',
@@ -46,7 +46,7 @@ define([
 	var Item = function(person) {
 		var $tpl = 
 			'<div class="person-action">' + 
-			'	<a class="view-profile btn btn-default">Detail</a>' + 
+			'	<a class="view-profile btn btn-default">' + i18n.my.search.PersonItemView.DETAIL + '</a>' + 
 			'</div>' + 
         	'<div class="person-photo"> ' +
         	'	<img class="img-circle" src="' + util.baseUrl + person.get('logo') + '"> ' +
@@ -101,7 +101,7 @@ define([
 						generateDetailedInfo(self.model);
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Fetch certain person failed. Please try again later!';
+						var alertMsg = i18n.my.search.PersonItemView.FETCH_PERSON_FAILED;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
@@ -123,7 +123,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Person Detail Information</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.search.PersonItemView.PERSON_DETAIL_INFO + '</h3> ' + 
 			'</div>';
 		return tpl;
 	};
@@ -131,7 +131,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-primary" data-dismiss="modal">&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-primary" data-dismiss="modal">' + i18n.my.search.PersonItemView.OK + '</a> ' + 
 			'</div> ';
 		return tpl;
 	};
@@ -160,7 +160,7 @@ define([
 		$('#person_logo').attr('src', util.baseUrl + person.get('logo'));
 		$('#person_nickname').html(person.get('nickname'));
 		$('#person_userid').html(person.get('userid'));
-		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):'signature is empty...');
+		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):i18n.my.search.PersonItemView.DETAIL_SIGNATURE_EMPTY);
 		
 		//根据email的属性来判断用户信息是否对外公开,具体判断逻辑在java代码中
 		var privacy_flag = (person.has('email') && person.get('email') != '') ? true : false;
@@ -168,53 +168,53 @@ define([
 		if(privacy_flag) {
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label for="person_realname" class="control-label">Real Name: </label>' + 
+				'	<label for="person_realname" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_REALNAME + '</label>' + 
 				'	<input type="text" class="form-control" id="person_realname" name="person_realname" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_phone" class="control-label">Phone: </label>' + 
+				'	<label for="person_phone" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_PHONE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_phone" name="person_phone" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_email" class="control-label">Email: </label>' + 
+				'	<label for="person_email" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_EMAIL + '</label>' + 
 				'	<input type="text" class="form-control" id="person_email" name="person_email" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_skype" class="control-label">Skype account: </label>' + 
+				'	<label for="person_skype" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_SKYPE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_skype" name="person_skype" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_wechat" class="control-label">WeChat account: </label>' + 
+				'	<label for="person_wechat" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_WECHAT + '</label>' + 
 				'	<input type="text" class="form-control" id="person_wechat" name="person_wechat" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_major" class="control-label">Major: </label>' + 
+				'	<label for="person_major" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_MAJOR + '</label>' + 
 				'	<input type="text" class="form-control" id="person_major" name="person_major" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_department" class="control-label">Department: </label>' + 
+				'	<label for="person_department" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_DEPARTMENT + '</label>' + 
 				'	<input type="text" class="form-control" id="person_department" name="person_department" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_college" class="control-label">College: </label>' + 
+				'	<label for="person_college" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_COLLEGE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_college" name="person_college" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_address" class="control-label">Address: </label>' + 
+				'	<label for="person_address" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_ADDRESS + '</label>' + 
 				'	<input type="text" class="form-control" id="person_address" name="person_address" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_interests" class="control-label">Interests: </label>' + 
+				'	<label for="person_interests" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_INTERESTS + '</label>' + 
 				'	<input type="text" class="form-control" id="person_address" name="person_address" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_introduction" class="control-label">Introduction: </label>' + 
+				'	<label for="person_introduction" class="control-label">' + i18n.my.search.PersonItemView.DETAIL_INTRODUCTION + '</label>' + 
 				'	<textarea class="form-control" id="person_introduction" name="person_introduction" disabled></textarea> ' + 
 				'</div> ';
 		}else{
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label class="control-label">Due to the person\'s privacy settings, you can\'t view his/her detailed information... </label>' + 
+				'	<label class="control-label">' + i18n.my.search.PersonItemView.DETAIL_PRIVACY_TIPS + '</label>' + 
 				'</div> ';
 		}
 		$('#personAttribute').append(detailed_tpl);

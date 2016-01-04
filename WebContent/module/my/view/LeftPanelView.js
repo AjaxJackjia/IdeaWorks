@@ -1,4 +1,7 @@
-define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function(Backbone, util, ProjectDetailModifyView) {
+define([ 
+         'backbone', 'util', 'i18n!../../../nls/translation', 
+         'view/projects/ProjectDetailModifyView' 
+       ], function(Backbone, util, i18n, ProjectDetailModifyView) {
 	var LeftPanelView = Backbone.View.extend({
 		
 		className: 'left-panel',
@@ -17,17 +20,23 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 				on('LeftPanelView:updateProfile', this.updateProfile, this);
 			
 			//navigation
-			this.nav = {
-				Dashboard: 'my.html#dashboard',
-				Projects : 'my.html#projects',
-				Settings : 'my.html#settings'
-			};
-			
-			this.navIcon = {
-				Dashboard: 'line-chart',
-				Projects : 'suitcase',
-				Settings : 'cog'
-			};
+			this.nav  = [
+			    {
+			    	index: i18n.my.LeftPanelView.DASHBOARD,
+			    	url: 'my.html#dashboard',
+			    	icon: 'line-chart'
+			    },
+			    {
+			    	index: i18n.my.LeftPanelView.PROJECTS,
+			    	url: 'my.html#projects',
+			    	icon: 'suitcase'
+			    },
+			    {
+			    	index: i18n.my.LeftPanelView.SETTINGS,
+			    	url: 'my.html#settings',
+			    	icon: 'cog'
+			    }
+			];
 		},
 		
 		render: function(){
@@ -40,7 +49,7 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 			/*
 			 * navigation list
 			 * */
-			var $nav = navList(this.nav, this.navIcon);
+			var $nav = navList(this.nav);
 			
 			/*
 			 * new project
@@ -104,28 +113,18 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 		return $user;
 	};
 	
-	var navList = function(nav, navIcons) {
+	var navList = function(nav) {
 		var $nav = $('<nav class="navigation">');
 		var nav_tpl = '<ul class="list-unstyled">';
 		
-		_.each(nav, function(value, key) {
-			if(key == 'Projects') {
-				nav_tpl += 
-					'<li>' + 
-	            	'	<a href="'+ value +'">' +
-	            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
-	            	'		<div class="nav-label">' + key + '</div>' +
-	            	'	</a>' +
-					'</li>';
-			}else{
-				nav_tpl += 
-					'<li>' + 
-	            	'	<a href="'+ value +'">' +
-	            	'		<div class="nav-icon"><i class="fa fa-'+ navIcons[key] +'"></i></div>' + 
-	            	'		<div class="nav-label">' + key + '</div>' +
-	            	'	</a>' +
-					'</li>';
-			}
+		_.each(nav, function(item) {
+			nav_tpl += 
+				'<li>' + 
+            	'	<a href="'+ item.url +'">' +
+            	'		<div class="nav-icon"><i class="fa fa-'+ item.icon +'"></i></div>' + 
+            	'		<div class="nav-label">' + item.index + '</div>' +
+            	'	</a>' +
+				'</li>';
 		});
 		nav_tpl += '</ul>';
 		$nav.html(nav_tpl);
@@ -138,7 +137,7 @@ define([ 'backbone', 'util', 'view/projects/ProjectDetailModifyView' ], function
 		var create_tpl = 
 			'<a href="javascript:;">' + 
 			'	<div class="nav-icon fa fa-plus-circle"></div>' + 
-			'	<div class="create-title">New</div>' + 
+			'	<div class="create-title">' + i18n.my.LeftPanelView.NEW + '</div>' + 
 			'</a>';
 		$create.html(create_tpl);
 		

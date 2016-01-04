@@ -1,5 +1,7 @@
 (function(win){
 	require.config({
+		locale: $.cookie('lang') || 'en-us',
+		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
 			'cookie' : '../../lib/jquery.cookie/jquery.cookie',
@@ -8,6 +10,7 @@
 			'bootstrap' : '../../lib/bootstrap/dist/js/bootstrap.min',
 			'Validator' : '../../lib/bootstrapvalidator/dist/js/bootstrapValidator.min',
 			'util': '../common/util',
+			'i18n': '../../lib/i18n/i18n',
 			'MD5' : '../../lib/js-md5/build/md5.min',
 			'css': '../../lib/require-css/css.min'
 		},
@@ -41,9 +44,10 @@
 	         'bootstrap', 
 	         'css!../../res/css/login/main.css',
 	         'util',
+	         'i18n!../../nls/translation',
 	         './view/SigninView',
 	         './view/SignupView'
-	        ], function(Backbone, bootstrap, css, util, SigninView, SignupView) {
+	        ], function(Backbone, bootstrap, css, util, i18n, SigninView, SignupView) {
 		
 		var Entry = Backbone.View.extend({
 			el: 'div.container',
@@ -66,10 +70,10 @@
 				var $well = $('<div class="tabs-container">');
 				
 				var $tabs = $('<ul class="tabs nav nav-tabs" role="tablist">');
-				$tabs.append($('<li class="active"><a data-target="#login">Sign In</a></li>'));
-				$tabs.append($('<li><a data-target="#signup">Sign Up</a></li>'));
+				$tabs.append($('<li class="active"><a data-target="#login">' + i18n.login.main.SIGNIN_TITLE + '</a></li>'));
+				$tabs.append($('<li><a data-target="#signup">' + i18n.login.main.SIGNUP_TITLE + '</a></li>'));
 				$well.append($tabs);
-				$('title').html('Sign in :: IdeaWorks');
+				$('title').html(i18n.login.main.SIGNIN_HTML_TITLE);
 				
 				var $tabContent = $('<div class="tab-content">');
 				var signinView = new SigninView();
@@ -90,10 +94,10 @@
 				$(e.target).tab('show');
 				
 				//modify page title
-				if($(e.target).html() === 'Sign In') {
-					$('title').html('Sign in :: IdeaWorks');
+				if($(e.target).html() === i18n.login.main.SIGNIN_TITLE) {
+					$('title').html(i18n.login.main.SIGNIN_HTML_TITLE);
 				}else{
-					$('title').html('Sign up :: IdeaWorks');
+					$('title').html(i18n.login.main.SIGNUP_HTML_TITLE);
 				}
 			}
 		});

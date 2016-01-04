@@ -1,9 +1,9 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/projects/ProjectDetailForumTopicMessageView'
        ], 
-    function(Backbone, util, ProjectDetailForumTopicMessageView) {
+    function(Backbone, util, i18n, ProjectDetailForumTopicMessageView) {
 	var ProjectDetailForumTopicView = Backbone.View.extend({
 		
 		className: 'topic project-detail-forum-topic-view',
@@ -99,7 +99,7 @@ define([
 		},
 		
 		deleteTopic: function() {
-			if(confirm('Do you want to delete this topic?')) {
+			if(confirm(i18n.my.projects.ProjectDetailForumTopicView.DELETE_CONFIRM)) {
 				//触发全局事件
 				Backbone.trigger('ProjectDetailForumView:deleteTopic', this.model);
 			}
@@ -117,7 +117,7 @@ define([
 				'</div> ' +
 				'<div class="content"> ' +
 				'	<div class="heading"> ' +
-				'		<div class="expand-icon" title="show topic detail"><i class="fa fa-angle-down"></i></div>' + 
+				'		<div class="expand-icon" title="' + i18n.my.projects.ProjectDetailForumTopicView.SHOW_DETAIL + '"><i class="fa fa-angle-down"></i></div>' + 
 				'		<span class="create-time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</span> ' + 
 				'		<img class="create-operator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '"> ' +
 				'		<div class="title" cid="'+ topic.cid +'" title="'+ topic.get('title') + '">'+ topic.get('title') + '</div> ' +
@@ -140,21 +140,21 @@ define([
 			'<div class="meta-container">' + 
 	        '	<img class="creator img-circle" title="' + creator.nickname + '" src="' + util.baseUrl + creator.logo + '">' + 
 	        '	<div class="creator-nickname">' + creator.nickname + '</div>' + 
-	        '	<div class="create-title"> create this topic at </div>' + 
+	        '	<div class="create-title">' + i18n.my.projects.ProjectDetailForumTopicView.CREATE_AT + '</div>' + 
 	        '	<div class="time">' + util.timeformat(new Date(topic.get('createtime')), "smart") + '</div> ' + 
 	        '	<div class="topic-action"> ' + 
 			'		<a class="modify-topic btn btn-default"> ' + 
-			'			<i class="fa fa-pencil"></i> Edit' +
+			'			<i class="fa fa-pencil"></i> ' + i18n.my.projects.ProjectDetailForumTopicView.EDIT + 
 			'		</a>' + 
 			'		<a class="delete-topic btn btn-default"> ' + 
-			'			<i class="fa fa-trash"></i> Delete' +
+			'			<i class="fa fa-trash"></i> ' + i18n.my.projects.ProjectDetailForumTopicView.DELETE + 
 			'		</a>' + 
 			'	</div> ' + 
 	        '</div>';
 		
 		var description_tpl = 
 			'<div class="description-container well">' + 
-	        '	<h4 class="heading">Description</h4>' + 
+	        '	<h4 class="heading">' + i18n.my.projects.ProjectDetailForumTopicView.DESCRIPTION + '</h4>' + 
 	        '	<div class="description-content">' + topic.get('description') + '</div>' + 
 	        '</div>';
 		
@@ -164,7 +164,7 @@ define([
 			'</div> ' +
 			'<div class="content"> ' +
 			'	<div class="heading"> ' +
-			'		<div class="expand-icon" title="show topic detail"><i class="fa fa-angle-up"></i></div>' + 
+			'		<div class="expand-icon" title="' + i18n.my.projects.ProjectDetailForumTopicView.SHOW_DETAIL + '"><i class="fa fa-angle-up"></i></div>' + 
 			'		<div class="title" cid="'+ topic.cid +'" title="'+ topic.get('title') + '">'+ topic.get('title') + '</div> ' +
 			'	</div>' +
 			'	<div class="body"> ' + meta_tpl + description_tpl + ' </div> ' +
@@ -220,14 +220,14 @@ define([
 		        	topic_title: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The topic title is required'
+		                        message: i18n.my.projects.ProjectDetailForumTopicView.CHECK_TOPIC_TITLE
 		                    }
 		                }
 		            },
 		            topic_description: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The topic description is required'
+		                        message: i18n.my.projects.ProjectDetailForumTopicView.CHECK_TOPIC_DESCRIPTION
 		                    }
 		                }
 		            }
@@ -269,7 +269,7 @@ define([
 			this.model.save('description', $('#topic_description').val(), {
 				wait: true,
 				error: function(model, response, options) {
-					var alertMsg = 'Update topic failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailForumTopicView.UPDATE_MILESTONE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -282,7 +282,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Modify Topic</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailForumTopicView.MODIFY_TOPIC + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -290,8 +290,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 				'<div class="modal-footer"> ' + 
-				'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-				'	<a type="submit" class="save btn btn-primary">Save</a> ' + 
+				'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailForumTopicView.CANCEL + '</a> ' + 
+				'	<a type="submit" class="save btn btn-primary">' + i18n.my.projects.ProjectDetailForumTopicView.SAVE + '</a> ' + 
 				'</div> ';
 		return tpl;
 	}
@@ -301,12 +301,12 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="topicAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="topic_title" class="control-label">Title:</label> ' + 
-			'			<input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="topic title..."> ' + 
+			'			<label for="topic_title" class="control-label">' + i18n.my.projects.ProjectDetailForumTopicView.MODIFY_TITLE + '</label> ' + 
+			'			<input type="text" class="form-control" id="topic_title" name="topic_title" placeholder="' + i18n.my.projects.ProjectDetailForumTopicView.MODIFY_TITLE_HOLDER + '"> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="topic_description" class="control-label">Description:</label> ' + 
-			'			<textarea class="form-control" id="topic_description" name="topic_description" placeholder="topic description..."></textarea> ' + 
+			'			<label for="topic_description" class="control-label">' + i18n.my.projects.ProjectDetailForumTopicView.MODIFY_DESCRIPTION + '</label> ' + 
+			'			<textarea class="form-control" id="topic_description" name="topic_description" placeholder="' + i18n.my.projects.ProjectDetailForumTopicView.MODIFY_DESCRIPTION_HOLDER + '"></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

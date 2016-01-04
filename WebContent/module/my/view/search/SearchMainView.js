@@ -1,10 +1,10 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/search/ProjectSearchView',
          'view/search/PersonSearchView'
        ], 
-    function(Backbone, util, ProjectSearchView, PersonSearchView) {
+    function(Backbone, util, i18n, ProjectSearchView, PersonSearchView) {
 	var SearchMainView = Backbone.View.extend({
 		
 		className: 'search-main-view',
@@ -23,11 +23,11 @@ define([
 		
 		render: function(){
 			var $searchOptions = $('<ul class="search-options">');
-			$searchOptions.append('<li class="option active" data-type="project"><i class="fa fa-flag"></i><span>Project</span></li>');
-			$searchOptions.append('<li class="option" data-type="person"><i class="fa fa-user"></i><span>Person</span></li>');
+			$searchOptions.append('<li class="option active" data-type="project"><i class="fa fa-flag"></i><span>' + i18n.my.search.SearchMainView.PROJECT + '</span></li>');
+			$searchOptions.append('<li class="option" data-type="person"><i class="fa fa-user"></i><span>' + i18n.my.search.SearchMainView.PERSON + '</span></li>');
 			
 			var $searchResult = $('<div class="search-result">');
-			$searchResult.append(Placeholder('No search result...'));
+			$searchResult.append(Placeholder(i18n.my.search.SearchMainView.NO_RESULT));
 			
 			$(this.el).html($searchOptions);
 			$(this.el).append($searchResult);

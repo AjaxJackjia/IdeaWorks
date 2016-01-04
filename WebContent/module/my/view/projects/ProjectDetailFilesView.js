@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/projects/ProjectDetailFileItemView',
          //model
          'model/project/FileModel'
        ], 
-    function(Backbone, util, ProjectDetailFileItemView, FileModel) {
+    function(Backbone, util, i18n, ProjectDetailFileItemView, FileModel) {
 	var ProjectDetailFilesView = Backbone.View.extend({
 		
 		className: 'project-detail-files-view',
@@ -35,14 +35,13 @@ define([
 			var $action = $('<div class="action">');
 			var uploads_tpl = 
 				'<div class="btn btn-default upload" style="position: relative;">' + 
-				'	<i class="fa fa-cloud-upload"></i>' + 
-				'		Upload file ' + 
+				'	<i class="fa fa-cloud-upload"></i>' + i18n.my.projects.ProjectDetailFilesView.UPLOAD_FILE + 
 				'</div>';
 			$action.append(uploads_tpl);
 		  
 			
 			var $files = $('<div class="files-container">');
-			$files.append('<div class="placeholder"><h4>No files...</h4></div>');
+			$files.append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailFilesView.NO_FILES + '</h4></div>');
 			
 			$(this.el).append($action);
 			$(this.el).append($files);
@@ -82,7 +81,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.file[cid]', this.el).length == 0) {
-				$('.files-container', this.el).append('<div class="placeholder"><h4>No files...</h4></div>');
+				$('.files-container', this.el).append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailFilesView.NO_FILES + '</h4></div>');
 			}
 		},
 		
@@ -124,7 +123,7 @@ define([
 			    processData: false,
 			    type: 'POST',
 			    success: function(){
-			    	alert("Upload complete!");
+			    	alert(i18n.my.projects.ProjectDetailFilesView.UPLOAD_COMPLETE);
 			    	
 			    	//更新整个file集合(先删除之前，然后再获取新的)
 			    	_.each($('.file[cid]'), function(dom, index) {
@@ -139,7 +138,7 @@ define([
 							$('#upload_sub_view').modal('toggle');
 			    		},
 				    	error: function(model, response, options) {
-				    		var alertMsg = 'Fetch files failed. Please try again later!';
+				    		var alertMsg = i18n.my.projects.ProjectDetailFilesView.FETCH_FILES_ERROR;
 							util.commonErrorHandler(response.responseJSON, alertMsg);
 			    			//隐藏窗口
 							$('#upload_sub_view').modal('toggle');
@@ -147,7 +146,7 @@ define([
 			    	});
 			    },
 			    error: function(response){
-			    	var alertMsg = 'Upload file failed. Please try again later!';
+			    	var alertMsg = i18n.my.projects.ProjectDetailFilesView.UPLOAD_FILE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 			    	//隐藏窗口
 			    	$('#upload_sub_view').modal('toggle');
@@ -167,7 +166,7 @@ define([
 					files.remove(file);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete file failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailFilesView.DELETE_FILE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -250,10 +249,10 @@ define([
 		//检查文件上传
 		validate: function() {
 			var maxsize = 50 * 1024 * 1024; //文件大小最大50M
-			var emptyMsg = "Please select your upload file!";
-			var errMsg = "The maxsize of upload file is 50M!";
-			var fileTypeMsg = "The file type doesn't support!";
-			var tipMsg = "Please use Chrome or Firefox browser to upload file!";
+			var emptyMsg = i18n.my.projects.ProjectDetailFilesView.CHECK_EMPTY_MSG;
+			var errMsg = i18n.my.projects.ProjectDetailFilesView.CHECK_MAX_SIZE_MSG;
+			var fileTypeMsg = i18n.my.projects.ProjectDetailFilesView.CHECK_FILE_TYPE_MSG;
+			var tipMsg = i18n.my.projects.ProjectDetailFilesView.CHECK_BROWSER_MSG;
 			var ua = window.navigator.userAgent;
 			var browserCfg = {};
 			if(ua.indexOf("Firefox")>=1){
@@ -313,7 +312,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Upload File</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailFilesView.UPLOAD_TITLE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -321,7 +320,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="submit" class="upload-file btn btn-primary">Upload</a> ' + 
+			'	<a type="submit" class="upload-file btn btn-primary">' + i18n.my.projects.ProjectDetailFilesView.UPLOAD + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -347,15 +346,15 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="fileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="upload_file_input" class="control-label">File:</label> ' + 
+			'			<label for="upload_file_input" class="control-label">' + i18n.my.projects.ProjectDetailFilesView.FILE + '</label> ' + 
 			'			<input id="upload_file_input" type="file" accept="' + accept_file_type.join(', ') + '"> ' +
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label class="control-label">(Max upload file size is 50M. Support file type: doc, docx, xls, xlsx, ppt, pptx, pdf, zip, rar, txt, gif, jpeg, jpg, png)</label> ' + 
+			'			<label class="control-label">' + i18n.my.projects.ProjectDetailFilesView.UPLOAD_TIPS + '</label> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="file_description" class="control-label">Description:</label> ' + 
-			'			<textarea class="form-control" id="file_description" name="file_description" placeholder="file description..."></textarea> ' + 
+			'			<label for="file_description" class="control-label">' + i18n.my.projects.ProjectDetailFilesView.DESCRIPTION + '</label> ' + 
+			'			<textarea class="form-control" id="file_description" name="file_description" placeholder="' + i18n.my.projects.ProjectDetailFilesView.DESCRIPTION_HOLDER + '"></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

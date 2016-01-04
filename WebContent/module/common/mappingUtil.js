@@ -1,4 +1,4 @@
-define(['jquery', 'cookie' ], function($, cookie) {
+define(['jquery', 'cookie', 'i18n!../../nls/translation' ], function($, cookie, i18n) {
 	/*
 	 * 将操作与实体代码与具体显示的语句进行mapping
 	 * */
@@ -40,46 +40,46 @@ define(['jquery', 'cookie' ], function($, cookie) {
 	/* msg mapping */
 	var kv = {};
 	//action
-	kv.CREATE 	= 'create';
-	kv.MODIFY 	= 'modify';
-	kv.READ 	= 'read';
-	kv.DELETE 	= 'delete';
-	kv.JOIN 	= 'join';
-	kv.REMOVE 	= 'remove';
-	kv.LEAVE 	= 'leave';
-	kv.UPLOAD 	= 'upload';
-	kv.REPLY 	= 'reply';
-	kv.APPLY 	= 'apply';
-	kv.REJECT	= 'reject';
-	kv.AGREE	= 'agree';
+	kv.CREATE 	= i18n.my.activity.CREATE;
+	kv.MODIFY 	= i18n.my.activity.MODIFY;
+	kv.READ 	= i18n.my.activity.READ;
+	kv.DELETE 	= i18n.my.activity.DELETE;
+	kv.JOIN 	= i18n.my.activity.JOIN;
+	kv.REMOVE 	= i18n.my.activity.REMOVE;
+	kv.LEAVE 	= i18n.my.activity.LEAVE;
+	kv.UPLOAD 	= i18n.my.activity.UPLOAD;
+	kv.REPLY 	= i18n.my.activity.REPLY;
+	kv.APPLY 	= i18n.my.activity.APPLY;
+	kv.REJECT	= i18n.my.activity.REJECT;
+	kv.AGREE	= i18n.my.activity.AGREE;
 	//entity
-	kv.PROJECT 		= 'project';
-	kv.MEMBER 		= 'member';
-	kv.MILESTONE 	= 'milestone';
-	kv.TOPIC 		= 'topic';
-	kv.MESSAGE 		= 'message';
-	kv.FILE 		= 'file';
-	kv.APPLICATION 	= 'application';
-	kv.TITLE 		= 'title';
-	kv.ADVISOR 		= 'advisor';
-	kv.ABSTRACT 	= 'abstract';
-	kv.LOGO 		= 'logo';
-	kv.STATUS 		= 'status';
-	kv.SECURITY 	= 'security';
-	kv.DESCRIPTION 	= 'description';
+	kv.PROJECT 		= i18n.my.activity.PROJECT;
+	kv.MEMBER 		= i18n.my.activity.MEMBER;
+	kv.MILESTONE 	= i18n.my.activity.MILESTONE;
+	kv.TOPIC 		= i18n.my.activity.TOPIC;
+	kv.MESSAGE 		= i18n.my.activity.MESSAGE;
+	kv.FILE 		= i18n.my.activity.FILE;
+	kv.APPLICATION 	= i18n.my.activity.APPLICATION;
+	kv.TITLE 		= i18n.my.activity.TITLE;
+	kv.ADVISOR 		= i18n.my.activity.ADVISOR;
+	kv.ABSTRACT 	= i18n.my.activity.ABSTRACT;
+	kv.LOGO 		= i18n.my.activity.LOGO;
+	kv.STATUS 		= i18n.my.activity.STATUS;
+	kv.SECURITY 	= i18n.my.activity.SECURITY;
+	kv.DESCRIPTION 	= i18n.my.activity.DESCRIPTION;
 	//assist
-	kv.UNKNOWN = 'unknown';
-	kv.OF = "\'s";
-	kv.IN = "in";
-	kv.FROM = "from";
-	kv.TO = "to";
-	kv.THIS = "this"; 
-	kv.WITH = "with";
-	kv.YOU = "you";
-	kv.ONGOING = "ongoing";
-	kv.COMPLETE = "complete";
-	kv.PUBLIC = "public";
-	kv.GROUP = "group visible";
+	kv.UNKNOWN = i18n.my.activity.UNKNOWN;
+	kv.OF = i18n.my.activity.OF;
+	kv.IN = i18n.my.activity.IN;
+	kv.FROM = i18n.my.activity.FROM;
+	kv.TO = i18n.my.activity.TO;
+	kv.THIS = i18n.my.activity.THIS;
+	kv.WITH = i18n.my.activity.WITH;
+	kv.YOU = i18n.my.activity.YOU;
+	kv.ONGOING = i18n.my.activity.ONGOING;
+	kv.COMPLETE = i18n.my.activity.COMPLETE;
+	kv.PUBLIC = i18n.my.activity.PUBLIC;
+	kv.GROUP = i18n.my.activity.GROUP;
 	
 	kv.emphasize = function(str) {
 		return '<span class="foci">' + str + '</span>';
@@ -244,7 +244,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 		var originInfo = $.parseJSON(response.title);
 		if(response.entity == entity.FILE)
 		{
-			return kv.UPLOAD + ' ' + kv.FILE + ' ' + response.title;
+			return kv.UPLOAD + ' ' + kv.FILE + ' ' + originInfo.title;
 		}
 		else
 		{
@@ -274,7 +274,7 @@ define(['jquery', 'cookie' ], function($, cookie) {
 	var applyActionMapping = function(response) {
 		if(response.entity == entity.APPLICATION)
 		{
-			return kv.APPLY + ' ' + kv.TO + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
+			return kv.APPLY + ' ' + kv.JOIN + ' ' + kv.THIS + ' ' + kv.PROJECT;
 		}
 		else
 		{

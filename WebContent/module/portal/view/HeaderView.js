@@ -1,4 +1,4 @@
-define([ 'backbone', 'headroom', 'util' ], function(Backbone, Headroom, util) {
+define([ 'backbone', 'headroom', 'util', 'i18n!../../../nls/translation' ], function(Backbone, Headroom, util, i18n) {
 	var HeaderView = Backbone.View.extend({
 		
 		tagName: 'header',
@@ -9,18 +9,25 @@ define([ 'backbone', 'headroom', 'util' ], function(Backbone, Headroom, util) {
 		
 		initialize: function(){
 			//navigation
-			this.nav = {
-				'Home': 'index.html',
-				'News': 'index.html#news',
-				'Projects': 'index.html#projects',
-				'Login': 'login.html'
-			};
+			this.nav = [{
+				index: i18n.portal.HeaderView.HOME,
+				url: 'index.html'
+			},{
+				index: i18n.portal.HeaderView.NEWS,
+				url: 'index.html#news'
+			},{
+				index: i18n.portal.HeaderView.PROJECTS,
+				url: 'index.html#projects'
+			},{
+				index: i18n.portal.HeaderView.LOGIN,
+				url: 'login.html'
+			}];
 		},
 		
 		render: function(){
 			var $nav = $('<ul class="nav nav-main">');
-			_.each(this.nav, function(value, key) {
-				$nav.append('<li><a href="'+ value +'">' + key + '</a></li>');
+			_.each(this.nav, function(item) {
+				$nav.append('<li><a href="'+ item.url +'">' + item.index + '</a></li>');
 			});
 			
 			var brandUrl = util.baseUrl + '/index.html';

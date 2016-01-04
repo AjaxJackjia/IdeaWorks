@@ -1,7 +1,8 @@
 define([ 
-         'backbone', 'util', 'view/projects/ProjectListItemView'
+         'backbone', 'util', 'i18n!../../../../nls/translation',
+         'view/projects/ProjectListItemView'
        ], 
-    function(Backbone, util, ProjectListItemView) {
+    function(Backbone, util, i18n, ProjectListItemView) {
 	var ProjectListView = Backbone.View.extend({
 		
 		className: 'project-list-view',
@@ -31,7 +32,7 @@ define([
 		render: function(){
 			//project list content
 			var $content = $('<ul class="project-list-content">');
-			$content.append('<div class="empty-place-holder"><h4>No projects...</h4></div>');
+			$content.append('<div class="empty-place-holder"><h4>' + i18n.my.projects.ProjectListView.NO_PROJECTS + '</h4></div>');
 			$(this.el).append($content);
 			
 		    return this;
@@ -63,7 +64,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.project-list-content > li', this.el).length == 0) {
-				$('.project-list-content', this.el).append('<div class="empty-place-holder"><h4>No projects...</h4></div>');
+				$('.project-list-content', this.el).append('<div class="empty-place-holder"><h4>' + i18n.my.projects.ProjectListView.NO_PROJECTS + '</h4></div>');
 			}
 		},
 		
@@ -77,7 +78,7 @@ define([
 					 $($('.project-list-content > li')[0]).click();
 				 }, 
 				 error: function(model, response, options) {
-					var alertMsg = 'Create project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectListView.CREATE_PROJECT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -94,7 +95,7 @@ define([
 					projectList.remove(project);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectListView.DELETE_PROJECT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -111,7 +112,7 @@ define([
 					projectList.remove(project);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Exit project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectListView.EXIT_PROJECT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});

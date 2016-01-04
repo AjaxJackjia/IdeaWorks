@@ -1,9 +1,9 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //model
          'model/search/ProjectModel'
        ], 
-    function(Backbone, util, ProjectModel) {
+    function(Backbone, util, i18n, ProjectModel) {
 	var ProjectItemView = Backbone.View.extend({
 		
 		className: 'project-item-view',
@@ -55,25 +55,25 @@ define([
 			    success: function(result){
 			    	if(result.ret == 0) {
 			    		if(result.msg == 'joined') {
-			    			alert('You have already joined this project...');
+			    			alert(i18n.my.search.ProjectItemView.ALREADY_JOIN_PROJECT);
 			    		}else if(result.msg == 'sent') {
-			    			alert('You have already send request to relative staff, please wait for acception...');
+			    			alert(i18n.my.search.ProjectItemView.ALREADY_SEND_REQUEST);
 			    		}else{
-			    			alert("Send request complete!");
+			    			alert(i18n.my.search.ProjectItemView.SEND_COMPLETE);
 			    		}
 			    	}else{
 			    		alert(result.msg);
 			    	}
 			    },
 			    error: function(response) {
-					var alertMsg = 'Set privacy failed. Please try again later!';
+					var alertMsg = i18n.my.search.ProjectItemView.JOIN_PROJECT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},
 		
 		alreadyJoinProject: function() {
-			alert('You have already joined this project...');
+			alert(i18n.my.search.ProjectItemView.ALREADY_JOIN_PROJECT);
 		}
 	});
 	
@@ -81,18 +81,18 @@ define([
 		//status view dom
 		var status_content = '';
 		switch(project.get('status')) {
-			case 0: status_content = 'ongoing';break;
-			case 1: status_content = 'completed';break;
-			default: status_content = 'unclear'; break;
+			case 0: status_content = i18n.my.search.ProjectItemView.ONGOING;break;
+			case 1: status_content = i18n.my.search.ProjectItemView.COMPLETE;break;
+			default: status_content = i18n.my.search.ProjectItemView.UNCLEAR; break;
 		}
 		
 		var action_tpl = '<div class="project-action">' + 
-						 '	<a class="view-project btn btn-default">Detail</a>';
+						 '	<a class="view-project btn btn-default">' + i18n.my.search.ProjectItemView.DETAIL + '</a>';
 		if(!project.get('userJoinStatus')) {
-			action_tpl += '	<a class="join-project btn btn-primary">Join</a>' + 
+			action_tpl += '	<a class="join-project btn btn-primary">' + i18n.my.search.ProjectItemView.JOIN + '</a>' + 
 						  '</div>';
 		}else{
-			action_tpl += '	<a class="already-join-project btn btn-default">Joined</a>' + 
+			action_tpl += '	<a class="already-join-project btn btn-default">' + i18n.my.search.ProjectItemView.JOINED + '</a>' + 
 			  			  '</div>';
 		}
 						 
@@ -102,7 +102,7 @@ define([
 					'<div class="info"> ' + 
 					'	<h4 class="project-title" title="' + project.get('title') + '">'+ project.get('title') +'</h4>' + 
 					'	<p class="project-status">' + status_content + '</p>' + 
-					'	<p class="project-createtime">create at ' + util.timeformat(new Date(project.get('createtime')), 'smart') + '</p>' + 
+					'	<p class="project-createtime">' + i18n.my.search.ProjectItemView.CREATE_AT + util.timeformat(new Date(project.get('createtime')), 'smart') + '</p>' + 
 					'</div>';
 		
 		return action_tpl + logo_tpl + info_tpl;
@@ -149,7 +149,7 @@ define([
 						generateDetailedInfo(self.model);
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Fetch certain project failed. Please try again later!';
+						var alertMsg = i18n.my.search.ProjectItemView.FETCH_PROJECT_FAILED;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
@@ -171,7 +171,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Project Detail Information</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.search.ProjectItemView.PROJECT_DETAIL_INFO + '</h3> ' + 
 			'</div>';
 		return tpl;
 	};
@@ -179,7 +179,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-primary" data-dismiss="modal">&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-primary" data-dismiss="modal">' + i18n.my.search.ProjectItemView.OK + '</a> ' + 
 			'</div> ';
 		return tpl;
 	};
@@ -189,15 +189,15 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="projectAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="project_title" class="control-label">Title: </label>' + 
+			'			<label for="project_title" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_TITLE + '</label>' + 
 			'			<input type="text" class="form-control" id="project_title" name="project_title" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="project_status" class="control-label">Status: </label>' + 
+			'			<label for="project_status" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_STATUS + '</label>' + 
 			'			<input type="text" class="form-control" id="project_status" name="project_status" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="project_createtime" class="control-label">Create time: </label>' + 
+			'			<label for="project_createtime" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_CREATE_TIME + '</label>' + 
 			'			<input type="text" class="form-control" id="project_createtime" name="project_createtime" disabled> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
@@ -208,9 +208,9 @@ define([
 	var generateDetailedInfo = function(project) {
 		var status_content = '';
 		switch(project.get('status')) {
-			case 0: status_content = 'ongoing';break;
-			case 1: status_content = 'completed';break;
-			default: status_content = 'unclear'; break;
+			case 0: status_content = i18n.my.search.ProjectItemView.ONGOING;break;
+			case 1: status_content = i18n.my.search.ProjectItemView.COMPLETE;break;
+			default: status_content = i18n.my.search.ProjectItemView.UNCLEAR; break;
 		}
 		
 		//basic info
@@ -226,21 +226,21 @@ define([
 			var advisor = project.get('advisor');
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label for="project_advisor" class="control-label">Advisor: </label>' + 
+				'	<label for="project_advisor" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_ADVISOR + '</label>' + 
 				'	<input type="text" class="form-control" id="project_advisor" name="project_advisor" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="project_creator" class="control-label">Creator: </label>' + 
+				'	<label for="project_creator" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_CREATOR + '</label>' + 
 				'	<input type="text" class="form-control" id="project_creator" name="project_creator" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="project_abstract" class="control-label">Abstract: </label>' + 
+				'	<label for="project_abstract" class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_ABSTRACT + '</label>' + 
 				'	<textarea class="form-control" id="project_abstract" name="project_abstract" disabled></textarea> ' + 
 				'</div> ';
 		}else{
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label class="control-label">Due to the project\'s security settings, you can\'t view the detail of this project before you join... </label>' + 
+				'	<label class="control-label">' + i18n.my.search.ProjectItemView.PROJECT_PRIVACY_TIPS + '</label>' + 
 				'</div> ';
 		}
 		$('#projectAttribute').append(detailed_tpl);

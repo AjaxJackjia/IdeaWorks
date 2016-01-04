@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util) {
+    function(Backbone, util, i18n) {
 	var ProjectDetailFileItemView = Backbone.View.extend({
 		
 		className: 'file attachment well project-detail-files-item-view',
@@ -41,7 +41,7 @@ define([
 		},
 		
 		deleteFile: function() {
-			if(confirm('Do you want to delete this file?')) {
+			if(confirm(i18n.my.projects.ProjectDetailFileItemView.DELETE_FILE_CONFIRM)) {
 				var file = this.model;
 				Backbone.trigger('ProjectDetailFilesView:deleteFile', file);
 			}
@@ -56,10 +56,10 @@ define([
 			'	<div class="overlay">' + 
 			'		<div class="top">' +
 			'			<span class="time">' + util.timeformat(new Date(file.get('createtime')), "smart") + '</span>' + 
-			'			<a class="delete"><i class="fa fa-trash-o"></i></a>'+	
+			'			<a class="delete" title="' + i18n.my.projects.ProjectDetailFileItemView.DELETE_FILE_TIPS + '"><i class="fa fa-trash-o"></i></a>'+	
 			'		</div>' +
 			'		<div class="action">' +
-			'			<a class="btn btn-default btn-long" href="' + util.baseUrl + file.get('url') + '" target="_blank">Download file</a>' + 
+			'			<a class="btn btn-default btn-long" href="' + util.baseUrl + file.get('url') + '" target="_blank">' + i18n.my.projects.ProjectDetailFileItemView.DOWNLOAD_FILE + '</a>' + 
 			'		</div>' +
 			'	</div>' +
 			'</div>' +
@@ -148,7 +148,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">File Detail Information</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailFileItemView.FILE_DETAIL_INFO + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -156,7 +156,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-primary" data-dismiss="modal">&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-primary" data-dismiss="modal">' + i18n.my.projects.ProjectDetailFileItemView.OK + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -166,23 +166,23 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="fileAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="file_title" class="control-label">File name: </label>' + 
+			'			<label for="file_title" class="control-label">' + i18n.my.projects.ProjectDetailFileItemView.FILE_NAME + '</label>' + 
 			'			<input type="text" class="form-control" id="file_title" name="file_title" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="file_size" class="control-label">File size: </label>' + 
+			'			<label for="file_size" class="control-label">' + i18n.my.projects.ProjectDetailFileItemView.FILE_SIZE + '</label>' + 
 			'			<input type="text" class="form-control" id="file_size" name="file_size" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="creator" class="control-label">Creator: </label>' + 
+			'			<label for="creator" class="control-label">' + i18n.my.projects.ProjectDetailFileItemView.CREATOR + '</label>' + 
 			'			<input type="text" class="form-control" id="creator" name="creator" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="creat_time" class="control-label">Create time: </label>' + 
+			'			<label for="creat_time" class="control-label">' + i18n.my.projects.ProjectDetailFileItemView.CREATE_TIME + '</label>' + 
 			'			<input type="text" class="form-control" id="creat_time" name="creat_time" disabled> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="file_description" class="control-label">Description: </label>' + 
+			'			<label for="file_description" class="control-label">' + i18n.my.projects.ProjectDetailFileItemView.DESCRIPTION + '</label>' + 
 			'			<textarea class="form-control" id="file_description" name="file_description" disabled></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 

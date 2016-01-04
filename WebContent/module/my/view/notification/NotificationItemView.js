@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, ProjectCollection) {
+    function(Backbone, util, i18n, ProjectCollection) {
 	var NotificationItemView = Backbone.View.extend({
 		
 		className: 'notification notification-item-view',
@@ -47,7 +47,7 @@ define([
 						Backbone.trigger('NotificationSideView:updateUnreadState', self.model);
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Mark notification read failed. Please try again later!';
+						var alertMsg = i18n.my.notification.NotificationItemView.MARK_READ_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 						//reset state
 						self.model.set('isRead', self.UNREAD_FLAG);
@@ -71,7 +71,7 @@ define([
 			    '		</div>' + 
 			    '		<div class="time">' + util.timeformat(new Date(notification.get('time')), "smart") + '</div>' + 
 			    '	</div>' + 
-			    '	<div class="notification-project" title="' + notification.get('projectTitle') + '"><span class="foci">in project </span>' + notification.get('projectTitle') + '</div>' + 
+			    '	<div class="notification-project" title="' + notification.get('projectTitle') + '"><span class="foci">' + i18n.my.notification.NotificationItemView.IN_PROJECT + '</span>' + notification.get('projectTitle') + '</div>' + 
 			    '	<div class="notification-title">' + notification.get('title') + '</div>' + 
 			    '</div>';
 		return $tpl;

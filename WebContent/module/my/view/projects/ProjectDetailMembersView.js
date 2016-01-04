@@ -1,10 +1,10 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //model
          'model/project/MemberCollection',
          'model/search/PersonModel'
        ], 
-    function(Backbone, util, MemberCollection, PersonModel) {
+    function(Backbone, util, i18n, MemberCollection, PersonModel) {
 	var ProjectDetailMembersView = Backbone.View.extend({
 		
 		className: 'project-detail-members-view',
@@ -24,16 +24,16 @@ define([
 		
 		render: function(){
 			var $advisor = $('<div class="advisor well">');
-			var $advisorTitle = $('<div class="advisor-title">Advisor</div>');
+			var $advisorTitle = $('<div class="advisor-title">' + i18n.my.projects.ProjectDetailMembersView.ADVISOR + '</div>');
 			var $advisorContent = $('<div class="advisor-content"></div>');
-			$advisorContent.append('<div class="placeholder"><h4>No advisor...</h4></div>');
+			$advisorContent.append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailMembersView.ADVISOR_PLACEHOLDER + '</h4></div>');
 			$advisor.append($advisorTitle);
 			$advisor.append($advisorContent);
 			
 			var $members = $('<div class="members well">');
-			var $membersTitle = $('<div class="members-title">Members</div>');
+			var $membersTitle = $('<div class="members-title">' + i18n.my.projects.ProjectDetailMembersView.MEMBERS + '</div>');
 			var $membersContent = $('<div class="members-content"></div>');
-			$membersContent.append('<div class="placeholder"><h4>No members...</h4></div>');
+			$membersContent.append('<div class="placeholder"><h4>' + i18n.my.projects.ProjectDetailMembersView.MEMBERS_PLACEHOLDER + '</h4></div>');
 			$members.append($membersTitle);
 			$members.append($membersContent);
 			
@@ -217,7 +217,7 @@ define([
 					$('#add_member_sub_view').modal('toggle');
 				},
 				error: function(response) {
-					var alertMsg = 'Add project member project failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailMembersView.ADD_PROJECT_MEMBERS_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -228,7 +228,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Invite Members</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailMembersView.INVITE_MEMBERS + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -236,8 +236,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="invite btn btn-primary">Invite</a> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailMembersView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="invite btn btn-primary">' + i18n.my.projects.ProjectDetailMembersView.INVITE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -308,7 +308,7 @@ define([
 						generateDetailedInfo(self.model);
 					},
 					error: function(model, response, options) {
-						var alertMsg = 'Fetch member failed. Please try again later!';
+						var alertMsg = i18n.my.projects.ProjectDetailMembersView.FETCH_MEMBER_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
@@ -330,7 +330,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Member Detail Information</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailMembersView.MEMBER_DETAIL_INFORMATION + '</h3> ' + 
 			'</div>';
 		return tpl;
 	};
@@ -338,7 +338,7 @@ define([
 	var DetailFooter = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-primary" data-dismiss="modal">&nbsp;&nbsp;&nbsp;OK&nbsp;&nbsp;&nbsp;</a> ' + 
+			'	<a type="button" class="btn btn-primary" data-dismiss="modal">' + i18n.my.projects.ProjectDetailMembersView.OK + '</a> ' + 
 			'</div> ';
 		return tpl;
 	};
@@ -367,7 +367,7 @@ define([
 		$('#person_logo').attr('src', util.baseUrl + person.get('logo'));
 		$('#person_nickname').html(person.get('nickname'));
 		$('#person_userid').html(person.get('userid'));
-		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):'signature is empty...');
+		$('#person_signature').html(person.get('signature')!=''?person.get('signature'):i18n.my.projects.ProjectDetailMembersView.DETAIL_SIGNATURE_EMPTY);
 		
 		//根据email的属性来判断用户信息是否对外公开,具体判断逻辑在java代码中
 		var privacy_flag = (person.has('email') && person.get('email') != '') ? true : false;
@@ -375,53 +375,53 @@ define([
 		if(privacy_flag) {
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label for="person_realname" class="control-label">Real Name: </label>' + 
+				'	<label for="person_realname" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_REALNAME + '</label>' + 
 				'	<input type="text" class="form-control" id="person_realname" name="person_realname" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_phone" class="control-label">Phone: </label>' + 
+				'	<label for="person_phone" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_PHONE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_phone" name="person_phone" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_email" class="control-label">Email: </label>' + 
+				'	<label for="person_email" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_EMAIL + '</label>' + 
 				'	<input type="text" class="form-control" id="person_email" name="person_email" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_skype" class="control-label">Skype account: </label>' + 
+				'	<label for="person_skype" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_SKYPE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_skype" name="person_skype" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_wechat" class="control-label">WeChat account: </label>' + 
+				'	<label for="person_wechat" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_WECHAT + '</label>' + 
 				'	<input type="text" class="form-control" id="person_wechat" name="person_wechat" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_major" class="control-label">Major: </label>' + 
+				'	<label for="person_major" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_MAJOR + '</label>' + 
 				'	<input type="text" class="form-control" id="person_major" name="person_major" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_department" class="control-label">Department: </label>' + 
+				'	<label for="person_department" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_DEPARTMENT + '</label>' + 
 				'	<input type="text" class="form-control" id="person_department" name="person_department" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_college" class="control-label">College: </label>' + 
+				'	<label for="person_college" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_COLLEGE + '</label>' + 
 				'	<input type="text" class="form-control" id="person_college" name="person_college" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_address" class="control-label">Address: </label>' + 
+				'	<label for="person_address" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_ADDRESS + '</label>' + 
 				'	<input type="text" class="form-control" id="person_address" name="person_address" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_interests" class="control-label">Interests: </label>' + 
+				'	<label for="person_interests" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_INTERESTS + '</label>' + 
 				'	<input type="text" class="form-control" id="person_address" name="person_address" disabled> ' + 
 				'</div> ' + 
 				'<div class="form-group"> ' + 
-				'	<label for="person_introduction" class="control-label">Introduction: </label>' + 
+				'	<label for="person_introduction" class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_INTRODUCTION + '</label>' + 
 				'	<textarea class="form-control" id="person_introduction" name="person_introduction" disabled></textarea> ' + 
 				'</div> ';
 		}else{
 			detailed_tpl = 
 				'<div class="form-group"> ' + 
-				'	<label class="control-label">Due to the person\'s privacy settings, you can\'t view his/her detailed information... </label>' + 
+				'	<label class="control-label">' + i18n.my.projects.ProjectDetailMembersView.DETAIL_PRIVACY_TIPS + '</label>' + 
 				'</div> ';
 		}
 		$('#personAttribute').append(detailed_tpl);

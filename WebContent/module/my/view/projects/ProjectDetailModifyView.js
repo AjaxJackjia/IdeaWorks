@@ -1,10 +1,11 @@
 define([ 
          'backbone', 'util', 'Validator',
+         'i18n!../../../../nls/translation',
          //model
  		'model/project/ProjectModel',
  		'model/project/MemberCollection'
        ], 
-    function(Backbone, util, Validator, ProjectModel, MemberCollection) {
+    function(Backbone, util, Validator, i18n, ProjectModel, MemberCollection) {
 	var ProjectDetailModifyView = Backbone.View.extend({
 		
 		id: 'project_detail_modify_view',
@@ -61,14 +62,14 @@ define([
 		        	project_title: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The porject title is required'
+		                        message: i18n.my.projects.ProjectDetailModifyView.CHECK_TITLE
 		                    }
 		                }
 		            },
 		            project_advisor: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The porject advisor is required'
+		                        message: i18n.my.projects.ProjectDetailModifyView.CHECK_ADVISOR
 		                    }
 		                }
 		            }
@@ -82,14 +83,14 @@ define([
 			$(this.el).on('show.bs.modal', function (event) {
 				if(projectModel == null) {
 					//创建project
-					$(this).find('.modal-title').html("Create Project");
-					$(this).find('.modal-footer > .btn-primary').html("Create");
+					$(this).find('.modal-title').html(i18n.my.projects.ProjectDetailModifyView.CREATE_PROJECT);
+					$(this).find('.modal-footer > .btn-primary').html(i18n.my.projects.ProjectDetailModifyView.CREATE);
 					
 					advisorCandidates.fetch();
 				}else{
 					//修改project
-					$(this).find('.modal-title').html("Edit Project");
-					$(this).find('.modal-footer > .btn-primary').html("Save");
+					$(this).find('.modal-title').html(i18n.my.projects.ProjectDetailModifyView.EDIT_PROJECT);
+					$(this).find('.modal-footer > .btn-primary').html(i18n.my.projects.ProjectDetailModifyView.SAVE);
 					
 					var $dom = $(this);
 					advisorCandidates.fetch({
@@ -131,9 +132,6 @@ define([
 				projectModel.set('title', $('#project_title').val());
 				
 				var creatorRaw = this.advisorCandidates.where({userid: util.currentUser()});
-				console.log(util.currentUser());
-				console.log(creatorRaw[0]);
-				
 				projectModel.set('creator', {
 					userid: creatorRaw[0].get('userid'),
 					nickname: creatorRaw[0].get('nickname'),
@@ -161,7 +159,7 @@ define([
 				this.model.save('advisor', advisorObj, {
 					wait: true,
 					error: function(model, response, options) {
-						var alertMsg = 'Update project failed. Please try again later!';
+						var alertMsg = i18n.my.projects.ProjectDetailModifyView.UPDATE_PROJECT_ERROR;
 						util.commonErrorHandler(response.responseJSON, alertMsg);
 					}
 				});
@@ -184,7 +182,7 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="btn btn-default" data-dismiss="modal">Cancel</a> ' + 
+			'	<a type="button" class="btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailModifyView.CANCEL + '</a> ' + 
 			'	<a type="submit" class="btn btn-primary"></a> ' + 
 			'</div> ';
 		return tpl;
@@ -195,11 +193,11 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="projectAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="project_title" class="control-label">Title:</label> ' + 
-			'			<input type="text" class="form-control" id="project_title" name="project_title" placeholder="project title"> ' + 
+			'			<label for="project_title" class="control-label">' + i18n.my.projects.ProjectDetailModifyView.TITLE + '</label> ' + 
+			'			<input type="text" class="form-control" id="project_title" name="project_title" placeholder="' + i18n.my.projects.ProjectDetailModifyView.TITLE_PLACEHOLDER + '"> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="project_advisor" class="control-label">Advisor:</label> ' + 
+			'			<label for="project_advisor" class="control-label">' + i18n.my.projects.ProjectDetailModifyView.ADVISOR + '</label> ' + 
 			'			<select class="form-control" id="project_advisor" name="project_advisor"> ' + 
 			'			</select> ' + 
 			'		</div> ' + 

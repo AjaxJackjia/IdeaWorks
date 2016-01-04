@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/search/ProjectItemView',
          //model
          'model/search/ProjectCollection'
        ], 
-    function(Backbone, util, ProjectItemView, ProjectCollection) {
+    function(Backbone, util, i18n, ProjectItemView, ProjectCollection) {
 	var ProjectSearchView = Backbone.View.extend({
 		
 		className: 'project-search-view',
@@ -41,14 +41,14 @@ define([
 				data: { key: searchTxt},
 				success: this.render,
 				error: function(model, response, options) {
-					var alertMsg = 'Search projects failed. Please try again later!';
+					var alertMsg = i18n.my.search.ProjectSearchView.SEARCH_PROJECT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
 		},
 		
 		clean: function() {
-			$(this.el).html(Placeholder('Search Project No result...'));
+			$(this.el).html(Placeholder(i18n.my.search.ProjectSearchView.SEARCH_NO_PROJECT));
 		},
 		
 		addProjects: function() {

@@ -46,10 +46,16 @@ public class AuthService extends BaseService {
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		//1. get password from db by id;
-		String db_password = "";
+		String db_password = "",
+			   nickname = "",
+			   userlogo = "",
+			   userlang = "";
 		
 		while(rs_stmt.next()) {
 			db_password = rs_stmt.getString("password");
+			nickname = rs_stmt.getString("nickname");
+			userlogo = Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo");
+			userlang = rs_stmt.getString("language");
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -69,6 +75,9 @@ public class AuthService extends BaseService {
 				request.getSession().setAttribute("token", token);
 				result.put("userid", p_userid);
 				result.put("password", "*******");
+				result.put("nickname", nickname);
+				result.put("userlogo", userlogo);
+				result.put("userlang", userlang);
 			}
 		}else{
 			result.put("ret", "-3");

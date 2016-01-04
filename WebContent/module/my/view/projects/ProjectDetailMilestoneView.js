@@ -1,11 +1,11 @@
 define([ 
-         'backbone', 'util', 'Validator',
+         'backbone', 'util', 'Validator', 'i18n!../../../../nls/translation',
          //view
          'view/projects/ProjectDetailMilestoneItemView',
          //model
          'model/project/MilestoneModel'
        ], 
-    function(Backbone, util, Validator, ProjectDetailMilestoneItemView, MilestoneModel) {
+    function(Backbone, util, Validator, i18n, ProjectDetailMilestoneItemView, MilestoneModel) {
 	var ProjectDetailMilestoneView = Backbone.View.extend({
 		
 		className: 'project-detail-milestone-view',
@@ -94,7 +94,7 @@ define([
 					 
 				 }, 
 				 error: function(model, response, options) {
-					 var alertMsg = 'Create milestone failed. Please try again later!';
+					 var alertMsg = i18n.my.projects.ProjectDetailMilestoneView.CERATE_MILESTONE_ERROR;
 					 util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -112,7 +112,7 @@ define([
 					milestones.remove(milestone);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Delete milestone failed. Please try again later!';
+					var alertMsg = i18n.my.projects.ProjectDetailMilestoneView.DELETE_MILESTONE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -129,7 +129,7 @@ define([
 			'    <i class="fa fa-plus"></i> ' +
 			'  </div> ' +
 			'  <div class="content"> ' +
-			'	 <div class="add-milestone-title">Add New Milestone</div> ' +
+			'	 <div class="add-milestone-title">' + i18n.my.projects.ProjectDetailMilestoneView.ADD_NEW_MILESTONE + '</div> ' +
 			'  </div> ' +
 			'</div>';
 			return $tpl;
@@ -182,14 +182,14 @@ define([
 		        	milestone_title: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The milestone title is required'
+		                        message: i18n.my.projects.ProjectDetailMilestoneView.CHECK_MILESTONE_TITLE
 		                    }
 		                }
 		            },
 		            milestone_description: {
 		                validators: {
 		                    notEmpty: {
-		                        message: 'The milestone description is required'
+		                        message: i18n.my.projects.ProjectDetailMilestoneView.CHECK_MILESTONE_DESCRIPTION
 		                    }
 		                }
 		            }
@@ -234,7 +234,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">Create Milestone</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_MILESTONE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -242,8 +242,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a> ' + 
-			'	<a type="submit" class="create btn btn-primary">Create</a> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailMilestoneView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="create btn btn-primary">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -253,12 +253,12 @@ define([
 			'<div class="modal-body"> ' + 
 			'	<form id="milestoneAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="milestone_title" class="control-label">Title:</label> ' + 
-			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="milestone title..."> ' + 
+			'			<label for="milestone_title" class="control-label">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_TITLE + '</label> ' + 
+			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_TITLE_HOLDER + '"> ' + 
 			'		</div> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="milestone_description" class="control-label">Description:</label> ' + 
-			'			<textarea class="form-control" id="milestone_description" name="milestone_description" placeholder="milestone description..."></textarea> ' + 
+			'			<label for="milestone_description" class="control-label">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_DESCRIPTION + '</label> ' + 
+			'			<textarea class="form-control" id="milestone_description" name="milestone_description" placeholder="' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_DESCRIPTION_HOLDER + '"></textarea> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

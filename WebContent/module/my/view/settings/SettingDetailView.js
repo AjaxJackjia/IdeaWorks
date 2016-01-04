@@ -1,5 +1,5 @@
 define([ 
-         'backbone', 'util',
+         'backbone', 'util', 'i18n!../../../../nls/translation',
          //view
          'view/settings/SettingListView',
          'view/settings/SettingDetailProfileView',
@@ -9,7 +9,7 @@ define([
          //model
          'model/settings/UserModel'
        ], 
-    function(Backbone, util,
+    function(Backbone, util, i18n,
     		//view
     		SettingListView,
     		SettingDetailProfileView,
@@ -42,7 +42,7 @@ define([
 					self.render();
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'Get user profile failed. Please try again later!';
+					var alertMsg = i18n.my.settings.SettingDetailView.FETCH_PROFILE_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -52,22 +52,22 @@ define([
 			//清空
 			$(this.el).html('');
 			
-			if(this.currentSetting == 'Profile') {
+			if(this.currentSetting == i18n.my.settings.SettingListView.PROFILE) {
 				var profileView = new SettingDetailProfileView({
 					model: this.model
 				});
 				$(this.el).append(profileView.render().el);
-			}else if(this.currentSetting == 'Notification') {
+			}else if(this.currentSetting == i18n.my.settings.SettingListView.NOTIFICATION) {
 				var notificationView = new SettingDetailNotificationView({
 					model: this.model
 				});
 				$(this.el).append(notificationView.render().el);
-			}else if(this.currentSetting == 'Privacy settings') {
+			}else if(this.currentSetting == i18n.my.settings.SettingListView.PRIVACY_SETTINGS) {
 				var privacyView = new SettingDetailPrivacyView({
 					model: this.model
 				});
 				$(this.el).append(privacyView.render().el);
-			}else if(this.currentSetting == 'Advanced settings') {
+			}else if(this.currentSetting == i18n.my.settings.SettingListView.ADVANCED_SETTINGS) {
 				var advancedView = new SettingDetailAdvancedView({
 					model: this.model
 				});
