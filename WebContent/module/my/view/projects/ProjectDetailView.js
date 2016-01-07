@@ -1,6 +1,5 @@
 define([ 
          'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
- 		 'css!../../../../lib/iCheck/skins/square/blue.css',
          //view
          'view/projects/ProjectDetailAbstractView',
          'view/projects/ProjectDetailMembersView',
@@ -17,7 +16,7 @@ define([
  		'model/project/ActivityCollection',
  		'model/project/ApplicationCollection'
        ], 
-    function(Backbone, util, CheckLib, i18n, iCheck_css,
+    function(Backbone, util, CheckLib, i18n,
     		//view
     		ProjectDetailAbstractView,
     		ProjectDetailMembersView,

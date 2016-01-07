@@ -1,6 +1,6 @@
 (function(win){
 	require.config({
-		locale: $.cookie('lang') || 'en-us',
+		locale: sessionStorage.getItem('lang') || 'en-us',
 		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
@@ -42,12 +42,11 @@
 	
 	require(['backbone', 
 	         'bootstrap', 
-	         'css!../../res/css/login/main.css',
 	         'util',
 	         'i18n!../../nls/translation',
 	         './view/SigninView',
 	         './view/SignupView'
-	        ], function(Backbone, bootstrap, css, util, i18n, SigninView, SignupView) {
+	        ], function(Backbone, bootstrap, util, i18n, SigninView, SignupView) {
 		
 		var Entry = Backbone.View.extend({
 			el: 'div.container',

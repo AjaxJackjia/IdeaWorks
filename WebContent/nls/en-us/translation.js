@@ -593,7 +593,7 @@ define({
     		'SettingDetailAdvancedView': {
     			'SYNC': 'Synchronize current browse state',
     			'SELECT_LNG': 'Select language',
-    			'SET_COMPLETE': 'Set complete! This setting will be activated in the next time you login.',
+    			'SET_COMPLETE': 'Set complete! This setting will be activated after it auto refresh.',
     			'SET_ADVANCED_ERROR': 'Set advanced settings failed. Please try again later!'
     		}
     	},

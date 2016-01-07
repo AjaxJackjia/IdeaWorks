@@ -1,6 +1,6 @@
 (function(win){
 	require.config({
-		locale: $.cookie('lang') || 'en-us',
+		locale: sessionStorage.getItem('lang') || 'en-us',
 		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
@@ -40,15 +40,19 @@
 		}  
 	});
 
-	var portalDependencies = [
-	        'backbone', 
-	        'bootstrap',
-	        'util',
-	        'router',
-	        'css!../../res/css/portal/main.css'
-		];
-
-	require(portalDependencies, function(Backbone, bootstrap, util, router, css) {
+	require([
+	         'backbone', 'bootstrap', 'util', 'router',
+	         //controllers
+	         './controller/PortalCtl', 
+	         './controller/AboutCtl',
+	         './controller/ContactCtl',
+	         './controller/HelpCtl',
+	         './controller/IntroductionCtl',
+	         './controller/NewsCtl',
+	         './controller/ProjectsCtl'
+	         ], function(Backbone, bootstrap, util, router, 
+	        		//controllers
+	        		 PortalCtl, AboutCtl, ContactCtl, HelpCtl, IntroductionCtl, NewsCtl, ProjectsCtl) {
 
 		//start monitoring
 	    Backbone.history.start();

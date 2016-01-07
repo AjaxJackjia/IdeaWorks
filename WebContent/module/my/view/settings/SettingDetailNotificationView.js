@@ -1,8 +1,7 @@
 define([ 
-         'backbone', 'util', 'Switch', 'i18n!../../../../nls/translation',
-         'css!../../../../lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css'
+         'backbone', 'util', 'Switch', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, Switch, i18n, boostrap_switch_css) {
+    function(Backbone, util, Switch, i18n) {
 	var SettingDetailNotificationView = Backbone.View.extend({
 		
 		className: 'setting-detail-notification-view',

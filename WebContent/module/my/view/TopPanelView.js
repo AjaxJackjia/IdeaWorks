@@ -2,16 +2,11 @@ define([
          'backbone', 'util', 'i18n!../../../nls/translation',
          //view
          'view/search/SearchMainView',
-         'view/notification/NotificationSideView',
-         //css
-         'css!../../../res/css/my/search.css',
-         'css!../../../res/css/my/notification.css'
+         'view/notification/NotificationSideView'
        ], 
     function(Backbone, util, i18n,
     		//view
-    		SearchMainView, NotificationSideView,
-    		//css
-    		search_css, notification_css ) {
+    		SearchMainView, NotificationSideView) {
 	var TopPanelView = Backbone.View.extend({
 		
 		className: 'top-panel',

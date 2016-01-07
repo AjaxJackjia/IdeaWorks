@@ -1,9 +1,8 @@
 define([ 'backbone', 
 		'util', 
 		'view/settings/SettingListView', 
-		'view/settings/SettingDetailView',
-		'css!../../../res/css/my/settings.css' 
-	   ], function(Backbone, util, SettingListView, SettingDetailView, css) {
+		'view/settings/SettingDetailView'
+	   ], function(Backbone, util, SettingListView, SettingDetailView) {
 	var SettingsController = function() {
 		console.log("This is settings controller module!");
 		

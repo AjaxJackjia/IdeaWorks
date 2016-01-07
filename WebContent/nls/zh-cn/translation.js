@@ -590,7 +590,7 @@ define({
     		'SettingDetailAdvancedView': {
     			'SYNC': '同步当前状态',
     			'SELECT_LNG': '选择语言',
-    			'SET_COMPLETE': '设置成功! 设置将会在你下次登录时生效.',
+    			'SET_COMPLETE': '设置成功! 设置将会在网页自动刷新后生效.',
     			'SET_ADVANCED_ERROR': '设置失败,请稍后重试.'
     		}
     	},

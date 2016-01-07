@@ -1,7 +1,6 @@
 define([ 
          'backbone',
          'util',
-         'css!../../../res/css/my/dashboard.css',
          //view
          'view/dashboard/BriefView',
          'view/dashboard/PopularTopicView',
@@ -10,7 +9,7 @@ define([
          'model/dashboard/BriefModel',
          'model/dashboard/PopularTopicCollection',
          'model/dashboard/RecentActivityCollection'
-       ], function(Backbone, util, css,
+       ], function(Backbone, util,
     		   BriefView, PopularTopicView, RecentActivityView, 
     		   BriefModel, PopularTopicCollection, RecentActivityCollection) {
 	var DashboardController = function() {

@@ -39,6 +39,7 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 @Path("/users")
 public class UserService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(UserService.class);
+	private static final String DEFAULT_USER_LOGO = "default_user_logo.jpg";
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -223,8 +224,9 @@ public class UserService extends BaseService {
 		/*
 		 * Step 3. 将logo写入server,并删除之前的logo
 		 * */
+		String currentTime = String.valueOf(System.currentTimeMillis());
 		String suffix = filename.substring(filename.lastIndexOf("."));
-		filename = p_userid + suffix; //修改文件名使其更符合规范(命名规范为userid.xxx)
+		filename = p_userid + "_" + currentTime + suffix; //修改文件名使其更符合规范(命名规范为userid.xxx)
 	    String fileLocation = getWebAppAbsolutePath() + Config.USER_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
@@ -237,7 +239,7 @@ public class UserService extends BaseService {
 		while(rs_stmt.next()) {
 			String logo = rs_stmt.getString("logo");
 			String preLogoPath = getWebAppAbsolutePath() + Config.USER_IMG_BASE_DIR + logo;
-			if(!logo.equals(filename)) {
+			if(!logo.equals(filename) && !logo.equals(DEFAULT_USER_LOGO)) {
 				FileUtil.delete(preLogoPath); //删除之前的logo
 			}
 		}

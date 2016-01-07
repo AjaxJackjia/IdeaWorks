@@ -1,6 +1,6 @@
 define([ 
          'backbone', 'util', 'i18n!../../../../nls/translation',
-       //view
+         //view
          'view/search/PersonItemView',
          //model
          'model/search/PersonCollection'

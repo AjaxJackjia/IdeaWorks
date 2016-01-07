@@ -1,8 +1,7 @@
 define([ 
-		'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
-		'css!../../../../lib/iCheck/skins/square/blue.css'
+		'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, CheckLib, i18n, iCheck_css) {
+    function(Backbone, util, CheckLib, i18n) {
 	var SettingDetailPrivacyView = Backbone.View.extend({
 		
 		className: 'setting-detail-privacy-view',

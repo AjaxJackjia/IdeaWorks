@@ -1,8 +1,7 @@
 define([ 
-		'backbone', 'util', 'Switch', 'i18n!../../../../nls/translation',
-		'css!../../../../lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css'
+		'backbone', 'util', 'Switch', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, Switch, i18n, boostrap_switch_css) {
+    function(Backbone, util, Switch, i18n) {
 	var SettingDetailAdvancedView = Backbone.View.extend({
 		
 		className: 'setting-detail-advanced-view',
@@ -53,6 +52,9 @@ define([
 			    success: function(result){
 			    	if(result.ret == 0) {
 			    		alert(i18n.my.settings.SettingDetailAdvancedView.SET_COMPLETE);
+			    		//刷新页面生效
+			    		sessionStorage.setItem('userlang', data.language);
+			    		location.reload();
 			    	}else{
 			    		alert(result.msg);
 			    	}

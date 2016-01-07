@@ -82,7 +82,7 @@ define([
 					$.cookie('userid', loginModel.get('userid'));
 					$.cookie('userlogo', loginModel.get('userlogo'));
 					$.cookie('nickname', loginModel.get('nickname'));
-					$.cookie('userlang', loginModel.get('userlang'));
+					sessionStorage.setItem('userlang', loginModel.get('userlang'));
 					
 					//如果url后面无参数则默认跳转到my.html；否则跳转到参数所指的url
 					var urlParams = util.resolveUrlParams();

@@ -144,7 +144,7 @@ define([
 		//设置定时拉取
 		setupFetchInterval: function() {
 			var self = this;
-			var timeInterval = 60 * 1000; //拉取频率为1min 1次
+			var timeInterval = 5 * 60 * 1000; //拉取频率为5min 1次
 			this.notificationInterval = setInterval(function() {
 				self.fetchLatestNotifications();
 			}, timeInterval);

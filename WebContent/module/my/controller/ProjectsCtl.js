@@ -1,13 +1,12 @@
 define([ 
 		'backbone', 
 		'util',
-		'css!../../../res/css/my/projects.css',
 		//view
 		'view/projects/ProjectListView', 
 		'view/projects/ProjectDetailView',
 		//model
 		'model/project/ProjectCollection'
-       ], function(Backbone, util, css, ProjectListView, ProjectDetailView, ProjectCollection) {
+       ], function(Backbone, util, ProjectListView, ProjectDetailView, ProjectCollection) {
 	var ProjectsController = function() {
 		console.log("This is projects controller module!");
 		

@@ -1,6 +1,6 @@
 (function(win){
 	require.config({
-		locale: $.cookie('userlang') || 'en-us', //设置用户预设的语言
+		locale: sessionStorage.getItem('userlang') || 'en-us', //设置用户预设的语言
 		
 		paths: {
 			'jquery': '../../lib/jquery/dist/jquery.min',
@@ -57,14 +57,15 @@
 		}  
 	});
 
-	var portalDependencies = [
-	        'backbone', 
-	        'bootstrap',
-	        'router',
-	        'css!../../res/css/my/main.css'
-		];
-
-	require(portalDependencies, function(Backbone, bootstrap, router, css) {
+	require([
+	         'backbone', 'bootstrap', 'router', 
+	         //controllers
+	         './controller/DashboardCtl', 
+	         './controller/IndexCtl',
+	         './controller/ProjectsCtl',
+	         './controller/SettingsCtl'
+	        ], function(Backbone, bootstrap, router, DashboardCtl, DashboardCtl, ProjectsCtl, SettingsCtl) {
+		
 		//start monitoring
 	    Backbone.history.start();
 	});

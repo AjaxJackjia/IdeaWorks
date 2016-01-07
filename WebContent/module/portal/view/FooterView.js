@@ -13,7 +13,7 @@ define([ 'backbone', 'util', 'cookie', 'i18n!../../../nls/translation' ], functi
 		
 		initialize: function(){
 			//获取当前语言类型
-			this.currentLang = $.cookie('lang') || 'en-us';
+			this.currentLang = sessionStorage.getItem('lang') || 'en-us';
 			
 			_.bindAll(this, 'render', 'genLanguageItem', 'switchLang');
 			
@@ -71,9 +71,9 @@ define([ 'backbone', 'util', 'cookie', 'i18n!../../../nls/translation' ], functi
 			$target = $(event.target).closest('li');
 			if($target != null) {
 				if($target.find('.en-us').length > 0) {
-					$.cookie('lang', 'en-us');
+					sessionStorage.setItem('lang', 'en-us');
 				}else{
-					$.cookie('lang', 'zh-cn');
+					sessionStorage.setItem('lang', 'zh-cn');
 				}
 				location.reload();
 			}
