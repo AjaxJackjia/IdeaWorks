@@ -1,7 +1,7 @@
 define([ 
          'backbone', 'util', 'Validator', 'i18n!../../../nls/translation',
-         'model/SignupModel'
-       ], function(Backbone, util, Validator, i18n, SignupModel) {
+         'model/SignupModel', 'model/LoginModel' 
+       ], function(Backbone, util, Validator, i18n, SignupModel, LoginModel) {
 	
 	var SignupView = Backbone.View.extend({
 		tagName: 'div',
@@ -124,8 +124,33 @@ define([
 					}
 					
 					//注册成功
-					alert(i18n.login.SignupView.SIGN_UP_SUCCESS);
-					window.location.href = "login.html";
+					self.login(signupModel.get('username'), signupModel.get('password'));
+				}
+			}); 
+		},
+		
+		login: function(username, password) {
+			var loginModel = new LoginModel();
+			loginModel.save({
+				'userid': username,
+				'password': password
+			},{
+				success: function() {
+					//若登录失败,则让用户重新手动登录
+					if(loginModel.get('msg') != 'ok') {
+						alert(i18n.login.SignupView.SIGN_UP_SUCCESS);
+						window.location.href = "login.html";
+						return;
+					}
+					
+					//登录成功,设置登录态
+					$.cookie('userid', loginModel.get('userid'));
+					$.cookie('userlogo', loginModel.get('userlogo'));
+					$.cookie('nickname', loginModel.get('nickname'));
+					sessionStorage.setItem('userlang', loginModel.get('userlang'));
+					
+					//跳转到个人中心
+					window.location.href = "my.html";
 				}
 			}); 
 		},

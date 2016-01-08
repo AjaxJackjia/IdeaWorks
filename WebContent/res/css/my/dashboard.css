@@ -35,6 +35,7 @@
 	float: left;
 	width: 25.0%;
 	text-decoration: none;
+	cursor: default;
 }
 
 .dashboard-container > .brief-view > .stats > .well
