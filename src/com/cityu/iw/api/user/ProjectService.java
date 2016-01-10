@@ -649,7 +649,7 @@ public class ProjectService extends BaseService {
 		
 		//获取project基本信息
 		String sql = "select " + 
-					 "	title, " + 
+					 "	title " + 
 					 "from " + 
 					 "	ideaworks.project " + 
 					 "where " + 

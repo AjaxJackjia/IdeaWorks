@@ -223,6 +223,9 @@ public class DashboardService extends BaseService {
 				
 		JSONArray list = new JSONArray();
 		
+		/*
+		 * 找出p_userid参与项目的所有最近活动
+		 * */
 		String sql = 
 				"select " + 
 				"	T2.id as activityid, " + 
@@ -240,11 +243,12 @@ public class DashboardService extends BaseService {
 				"	ideaworks.user T3 " + 
 				"where " + 
 				"	T1.id = T2.projectid and " + 
+				"	T1.isDeleted = 0 and " + 
 				"	T2.operator = T3.id and " + 
-				"	T2.operator = ? " + 
+				"	T2.projectid in (select distinct projectid from ideaworks.project_member where userid = ?) " + 
 				"order by " + 
 				"	T2.time desc " + 
-				"limit 30 ";
+				"limit 60 ";
 				
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
