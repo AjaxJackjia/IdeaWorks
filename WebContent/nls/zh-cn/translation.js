@@ -181,6 +181,16 @@ define({
     			'IN_PROJECT': '在项目  '
     		}
     	},
+    	'advice': {
+    		'CHECK_NOT_EMPTY': '反馈内容不能为空!',
+    		'CHECK_LENGTH': '反馈内容最长为300字!',
+    		'FEEDBACK_EEROR': '反馈失败，请稍后重试.',
+    		'ADVICE_THANKYOU': '谢谢您的反馈，我们会努力改进!',
+			'ADVICE_TITLE': '意见 & 建议',
+			'ADVICE_CONTENT_TITLE': '请输入您宝贵的意见或者建议...',
+			'CANCEL': '取消',
+			'CONFIRM': '提交',
+    	},
     	'projects': {
     		'ProjectListView': {
     			'NO_PROJECTS': '暂无项目...',
@@ -604,6 +614,7 @@ define({
     		'SEARCH_TITLE': '搜索',
     		'SEARCH_INPUT_TITLE': '搜索...',
     		'NOTIFICATION_TITLE': '通知',
+    		'ADVICE_TITLE': '反馈 & 建议',
     		'LOGOUT_TITLE': '退出',
     		'LOGOUT_CONFIRM': '确定退出当前用户?'
     	}

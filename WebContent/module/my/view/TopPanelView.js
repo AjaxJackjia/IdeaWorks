@@ -2,11 +2,12 @@ define([
          'backbone', 'util', 'i18n!../../../nls/translation',
          //view
          'view/search/SearchMainView',
-         'view/notification/NotificationSideView'
+         'view/notification/NotificationSideView',
+         'view/advice/AdviceView'
        ], 
     function(Backbone, util, i18n,
     		//view
-    		SearchMainView, NotificationSideView) {
+    		SearchMainView, NotificationSideView, AdviceView) {
 	var TopPanelView = Backbone.View.extend({
 		
 		className: 'top-panel',
@@ -14,6 +15,7 @@ define([
 		events: {
 			'click .search-input > input': 'showSearchView',
 			'click .search-btn': 'toggleSearch',
+			'click .advice-btn': 'toggleAdvice',
 			'click .msg-btn': 'toggleNotification',
 			'click .signout-btn': 'logout'
 		},
@@ -21,7 +23,7 @@ define([
 		initialize: function(){
 			_.bindAll(this, 'render', 
 					'toggleSearch', 'showSearchView', 'hideSearchView', 
-					'toggleNotification', 'logout');
+					'toggleNotification', 'toggleAdvice', 'logout');
 			
 			//global params
 			this.searchView = new SearchMainView();
@@ -90,6 +92,23 @@ define([
 			}
 		},
 		
+		/*
+		 * advice view related event
+		 * */
+		toggleAdvice: function() {
+			var adviceView = new AdviceView({
+				model: this.model
+			});
+			var $adviceView = $('#advice_view');
+			if($adviceView.length > 0) {
+				$('#advice_view').remove();
+			}
+			$('.content-panel').append($(adviceView.render().el));
+			
+			//显示view
+			$('#advice_view').modal('toggle');
+		},
+		
 		logout: function() {
 			if(confirm(i18n.my.TopPanelView.LOGOUT_CONFIRM)) {
 				util.logout();
@@ -124,6 +143,9 @@ define([
 				'	</div>' + 
 				'	<div class="msg-btn btn btn-default" title="' + i18n.my.TopPanelView.NOTIFICATION_TITLE + '">' +
 				'		<i class="fa fa-bell-o"></i>' +
+				'	</div>' +
+				'	<div class="advice-btn btn btn-default" title="' + i18n.my.TopPanelView.ADVICE_TITLE + '">' +
+				'		<i class="fa fa-comments"></i>' +
 				'	</div>' +
 				'</div>';
 		return tpl;

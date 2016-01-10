@@ -230,3 +230,75 @@
 }
 
 /* notification-side-view end */
+
+
+/* advice-view begin */
+/* advice-view modal dialog common begin */
+.modal .modal-header,
+.modal .modal-footer
+{
+	border: none;	
+}
+
+.modal .modal-header .modal-title
+{
+	margin-top: 12px;
+  	line-height: 1.8;
+  	color: #23a8f5;
+  	text-align: center;
+}
+
+.modal .modal-header .close
+{
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	z-index: 100;
+}
+
+.modal .modal-header .close > span
+{
+	font-size: 40px;
+}
+
+.modal .modal-content
+{
+	padding: 15px;	
+}
+
+.modal .modal-footer > .btn
+{
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.modal .modal-footer > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.modal .modal-footer > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+/* advice-view modal dialog common end */
+
+.advice-view
+{
+	
+}
+
+.advice-view #advice_content
+{
+	width: 100%;
+	height: 200px;
+}
+
+/*  advice-view end */

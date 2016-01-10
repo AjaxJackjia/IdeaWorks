@@ -157,7 +157,6 @@ define([
 	});
 	
 	var HeaderItem = function() {
-		console.log(i18n.my.notification);
 		var tpl =
 				'<div class="heading">' +
 				'	<h4 class="title">' + i18n.my.notification.NotificationSideView.NOTIFICATIONS + '<span class="count"></span></h4> ' +

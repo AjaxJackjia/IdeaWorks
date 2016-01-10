@@ -294,7 +294,8 @@ p
 }
 
 .top-panel > .tool-box > .msg-btn,
-.top-panel > .tool-box > .signout-btn
+.top-panel > .tool-box > .signout-btn,
+.top-panel > .tool-box > .advice-btn
 {
 	float: right;
 	width: 40px;

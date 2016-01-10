@@ -183,6 +183,16 @@ define({
     			'IN_PROJECT': 'in project  '
     		}
     	},
+    	'advice': {
+    		'CHECK_NOT_EMPTY': 'The content of feedback could be emtpy!',
+    		'CHECK_LENGTH': 'The max length of feedback is 300!',
+    		'FEEDBACK_EEROR': 'Feedback error, please try again later!',
+    		'ADVICE_THANKYOU': 'Thank you for your advice and suggestion, we will try our best to improve!',
+			'ADVICE_TITLE': 'Advice & Suggestion',
+			'ADVICE_CONTENT_TITLE': 'Please write down your advice or suggestion...',
+			'CANCEL': 'Cancel',
+			'CONFIRM': 'Feedback',
+    	},
     	'projects': {
     		'ProjectListView': {
     			'NO_PROJECTS': 'No projects...',
@@ -607,6 +617,7 @@ define({
     		'SEARCH_TITLE': 'Search',
     		'SEARCH_INPUT_TITLE': 'Search...',
     		'NOTIFICATION_TITLE': 'Notification',
+    		'ADVICE_TITLE': 'Advice & suggestion',
     		'LOGOUT_TITLE': 'Log out',
     		'LOGOUT_CONFIRM': 'Are you sure to logout?'
     	}
