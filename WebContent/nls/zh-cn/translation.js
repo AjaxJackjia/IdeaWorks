@@ -243,7 +243,7 @@ define({
     			'CHANGE_PROJECT_LOGO': '修改项目图标',
     			'UPLOAD': '上传',
     			'UPLOAD_FILE': '文件:',
-    			'UPLOAD_TIPS': '(支持的最大上传文件大小为1M. 支持的文件类型: gif, jpeg, jpg, png)',
+    			'UPLOAD_TIPS': '(支持的最大上传文件大小为300k. 支持的文件类型: gif, jpeg, jpg, png)',
     			//ProjectStatusSubView 子页面提示
     			'UPDATE_STATUS_ERROR': '更新项目状态失败,请稍后重试.',
     			'PROJECT_STATUS': '项目状态',
@@ -558,7 +558,7 @@ define({
     			'CHECK_ALERT_BROWSER': '请使用Chrome浏览器或者Firefox浏览器来上传文件.',
     			'CHANGE_USER_LOGO': '修改头像',
     			'FILE': '文件:',
-    			'UPLOAD_TIPS': '(支持的最大文件大小为1M.支持的文件类型有:gif, jpeg, jpg, png)',
+    			'UPLOAD_TIPS': '(支持的最大文件大小为300k.支持的文件类型有:gif, jpeg, jpg, png)',
     			//EditProfileSubView 子页面
     			'CHECK_NICKNAME': '昵称不能为空',
     			'CHECK_NICKNAME_LENGTH': '昵称必须小于30个字母',

@@ -245,7 +245,7 @@ define({
     			'CHANGE_PROJECT_LOGO': 'Change Project Logo',
     			'UPLOAD': 'Upload',
     			'UPLOAD_FILE': 'File:',
-    			'UPLOAD_TIPS': '(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)',
+    			'UPLOAD_TIPS': '(Max upload logo image size is 300k. Support file type: gif, jpeg, jpg, png)',
     			//ProjectStatusSubView 子页面提示
     			'UPDATE_STATUS_ERROR': 'Update project status failed. Please try again later!',
     			'PROJECT_STATUS': 'Project Status',
@@ -561,7 +561,7 @@ define({
     			'CHECK_ALERT_BROWSER': 'Please use Chrome or Firefox browser to upload file!',
     			'CHANGE_USER_LOGO': 'Change User Logo',
     			'FILE': 'File:',
-    			'UPLOAD_TIPS': '(Max upload logo image size is 1M. Support file type: gif, jpeg, jpg, png)',
+    			'UPLOAD_TIPS': '(Max upload logo image size is 300k. Support file type: gif, jpeg, jpg, png)',
     			//EditProfileSubView 子页面
     			'CHECK_NICKNAME': 'The nickname is required',
     			'CHECK_NICKNAME_LENGTH': 'The nickname must be smaller than 30 characters',
