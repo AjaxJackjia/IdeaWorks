@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+<Resource name="jdbc/mysql"
+auth="Container"
+driverClassName="com.mysql.jdbc.Driver"
+type="javax.sql.DataSource"
+url="jdbc:mysql://144.214.55.105:3306/ideaworks"
+username="cityu"
+password="ideaworks2015cityu"
+maxActive="30"
+maxIdle="20"
+maxWait="1000" />
+</Context> 
