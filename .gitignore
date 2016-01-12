@@ -2,3 +2,4 @@
 /bin/
 *context.xml
 *~
+/WebContent/uploads/*

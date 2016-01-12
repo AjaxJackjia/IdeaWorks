@@ -75,7 +75,10 @@ define({
     		'PASSWORD': '请输入密码...',
     		'CHECK_USERNAME_OR_PWD_EMPTY': '用户名或密码不能为空.',
     		'SIGN_IN': '登&nbsp;&nbsp;录',
-    		'SIGNING_IN': '登录中...'
+    		'SIGNING_IN': '登录中...',
+    		'FORGET_PWD': '忘记密码?',
+    		'SIGN_IN_WITH': '使用其他账号登录:',
+    		'SIGN_IN_WITH_WECHAT': '使用微信账号登录'
     	},
     	'SignupView': {
     		'SIGN_UP': '注&nbsp;&nbsp;册',

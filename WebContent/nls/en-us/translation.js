@@ -77,7 +77,10 @@ define({
     		'PASSWORD': 'please enter your password...',
     		'CHECK_USERNAME_OR_PWD_EMPTY': 'Username or password can\'t be empty!',
     		'SIGN_IN': 'Sign In',
-    		'SIGNING_IN': 'Signing in...'
+    		'SIGNING_IN': 'Signing in...',
+    		'FORGET_PWD': 'Forget Password?',
+    		'SIGN_IN_WITH': 'Sign in with:',
+    		'SIGN_IN_WITH_WECHAT': 'login in with WeChat ID'
     	},
     	'SignupView': {
     		'SIGN_UP': 'Sign Up',

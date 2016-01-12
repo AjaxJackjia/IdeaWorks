@@ -17,6 +17,7 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.MailUtil;
 import com.cityu.iw.util.Util;
 import com.sun.jersey.multipart.FormDataParam;
 
@@ -125,10 +126,10 @@ public class AuthService extends BaseService {
 		}
 		
 		// Step 2. create user
-		String notifications = "{\"project\":true,\"member\":true,\"milestone\":true,\"forum\":true,\"discussion\":true,\"file\":true}"; //信息通知设置
+		String notifications = "{\"project\":true,\"member\":true,\"milestone\":true,\"forum\":true,\"discussion\":true,\"file\":true}"; //淇℃伅閫氱煡璁剧疆
 		int privacy = 2;			//默认profile组内可见
 		int sync = 0;				//默认不同步
-		String language = "en-us"; //默认语言为英语
+		String language = "en-us";  //默认语言为英语
 		
 		sql = "insert into " +
 					 "	ideaworks.user (" + 
@@ -215,6 +216,56 @@ public class AuthService extends BaseService {
 		}else{
 			result.put("ret", "-2");
 			result.put("msg", "old password invalid");
+		}
+		
+		return result;
+	}
+	
+	@POST
+	@Path("/forget")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JSONObject forgetPassword(
+			@FormParam("userid") String p_userid,
+			@FormParam("email") String p_email ) throws Exception
+	{
+		JSONObject result = new JSONObject();
+		//check param
+		if((p_userid == null || p_userid.equals("")) && 
+		   (p_email == null || p_email.equals("")) ) {
+			result.put("ret", "-1");
+			result.put("msg", "parameter invalid");
+			return result;
+		}
+		
+		//1. check user email whether is valid
+		String sql = "select email from ideaworks.user where id = ?";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		String db_email = "";
+		while(rs_stmt.next()) {
+			db_email = rs_stmt.getString("email");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//validate email && generate new password
+		if(db_email.equals(p_email)) {
+//			sql = "update ideaworks.user set password = ? where id = ? ";
+//			stmt = DBUtil.getInstance().createSqlStatement(sql, Util.md5(Util.generateRandomString(6)), p_userid);
+//			stmt.execute();
+//			DBUtil.getInstance().closeStatementResource(stmt);
+			
+			//send email to user
+			try{
+				MailUtil.sendMailTo(db_email);
+			}catch(Exception ex){
+				ex.printStackTrace();
+			}
+			
+			result.put("ret", "0");
+			result.put("msg", "ok");
+		}else{
+			result.put("ret", "-2");
+			result.put("msg", "email address invalid");
 		}
 		
 		return result;
