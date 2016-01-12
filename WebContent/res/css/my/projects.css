@@ -1,0 +1,1809 @@
+.project-list-view
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 350px;
+
+	margin: 0;
+	padding: 0;
+}
+
+.project-list-view > .project-list-content
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 350px;
+
+	margin: 0;
+	padding: 0;
+	border-right: 1px solid #dedede;
+	list-style: none;
+	overflow: auto;
+}
+
+.project-list-view > .project-list-content > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-list-view > .project-list-content > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view
+{
+	width: 100%;
+	height: 80px;
+
+	margin: 0;
+	padding: 15px 15px 15px 15px;
+	
+	cursor: pointer;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .info
+{
+	margin-left: 65px;
+	color: #7b898d;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .info > .project-title
+{
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 18px;
+	width: 185px;
+	margin: 5px 0px 3px 0px;
+	padding: 0px;
+	color: #7b898d;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .info > .project-advisor
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status
+{
+	float: right;
+	color: #afb6ba;
+	font-size: 12px;
+	padding-top: 3px;
+	padding-left: 3px;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.ongoing
+{
+	color: #227700;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.completed
+{
+	color: #ff7744;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view > .project-status.unclear
+{
+	color: #ffff33;
+}
+
+.project-list-view > .project-list-content > .project-list-item-view.active
+{
+	border-left: 4px solid #23a8f5;
+	padding-left: 11px;
+	background-color: #f8fafb;
+}
+
+.project-detail-view
+{
+	position: absolute;
+	left: 350px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	margin: 0;
+	padding: 0;
+}
+
+.project-detail-view > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-view > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-view > .project-header
+{
+	position: absolute;
+	top: 0;
+	width: 100%;
+	height: 150px;
+	
+	padding: 35px 40px;
+}
+
+.project-detail-view > .project-header > .content
+{
+	
+}
+
+.project-detail-view > .project-header > .content > img
+{
+	float: left;
+	width: 100px;
+	height: 100px;
+}
+
+.project-detail-view > .project-header > .content > .info
+{
+	margin-left: 110px;
+	color: #7b898d;
+}
+
+.project-detail-view > .project-header > .content > .info > .project-title
+{
+	display: block;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 18px;
+	max-width: 600px;
+	color: #23a8f5;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-view > .project-header > .content > .info > .project-advisor, 
+.project-detail-view > .project-header > .content > .info > .project-creator,
+.project-detail-view > .project-header > .content > .info > .project-createtime
+{
+	margin: 0 0 4px;
+	padding: 0;
+	
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-view > .project-header > .actions
+{
+	position: absolute;
+	right: 40px;
+	height: 80px;
+	line-height: 80px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu
+{
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	margin-top: -20px;
+	margin-left: -65px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li
+{
+	height: 35px;
+	line-height: 35px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li.divider
+{
+	margin: 0;
+	height: 1px;
+	line-height: 1px;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu > li > a
+{
+	color: #7b898d;
+	height: 35px;
+	line-height: 35px;
+	cursor: pointer;
+}
+
+.project-detail-view > .project-header > .actions > .project-action-menu > .dropdown-menu .delete-project:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-view > .project-header > .actions > .btn.btn-default
+{
+	display: inline-block;
+	margin-top: 15px;
+	border-radius: 40px;
+  	line-height: 24px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-view > .project-menu
+{
+	position: absolute;
+	top: 150px;
+	width: 100%;
+	height: 48px;
+	padding: 0px 20px;
+}
+
+.project-detail-view > .project-menu > li > a
+{
+	border: none;
+	padding-top: 16px;
+	padding-left: 20px;
+	padding-right: 20px;
+	color: #5f6a6d;
+}
+
+.project-detail-view > .project-menu > li > a:hover
+{
+	color: #23a8f5;
+	background-color: #fff;
+	border: none;
+	padding-bottom: 8px;
+	border-bottom: 4px solid #23a8f5;
+}
+
+.project-detail-view > .project-menu > li.active > a
+{
+	border: none;
+	border-bottom: 4px solid #23a8f5;
+	padding-top: 16px;
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-bottom: 8px;
+	color: #5f6a6d;
+	cursor: pointer;
+}
+
+.project-detail-view > .project-content
+{
+	position: absolute;
+	top: 198px;
+	bottom: 0;
+	width: 100%;
+	overflow: auto;
+}
+
+.project-detail-abstract-view,
+.project-detail-members-view,
+.project-detail-milestone-view,
+.project-detail-forum-view,
+.project-detail-files-view,
+.project-detail-activity-view
+{
+	padding: 20px;
+}
+
+.project-detail-abstract-view > .abstract-container
+{
+	margin: 0px 0px 6px 0px;
+	min-height: 200px;
+  	line-height: 30px;
+	color: #5f6a6d;
+	background-color: #fff;
+  	word-wrap: break-word;
+}
+
+.project-detail-abstract-view > .abstract-container > .placeholder
+{
+	position: absolute;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+}
+
+.project-detail-abstract-view > .abstract-container > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-abstract-view > .action
+{
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+}
+
+.project-detail-abstract-view > .action > .edit-btn
+{
+	float: right;
+	height: 40px;
+	line-height: 24px;
+	margin-top: 20px;
+	margin-right: 20px;
+	color: #7c8589;
+	border-radius: 40px;
+}
+
+.project-detail-members-view > .advisor,
+.project-detail-members-view > .members
+{
+	background-color: #fff;
+}
+
+.project-detail-members-view > .advisor > .advisor-title, 
+.project-detail-members-view > .members > .members-title
+{
+	width: 150px;
+	height: 30px;
+	line-height: 30px;
+	color: #484c52;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.project-detail-members-view > .advisor > .advisor-content > .placeholder,
+.project-detail-members-view > .members > .members-content > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-members-view > .advisor > .advisor-content > .placeholder > h4,
+.project-detail-members-view > .members > .members-content > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-members-view .member
+{
+	display: inline-block;
+	cursor: pointer;
+	background-color: #ffffff;
+	border: 1px solid #D8E3E7;
+	box-shadow: 0px 1px 2px 0px rgba(95,105,109,0.09);
+	border-radius: 3px;
+	margin: 8px 12px;
+	padding: 8px 10px;
+	height: 68px;
+	width: 220px;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.project-detail-members-view .member > .member-photo
+{
+	width: 50px;
+	float: left;
+	position: relative;
+}
+
+.project-detail-members-view .member > .member-photo > img
+{
+	width: 50px;
+}
+
+.project-detail-members-view .member > .info
+{
+	margin-left: 60px;
+	color: #7f8689;
+}
+
+.project-detail-members-view .member > .info > h4
+{
+	height: 31px;
+	font-size: 14px;
+	line-height: 15px;
+	margin: 0px 0px 3px 0px;
+	padding: 0;
+	color: #5f6a6d;
+	font-weight: 600;
+	overflow: hidden;
+}
+
+.project-detail-members-view .member > .info > h4 > span
+{
+	height: 31px;
+	line-height: 31px;
+}
+
+.project-detail-members-view .member > .info > .signature
+{
+	margin: 0;
+	padding: 0;
+	margin-top: -7px;
+	height: 31px;
+	width: 130px;
+	line-height: 31px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.project-detail-members-view .member-action
+{
+	display: inline-block;
+	cursor: pointer;
+	background-color: #ffffff;
+	border: 1px solid #D8E3E7;
+	border-radius: 50%;
+	box-shadow: 0px 1px 2px 0px rgba(95,105,109,0.09);
+	margin: 8px 12px;
+	height: 68px;
+	width: 68px;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.project-detail-members-view .member-action > a
+{
+	display: block;
+	width: 100%;
+	height: 100%;
+	font-size: 20px;
+	border-radius: 50%;
+}
+
+.project-detail-members-view .member-action > a > i
+{
+	display: block;
+	width: 40px;
+	height: 40px;
+	margin: 0 auto;
+	margin-top: 15px;
+	text-align: center;  
+}
+
+/* project-detail-milestones-view */
+.project-detail-milestone-view
+{
+
+}
+
+.project-detail-milestone-view > .milestones
+{
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .timeline-icon
+{
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 40px;
+	height: 40px;
+	line-height: 38px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content
+{
+	padding: 5px;
+	margin-left: 52px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .add-milestone-title
+{
+	margin-top: 5px;
+	margin-left: 0;
+	margin-right: 60px;
+	margin-bottom: 15px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .heading
+{
+	margin-top: 5px;
+	width: 100%;
+	height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .heading > .expand-icon
+{
+	float: right;
+	margin-left: 10px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 20px;
+	color: #afb6ba;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .heading > .title
+{
+	margin-left: 0;
+	margin-right: 60px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	word-wrap: break-word;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta
+{
+	width: 100%;
+	height: 30px;
+	margin: 0;
+	padding: 0;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta > .creator
+{
+	position: relative;
+	display: inline-block;
+	width: 25px;
+	cursor: pointer;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .meta > .time
+{
+	display: inline-block;
+	margin-left: 5px;
+	color: #7b898d;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .description
+{
+	margin-top: 10px;
+	margin-right: 50px;
+	font-size: 15px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail
+{
+	
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info
+{
+	height: 30px;
+	padding: 6px;
+	font-size: 15px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-time
+{
+	float: left;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator
+{
+	float: left;
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-operator-nickname
+{
+	float: left;
+	height: 30px;
+	line-height: 30px;
+	margin-top: 2px;
+	margin-left: 10px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .create-title
+{
+	float: left;
+	margin-left: 10px;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action
+{
+	float: right;
+	margin-right: 25px;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .modify-milestone:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .meta-info > .milestone-action > .delete-milestone:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container
+{
+	margin-top: 20px;
+	background-color: #fff;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container > .heading
+{
+	margin: 5px 0px 15px 0px;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.project-detail-milestone-view > .milestones > .milestone > .content > .body > .detail > .description-container > .description-content
+{
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
+/* project-detail-forum-view */
+.project-detail-forum-view
+{
+	
+}
+
+.project-detail-forum-view > .topics
+{
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
+}
+
+.project-detail-forum-view > .topics > .topic > .timeline-icon
+{
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 40px;
+	height: 40px;
+	line-height: 38px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.project-detail-forum-view > .topics > .topic > .content
+{
+	padding: 5px;
+	margin-left: 52px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .add-topic-title
+{
+	margin-top: 5px;
+	margin-left: 0;
+	margin-right: 60px;
+	margin-bottom: 15px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	height: 40px;
+	line-height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading
+{
+	margin-top: 5px;
+	width: 100%;
+	height: 40px;
+	cursor: pointer;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .expand-icon
+{
+	float: right;
+	margin-left: 10px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 20px;
+	color: #afb6ba;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .create-operator
+{
+	float: right;
+	margin-right: 5px;
+  	margin-top: 5px;
+	width: 30px;
+	height: 30px;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .create-time
+{
+	float: right;
+	margin-left: 5px;
+	margin-right: 5px;
+	width: 110px;
+	height: 40px;
+	line-height: 40px;
+	font-size: 13px;
+	color: #afb6ba;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .title
+{
+	margin-left: 0;
+	margin-right: 60px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	max-width: 500px;
+	height: 40px;
+	line-height: 40px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .heading > .title.expanded
+{
+	margin-right: 30px;
+	max-width: initial;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body
+{
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	word-wrap: break-word;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .short-description
+{
+	margin: 10px 50px 10px 0;
+	font-size: 15px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+/* project-detail-forum-topic-view */
+.project-detail-forum-topic-view h4.heading
+{
+	margin: 5px 0px 15px 0px;
+	font-size: 13px;
+	font-weight: 600;
+	text-transform: uppercase;
+}
+
+.project-detail-forum-topic-view .meta-container
+{
+	padding: 6px 0;
+	font-size: 15px;
+}
+
+.project-detail-forum-topic-view .meta-container > .creator
+{
+	width: 30px;
+	height: 30px;
+	margin-left: 10px;
+}
+
+.project-detail-forum-topic-view .meta-container > .creator-nickname
+{
+	display: inline-block;
+	margin-left: 10px;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-forum-topic-view .meta-container > .create-title
+{
+	display: inline-block;
+	margin-left: 2px;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+.project-detail-forum-topic-view .meta-container > .time
+{
+	display: inline-block;
+	color: #afb6ba;
+	font-size: 14px;
+	padding-top: 6px;
+}
+
+
+.project-detail-forum-topic-view .meta-container > .topic-action
+{
+	float: right;
+	margin-right: 25px;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .btn.btn-default
+{
+	display: inline-block;
+	margin: 0px 5px;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .modify-topic:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .meta-container > .topic-action > .delete-topic:hover
+{
+	background-color: #F08080;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .description-container,
+.project-detail-forum-topic-view .discussion-container
+{
+	margin-top: 20px;
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action
+{
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.project-detail-forum-topic-view .discussion-container > .heading > .message-action > .refresh-topic:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.project-detail-forum-topic-view .discussion-container > .discussion-content
+{
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;	
+}
+
+.project-detail-forum-topic-view .discussion-container > .discussion-content > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.project-detail-forum-topic-view .discussion-container > .discussion-content > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message
+{
+	position: relative;
+	width: 100%;
+	margin: 20px 5px;
+	
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.other > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.self > img
+{
+	float: right;
+	width: 50px;
+	height: 50px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.other > .message-body
+{
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-left: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body
+{
+	position: relative;
+	float: right;
+	display: inline-block;
+	margin-right: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title 
+{
+	display: inline-block;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-title 
+{
+	float: right;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title > .message-from
+{
+	color: #23a8f5;
+	font-size: 14px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-title > .message-time
+{
+	color: #afb6ba;
+	font-size: 14px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text
+{
+	display: block;
+	padding: 5px 10px 20px 10px;
+	max-width: 500px;
+	min-height: 1em;
+	vertical-align: top;
+	text-align: left;
+	font-size: 14px;
+	white-space: pre-wrap;
+	background-color: #eeeeee;
+	
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message,
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .remove-message
+{
+	float: right;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message-count
+{
+	float: right;
+	display: inline-block;
+	max-width: 80px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.project-detail-forum-topic-view .discussion-content > .message.self > .message-body > .message-text
+{
+	clear: both;
+}
+
+.project-detail-forum-topic-view .discussion-sender
+{
+	padding-top: 20px;
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+	border-top: 1px solid #dedede;
+}
+
+.project-detail-forum-topic-view .discussion-sender > #send_content
+{
+	height: 150px;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action > .btn.btn-primary
+{
+	display: inline-block;
+	border-radius: 40px;
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action
+{
+	display: block;
+	width: 100%;
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.project-detail-forum-topic-view .discussion-sender > .send-action > .send
+{
+	float: right;
+	margin-top: 10px;
+	margin-right: 15px;
+	width: 120px;
+}
+
+/* project-detail-files-view */
+.project-detail-files-view > .action
+{
+	margin-bottom: 15px;
+}
+
+.project-detail-files-view > .action > .upload
+{
+	color: #888;
+	background-color: #fff;
+	margin-left: 15px;
+	border-color: #ccc;
+	border-radius: 40px;
+	cursor: pointer;
+}
+
+.project-detail-files-view > .action > .upload > i
+{
+	padding-right: 4px;
+	font-size: 18px;
+	vertical-align: middle;
+}
+
+.project-detail-files-view > .action > .upload > input
+{
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	width: 100%;
+	opacity: 0;
+	position: absolute;
+}
+
+.project-detail-files-view > .files-container
+{
+	float: left;
+	width: 100%;
+	min-height: 200px;
+}
+
+.project-detail-files-view > .files-container > .placeholder
+{
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 200px;
+	height: 100px;
+}
+
+.project-detail-files-view > .files-container > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 200px;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-files-view > .files-container > .attachment
+{
+	float: left;
+	padding: 0px;
+	margin: 15px;
+	width: 220px;
+	background: #fff;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview
+{
+	position: relative;
+	width: 220px;
+	height: 154px;
+	overflow: hidden;
+	-webkit-transition: height .25s ease;
+	-moz-transition: height .25s ease;
+	transition: height .25s ease;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .extension
+{
+	margin: 45px auto 0px auto;
+	padding-top: 21px;
+	width: 70px;
+	height: 70px;
+	text-align: center;
+	text-transform: uppercase;
+	color: #afb6ba;
+	font-size: 16px;
+	font-weight: 600;
+	border-radius: 50%;
+	border: 1px solid #d8e3e7;
+	background-color: #f1f6f8;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay
+{
+	opacity: 0;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	left: 0px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	background-color: rgba(45,48,56,0.8);
+	-webkit-transition: opacity .2s ease;
+	-moz-transition: opacity .2s ease;
+	transition: opacity .2s ease;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay:hover
+{
+	opacity: 1;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay > .top
+{
+	padding: 10px 15px;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay > .top > .time
+{
+	font-size: 12px;
+	padding-top: 8px;
+	color: #cccecf;
+	float: left;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay > .top > .delete
+{
+	color: #ffffff;
+	float: right;
+	font-size: 20px;
+	cursor: pointer;
+}
+
+.project-detail-files-view > .files-container > .attachment > .preview > .overlay > .action
+{
+	text-align: center;
+	margin-top: 50px;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer
+{
+	height: 120px;
+	padding: 10px 20px;
+	background-color: #ffffff;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-top: 1px solid #d8e3e7;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer > .filename
+{
+	display: block;
+	color: #484c52;
+	margin-bottom: 10px;
+	font-size: 14px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer > .filedescription
+{
+	display: block;
+	color: #484c52;
+	margin-bottom: 10px;
+	font-size: 14px;
+	text-decoration: none;
+}
+
+.truncate
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer > .user > img
+{
+	float: left;
+	width: 30px;
+	height: 30px;
+}
+
+.project-detail-files-view > .files-container > .attachment > .footer > .user > .name
+{
+	margin-left: 40px;
+	line-height: 35px;
+}
+
+/* project-detail-activity-view */
+.project-detail-activity-view > .activities
+{
+	background: url(../../images/my/timeline.png) repeat-y 45px 0px;
+}
+
+.project-detail-activity-view > .activities > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 50px;
+}
+
+.project-detail-activity-view > .activities > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 50px;
+	line-height: 50px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.project-detail-activity-view > .activities > .activity > .timeline-icon
+{
+	float: left;
+	margin-top: 10px;
+	margin-left: 5px;
+	width: 40px;
+	height: 40px;
+	line-height: 38px;
+	font-size: 18px;
+	background-color: #ffffff;
+	color: #afb6ba;
+	text-align: center;
+	border: 1px solid #d8e3e7;
+	border-radius: 50%;
+}
+
+.project-detail-activity-view > .activities > .activity > .content
+{
+	padding: 5px;
+	margin-left: 52px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .heading
+{
+	width: 100%;
+	height: 40px;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .heading > img
+{
+	width: 40px;
+	float: left;
+	margin-top: -8px;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .heading > .time
+{
+	font-size: 12px;
+	float: right;
+	line-height: 18px;
+	margin-top: 12px;
+	color: #afb6ba;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .heading > .user
+{
+	margin-left: 50px;
+	margin-right: 60px;
+	margin-top: 12px;
+	
+	color: #23a8f5;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 22px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .body
+{
+	margin: 6px 0px 0px 0px;
+	width: 500px;
+	word-wrap: break-word;
+}
+
+/* project modal dialog common */
+.modal .modal-header,
+.modal .modal-footer
+{
+	border: none;	
+}
+
+.modal .modal-header .modal-title
+{
+	margin-top: 12px;
+  	line-height: 1.8;
+  	color: #23a8f5;
+  	text-align: center;
+}
+
+.modal .modal-header .close
+{
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	z-index: 100;
+}
+
+.modal .modal-header .close > span
+{
+	font-size: 40px;
+}
+
+.modal .modal-content
+{
+	padding: 15px;	
+}
+
+.modal .modal-footer > .btn
+{
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.modal .modal-footer > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.modal .modal-footer > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+
+/* project-detail-modify-view */
+.project-detail-modify-view 
+{
+	
+}
+
+/* project-status-sub-view / project-security-sub-view */
+.project-status-sub-view,
+.project-security-sub-view
+{
+	
+}
+
+.project-status-sub-view .status-container,
+.project-security-sub-view .security-container
+{
+	border-radius: 5px;
+	border: 1px solid #d8e3e7;
+	background-color: #ffffff;
+	padding: 15px;
+}
+
+.project-status-sub-view .status-container > .status-item,
+.project-security-sub-view .security-container > .security-item
+{
+	border: 1px solid #d8e3e7;
+	border-radius: 5px;
+	padding: 10px 15px;
+	margin-bottom: 15px;
+}
+
+.project-status-sub-view .status-container > .status-item > .option,
+.project-security-sub-view .security-container > .security-item > .option
+{
+	margin-left: 40px;
+	margin-top: -20px;
+	font-size: 15px;
+  	color: #7b898d;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+/* project-application-sub-view */
+.project-application-sub-view
+{
+	
+}
+
+.project-application-sub-view .applications thead
+{
+	font-weight: 600;
+}
+
+.project-application-sub-view .applications td
+{
+	text-align: center;
+}
+
+.project-application-sub-view .applications td.application_msg
+{
+	max-width: 90px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-application-sub-view .applications td.application_action
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.project-application-sub-view .agree,
+.project-application-sub-view .reject
+{
+	padding: 0px 10px;
+	margin-right: 10px;
+}
+
+/* edit-abstract-sub-view */
+.edit-abstract-sub-view .abstract-container
+{
+	background-color: #fff;
+	padding: 0;
+}
+
+.edit-abstract-sub-view .abstract-area
+{
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	min-height: 270px;
+}
+
+/* add-member-sub-view  */
+.add-member-sub-view .candidate-container
+{
+	background-color: #fff;
+	min-height: 200px;
+	max-height: 400px;
+	overflow: auto;
+}
+
+.add-member-sub-view .candidate-container > .candidate
+{
+	display: inline-block;
+	cursor: pointer;
+	background-color: #ffffff;
+	border: 1px solid #D8E3E7;
+	box-shadow: 0px 1px 2px 0px rgba(95,105,109,0.09);
+	border-radius: 3px;
+	margin: 12px;
+	padding: 8px;
+	height: 125px;
+	width: 99px;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.add-member-sub-view .candidate-container > .candidate.active
+{
+    z-index: 1;
+    background: #B3D9D9;
+    box-shadow: 0 0 2px 1px #fff
+}
+
+.add-member-sub-view .candidate-container > .candidate > .candidate-photo
+{
+	position: relative;
+	width: 80px;
+	margin: 0 auto;
+}
+
+.add-member-sub-view .candidate-container > .candidate > .candidate-photo > img
+{
+	width: 80px;
+}
+
+.add-member-sub-view .candidate-container > .candidate > .info
+{
+	margin: 0 auto;
+	margin-top: 10px;
+	color: #7f8689;
+}
+
+.add-member-sub-view .candidate-container > .candidate > .info > h4
+{
+	height: 25px;
+	font-size: 14px;
+	line-height: 25px;
+	margin: 0px 0px 3px 0px;
+	padding: 0;
+	color: #5f6a6d;
+	font-weight: 600;
+	text-align: center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.add-member-sub-view .candidate-container > .candidate > .info > h4 > span
+{
+	height: 25px;
+	line-height: 25px;
+}
+
+/* member-detail-sub-view  */
+.member-detail-sub-view #person_logo
+{
+	position: relative;
+	display: inline-block;
+	width: 100px;
+	height: 100px;
+	cursor: pointer;
+}
+
+.member-detail-sub-view .person-info
+{
+	position: relative;
+	display: inline-block;
+	height: 100px;
+	color: #7b898d;
+}
+
+.member-detail-sub-view .person-info > h4
+{
+	position: relative;
+	top: 20px;
+	font-weight: 600;
+}
+
+.member-detail-sub-view .person-info > .signature
+{
+	position: relative;
+	top: 25px;
+}
+
+/* reply-message-sub-view */
+.reply-message-sub-view .message-origin,
+.reply-message-sub-view .reply-message
+{
+	position: relative;
+	width: 100%;
+	margin: 10px 5px;
+	color: #5f6a6d;
+	line-height: 30px;
+	
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.reply-message-sub-view .message-origin > img,
+.reply-message-sub-view .reply-message > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.reply-message-sub-view .message-origin > .message-body,
+.reply-message-sub-view .reply-message > .message-body
+{
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-left: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title,
+.reply-message-sub-view .reply-message > .message-body > .message-title 
+{
+	display: inline-block;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title > .message-from,
+.reply-message-sub-view .reply-message > .message-body > .message-title > .message-from
+{
+	color: #23a8f5;
+	font-size: 14px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-title > .message-time,
+.reply-message-sub-view .reply-message > .message-body > .message-title > .message-time
+{
+	color: #afb6ba;
+	font-size: 14px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-text,
+.reply-message-sub-view .reply-message > .message-body > .message-text
+{
+	display: block;
+	padding: 10px;
+	max-width: 470px;
+	min-height: 1em;
+	vertical-align: top;
+	text-align: left;
+	font-size: 14px;
+	white-space: pre-wrap;
+	background-color: #eeeeee;
+	
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.reply-message-sub-view .message-origin > .message-body > .message-text > .message-action > .reply-message-action,
+.reply-message-sub-view .message-origin > .message-body > .message-text > .message-action > .remove-message-action,
+.reply-message-sub-view .reply-message > .message-body > .message-text > .message-action > .reply-message-action,
+.reply-message-sub-view .reply-message > .message-body > .message-text > .message-action > .remove-message-action
+{
+	float: right;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: -17px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.reply-message-sub-view .reply-msg-container
+{
+	padding-top: 20px;
+    background-color: #fff;
+    color: #5f6a6d;
+    line-height: 30px;
+    border-top: 1px solid #dedede;
+}
+
+.reply-message-sub-view .reply-messages > .placeholder
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+}
+
+.reply-message-sub-view .reply-messages > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+.reply-message-sub-view #reply_msg
+{
+	height: 100px;
+}

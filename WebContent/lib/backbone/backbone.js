@@ -66,7 +66,7 @@
   // `application/json` requests ... this will encode the body as
   // `application/x-www-form-urlencoded` instead and will send the model in a
   // form param named `model`.
-  Backbone.emulateJSON = false;
+  Backbone.emulateJSON = true;
 
   // Proxy Backbone class methods to Underscore functions, wrapping the model's
   // `attributes` object or collection's `models` array behind the scenes.
@@ -1379,7 +1379,8 @@
     // For older servers, emulate JSON by encoding the request into an HTML-form.
     if (options.emulateJSON) {
       params.contentType = 'application/x-www-form-urlencoded';
-      params.data = params.data ? {model: params.data} : {};
+//    params.data = params.data ? {model: params.data} : {};
+      params.data = params.data ? JSON.parse(params.data) : {};
     }
 
     // For older servers, emulate HTTP by mimicking the HTTP method with `_method`

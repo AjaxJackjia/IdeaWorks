@@ -5,11 +5,24 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>IdeaWorks-core</title>
+		<link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css">
+		<link rel="stylesheet" href="lib/bootstrapvalidator/dist/css/bootstrapValidator.min.css">
+		<link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
+		<link rel="stylesheet" href="lib/iCheck/skins/square/blue.css">
+		<link rel="stylesheet" href="lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css">
+		<!-- module css -->
+		<link rel="stylesheet" href="res/css/my/main.css">
+		<link rel="stylesheet" href="res/css/my/dashboard.css">
+		<link rel="stylesheet" href="res/css/my/notification.css">
+		<link rel="stylesheet" href="res/css/my/projects.css">
+		<link rel="stylesheet" href="res/css/my/search.css">
+		<link rel="stylesheet" href="res/css/my/settings.css">
 	</head>
 	<body>
-		<div class="container"></div>
+		<div class="content-panel"></div>
 		
 		<!-- lib js -->
-		<script src="lib/requirejs/require.js" data-main="module/my/main"></script>
+		<!-- <script src="lib/requirejs/require.js" data-main="module/my/main"></script> -->
+		<script src="lib/requirejs/require.js" defer async="true" data-main="module/my/my.min"></script>
 	</body>
 </html>

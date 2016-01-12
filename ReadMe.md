@@ -12,4 +12,19 @@ Bower manages common front-end libraries and their dependency tree in an easy ma
 
 ## IdeaWorks-core
 
+### TODO
+
+#### Portal page:
+
+* ~~News List view~~;
+* Projects view;
+* Concrete show view (~~news~~ or projects);
+
+#### login page:
+
+#### admin page:
+
+#### my center page:
+
+
 
