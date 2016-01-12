@@ -1,5 +1,7 @@
 (function(win){
 	require.config({
+		waitSeconds: 30,
+		
 		locale: sessionStorage.getItem('userlang') || 'en-us', //设置用户预设的语言
 		
 		paths: {

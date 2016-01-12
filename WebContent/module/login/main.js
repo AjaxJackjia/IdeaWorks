@@ -1,5 +1,7 @@
 (function(win){
 	require.config({
+		waitSeconds: 30,
+		
 		locale: sessionStorage.getItem('lang') || 'en-us',
 		
 		paths: {
