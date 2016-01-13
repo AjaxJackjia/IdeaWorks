@@ -106,6 +106,21 @@ define({
     		'TEACHER': 'Teacher',
     		'SOCIAL': 'Social',
     		'SIGN_UP_SUCCESS': 'Sign up success! Please login in use your username and password! Enjoy~',
+    	},
+    	'ForgetPasswordSubView': {
+    		'TITLE': 'Forget Password',
+    		'USER_ID': 'User Name:',
+    		'USER_ID_HOLDER':'Please input your username...',
+    		'EMAIL': 'Email: ',
+    		'EMAIL_HOLDER': 'Please input your email address which you previously used in sign up...',
+    		'CANCEL': 'Cancel',
+    		'CONFIRM': 'Confirm',
+    		'SUCCESS': 'New password has already been sent to your email address, please check your email!',
+    		'CHECK_USERNAME_EMPTY': 'The username is required',
+    		'CHECK_USERNAME_VALID': 'The username can consist of lowercase letters and numbers only',
+    		'CHECK_USERNAME_LENGTH': 'The username must be smaller than 30 characters',
+    		'CHECK_EMAIL_EMPTY': 'The email address is required',
+    		'CHECK_EMAIL_VALID': 'The value is not a valid email address'
     	}
     },
     

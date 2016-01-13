@@ -1,7 +1,7 @@
 define([ 
-         'backbone', 'util', 'MD5', 'cookie', 'i18n!../../../nls/translation',
-         'model/LoginModel' 
-       ], function(Backbone, util, MD5, cookie, i18n, LoginModel) {
+         'backbone', 'util', 'MD5', 'cookie', 'Validator', 'i18n!../../../nls/translation',
+         'model/LoginModel', 'model/ForgetPwdModel' 
+       ], function(Backbone, util, MD5, cookie, Validator, i18n, LoginModel, ForgetPwdModel) {
 
 	var SigninView = Backbone.View.extend({
 		tagName: 'div',
@@ -117,7 +117,7 @@ define([
 		},
 		
 		wechatLogin: function() {
-			alert('wechat login!');
+			alert('under construction...');
 		},
 		
 		validate: function(id, pwd) {
@@ -178,6 +178,48 @@ define([
 			
 			//绑定modal消失时出发的事件
 			var self = this;
+			
+			$(this.el).on('show.bs.modal', function (event) {
+				//form validator
+				console.log($modalDialogContent.find('#forgetPwdAttribute'));
+				$modalDialogContent.find('#forgetPwdAttribute').bootstrapValidator({
+					live: 'enabled',
+			        message: 'This value is not valid',
+			        feedbackIcons: {
+			            valid: 'glyphicon glyphicon-ok',
+			            invalid: 'glyphicon glyphicon-remove',
+			            validating: 'glyphicon glyphicon-refresh'
+			        },
+			        fields: {
+			        	fpwd_username: {
+			                validators: {
+			                    notEmpty: {
+			                        message: i18n.login.ForgetPasswordSubView.CHECK_USERNAME_EMPTY
+			                    },
+			                    regexp: {
+			                        regexp: '^[a-z0-9]+$',
+			                        message: i18n.login.ForgetPasswordSubView.CHECK_USERNAME_VALID
+			                    },
+			                    stringLength: {
+			                    	max: 30,
+			                        message: i18n.login.ForgetPasswordSubView.CHECK_USERNAME_LENGTH
+			                    }
+			                }
+			            },
+			            fpwd_email: {
+			                validators: {
+			                	notEmpty: {
+			                        message: i18n.login.ForgetPasswordSubView.CHECK_EMAIL_EMPTY
+			                    },
+			                	emailAddress: {
+			                        message: i18n.login.ForgetPasswordSubView.CHECK_EMAIL_VALID
+			                    }
+			                }
+			            }
+			        }
+			    });
+			});
+			
 			$(this.el).on('hide.bs.modal', function (event) {
 				self.unrender();
 			});
@@ -191,7 +233,26 @@ define([
 		
 		//confirm function
 		confirm: function() {
+			//validate
+			$('#forgetPwdAttribute').data('bootstrapValidator').validateField('fpwd_username');
+			$('#forgetPwdAttribute').data('bootstrapValidator').validateField('fpwd_email');
+			if(!$('#forgetPwdAttribute').data('bootstrapValidator').isValid()) return;
 			
+			var forgetPwdModel = new ForgetPwdModel();
+			forgetPwdModel.save({
+				'userid': $('#fpwd_username').val(),
+				'email': $('#fpwd_email').val()
+			},{
+				success: function() {
+					$('#forget_pwd_sub_view').modal('toggle');
+					
+					if(forgetPwdModel.get('msg') != 'ok') {//找回密码失败
+						alert(forgetPwdModel.get('msg'));
+					}else{//找回密码成功
+						alert(i18n.login.ForgetPasswordSubView.SUCCESS);
+					}
+				}
+			}); 
 		}
 	});
 	
@@ -199,7 +260,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">' + i18n.my.projects.ProjectDetailFilesView.UPLOAD_TITLE + '</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.login.ForgetPasswordSubView.TITLE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	}
@@ -207,8 +268,8 @@ define([
 	var Footer = function() {
 		var tpl = 
 			'<div class="modal-footer"> ' + 
-			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.projects.ProjectDetailMilestoneView.CANCEL + '</a> ' + 
-			'	<a type="submit" class="create btn btn-primary">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE + '</a> ' + 
+			'	<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.login.ForgetPasswordSubView.CANCEL + '</a> ' + 
+			'	<a type="submit" class="confirm btn btn-primary">' + i18n.login.ForgetPasswordSubView.CONFIRM + '</a> ' + 
 			'</div> ';
 		return tpl;
 	}
@@ -216,10 +277,14 @@ define([
 	var Body = function() {
 		var tpl = 
 			'<div class="modal-body"> ' + 
-			'	<form id="fileAttribute"> ' + 
+			'	<form id="forgetPwdAttribute"> ' + 
 			'		<div class="form-group"> ' + 
-			'			<label for="milestone_title" class="control-label">' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_TITLE + '</label> ' + 
-			'			<input type="text" class="form-control" id="milestone_title" name="milestone_title" placeholder="' + i18n.my.projects.ProjectDetailMilestoneView.CREATE_TITLE_HOLDER + '"> ' + 
+			'			<label for="fpwd_username" class="control-label">' + i18n.login.ForgetPasswordSubView.USER_ID + '</label> ' + 
+			'			<input type="text" class="form-control" id="fpwd_username" name="fpwd_username" placeholder="' + i18n.login.ForgetPasswordSubView.USER_ID_HOLDER + '"> ' + 
+			'		</div> ' + 
+			'		<div class="form-group"> ' + 
+			'			<label for="fpwd_email" class="control-label">' + i18n.login.ForgetPasswordSubView.EMAIL + '</label> ' + 
+			'			<input type="text" class="form-control" id="fpwd_email" name="fpwd_email" placeholder="' + i18n.login.ForgetPasswordSubView.EMAIL_HOLDER + '"> ' + 
 			'		</div> ' + 
 			'	</form> ' + 
 			'</div> '

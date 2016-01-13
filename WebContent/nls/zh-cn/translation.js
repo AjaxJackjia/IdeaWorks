@@ -104,6 +104,21 @@ define({
     		'TEACHER': '教师',
     		'SOCIAL': '社会人士',
     		'SIGN_UP_SUCCESS': '注册成功!请使用刚才注册的用户名密码登录.',
+    	},
+    	'ForgetPasswordSubView': {
+    		'TITLE': '忘记密码',
+    		'USER_ID': '用户名:',
+    		'USER_ID_HOLDER':'请输入你的用户名...',
+    		'EMAIL': '邮箱: ',
+    		'EMAIL_HOLDER': '请输入你在注册时用的邮箱...',
+    		'CANCEL': '取消',
+    		'CONFIRM': '确认',
+    		'SUCCESS': '账户新密码已经发送到您的邮箱，请您尽快查收!',
+    		'CHECK_USERNAME_EMPTY': '用户名为必填项',
+    		'CHECK_USERNAME_VALID': '用户名必须只能包含小写字母和数字',
+    		'CHECK_USERNAME_LENGTH': '用户名长度必须小于30个字符',
+    		'CHECK_EMAIL_EMPTY': '邮箱为必填项',
+    		'CHECK_EMAIL_VALID': '不是有效邮箱'
     	}
     },
     

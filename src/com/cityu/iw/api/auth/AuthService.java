@@ -249,14 +249,27 @@ public class AuthService extends BaseService {
 		
 		//validate email && generate new password
 		if(db_email.equals(p_email)) {
-//			sql = "update ideaworks.user set password = ? where id = ? ";
-//			stmt = DBUtil.getInstance().createSqlStatement(sql, Util.md5(Util.generateRandomString(6)), p_userid);
-//			stmt.execute();
-//			DBUtil.getInstance().closeStatementResource(stmt);
+			String newPwd = Util.generateRandomString(6);
+			sql = "update ideaworks.user set password = ? where id = ? ";
+			stmt = DBUtil.getInstance().createSqlStatement(sql, Util.md5(newPwd), p_userid);
+			stmt.execute();
+			DBUtil.getInstance().closeStatementResource(stmt);
 			
 			//send email to user
 			try{
-				MailUtil.sendMailTo(db_email);
+				StringBuilder sb = new StringBuilder();
+				sb.append("Dear " + p_userid + ": \n");
+				sb.append("\t You have reset your password. \n");
+				sb.append("\t The new password is " + newPwd + ". \n");
+				sb.append("\t Please login in IdeaWorks in your new password. Thank you. \n\n");
+				sb.append("\t This email is sent automatically. Please do not reply this email.\n");
+				sb.append("Best Regards, ");
+				sb.append("IdeaWorks Development Team");
+				
+				JSONObject mailInfo = new JSONObject();
+				mailInfo.put("subject", "[ideaworks] Password reset confirm email");
+				mailInfo.put("content", sb.toString());
+				MailUtil.sendMailTo(db_email, mailInfo);
 			}catch(Exception ex){
 				ex.printStackTrace();
 			}
@@ -265,7 +278,7 @@ public class AuthService extends BaseService {
 			result.put("msg", "ok");
 		}else{
 			result.put("ret", "-2");
-			result.put("msg", "email address invalid");
+			result.put("msg", "username or email address is invalid!");
 		}
 		
 		return result;
