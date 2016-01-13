@@ -271,7 +271,10 @@ public class AuthService extends BaseService {
 				mailInfo.put("content", sb.toString());
 				MailUtil.sendMailTo(db_email, mailInfo);
 			}catch(Exception ex){
-				ex.printStackTrace();
+				//异常事件
+				result.put("ret", "-3");
+				result.put("msg", "Server busy!");
+				return result;
 			}
 			
 			result.put("ret", "0");

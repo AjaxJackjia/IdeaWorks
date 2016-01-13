@@ -16,8 +16,12 @@ import org.codehaus.jettison.json.JSONObject;
 
 public class MailUtil {
 	private static final Logger LOGGER = Logger.getLogger(MailUtil.class);
-	private static final String MAIL_USERID = "ideaworks2016@163.com";
-	private static final String MIAL_PASSWORD = "twvxzbxzbioftwqo";
+	//163mail 用户名密码 
+	private static final String MAIL163_USERID = "ideaworks2016@163.com";
+	private static final String MAIL163_PASSWORD = "twvxzbxzbioftwqo";
+	//gmail 用户名密码
+	private static final String GMAIL_USERID = "2016ideaworks@gmail.com";
+	private static final String GMAIL_PASSWORD = "ideaworkscityu.";
 	
 	public static void sendMailTo(String p_email, JSONObject mailInfo) throws MessagingException, JSONException {
 		//check param
@@ -25,19 +29,18 @@ public class MailUtil {
 			return ;
 		}
 		
-		Properties props = new Properties();  
-        // 设置邮件服务器主机名  
-        props.setProperty("mail.smtp.host", "smtp.163.com");
-        // 发送服务器需要身份验证  
-        props.setProperty("mail.smtp.auth", "true");  
-        
-        MyAuthenticator myauth = new MyAuthenticator(MAIL_USERID, MIAL_PASSWORD);
+//		//设置163mail配置
+//		Properties props = get163MailProperties();
+		//设置gmail配置
+		Properties props = getGmailProperties(); 
+		
+        MyAuthenticator myauth = new MyAuthenticator(GMAIL_USERID, GMAIL_PASSWORD);
         Session session = Session.getDefaultInstance(props, myauth);
           
         // 创建邮件对象  
         Message msg = new MimeMessage(session);  
         // 设置发件人  
-        msg.setFrom(new InternetAddress(MAIL_USERID));
+        msg.setFrom(new InternetAddress(GMAIL_USERID));
         // 设置收件人
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(p_email));
         // 设置主题
@@ -47,6 +50,31 @@ public class MailUtil {
         
         msg.saveChanges();
         Transport.send(msg);
+	}
+	
+	//获取163邮件服务设置
+	private static Properties get163MailProperties() {
+		Properties props = new Properties();  
+        // 设置邮件服务器主机名  
+        props.setProperty("mail.smtp.host", "smtp.163.com");
+        // 发送服务器需要身份验证  
+        props.setProperty("mail.smtp.auth", "true");
+        
+        return props;
+	}
+	
+	//获取Gmail邮件服务设置 （GMail via SSL）
+	private static Properties getGmailProperties() {
+		Properties props = new Properties();  
+		// 设置邮件服务器主机名
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.port", "465");
+		// 发送服务器需要身份验证 
+		props.put("mail.smtp.auth", "true");
+		
+		return props;
 	}
 }
 

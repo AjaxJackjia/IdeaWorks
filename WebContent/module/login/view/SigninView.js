@@ -181,7 +181,6 @@ define([
 			
 			$(this.el).on('show.bs.modal', function (event) {
 				//form validator
-				console.log($modalDialogContent.find('#forgetPwdAttribute'));
 				$modalDialogContent.find('#forgetPwdAttribute').bootstrapValidator({
 					live: 'enabled',
 			        message: 'This value is not valid',
