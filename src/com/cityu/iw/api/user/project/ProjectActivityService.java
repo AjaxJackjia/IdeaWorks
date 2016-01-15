@@ -1,4 +1,4 @@
-package com.cityu.iw.api.user;
+package com.cityu.iw.api.user.project;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

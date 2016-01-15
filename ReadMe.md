@@ -1,30 +1,8 @@
 # Introduction
 
-This is IdeaWorks.
+This is IdeaWorks. An online project management tool built by Requirejs & Backbone.
 
-# Tools
 
-## Bower
-
-Bower manages common front-end libraries and their dependency tree in an easy manner.
-
-# Version
-
-## IdeaWorks-core
-
-### TODO
-
-#### Portal page:
-
-* ~~News List view~~;
-* Projects view;
-* Concrete show view (~~news~~ or projects);
-
-#### login page:
-
-#### admin page:
-
-#### my center page:
 
 
 

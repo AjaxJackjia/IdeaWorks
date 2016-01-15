@@ -1,4 +1,4 @@
-package com.cityu.iw.api.user;
+package com.cityu.iw.api.user.project;
 
 import java.io.InputStream;
 import java.net.URLDecoder;
@@ -30,6 +30,7 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.api.BaseService;
+import com.cityu.iw.api.user.UserService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;

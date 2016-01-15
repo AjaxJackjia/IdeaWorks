@@ -1,4 +1,4 @@
-package com.cityu.iw.api.user;
+package com.cityu.iw.api.user.project;
 
 import java.io.File;
 import java.io.FileInputStream;

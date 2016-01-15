@@ -103,8 +103,10 @@ define({
     		'CHECK_EMAIL_EMPTY': 'The email address is required',
     		'CHECK_EMAIL_VALID': 'The value is not a valid email address',
     		'STUDENT': 'Student',
-    		'TEACHER': 'Teacher',
-    		'SOCIAL': 'Social',
+    		'FACULTY': 'Faculty',
+    		'INDUSTRICAL_PARTICIPANT': 'Industrical Participant',
+    		'GOVERNMENT': 'Government',
+    		'OTHERS': 'Others',
     		'SIGN_UP_SUCCESS': 'Sign up success! Please login in use your username and password! Enjoy~',
     	},
     	'ForgetPasswordSubView': {

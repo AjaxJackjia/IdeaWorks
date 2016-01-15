@@ -101,8 +101,10 @@ define({
     		'CHECK_EMAIL_EMPTY': '邮箱为必填项',
     		'CHECK_EMAIL_VALID': '不是有效邮箱',
     		'STUDENT': '学生',
-    		'TEACHER': '教师',
-    		'SOCIAL': '社会人士',
+    		'FACULTY': '教职员工',
+    		'INDUSTRICAL_PARTICIPANT': '工业界人士',
+    		'GOVERNMENT': '政府人员',
+    		'OTHERS': '其他',
     		'SIGN_UP_SUCCESS': '注册成功!请使用刚才注册的用户名密码登录.',
     	},
     	'ForgetPasswordSubView': {

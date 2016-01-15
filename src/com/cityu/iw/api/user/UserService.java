@@ -434,9 +434,12 @@ public class UserService extends BaseService {
 	
 	public static String getUserType(int type) {
 		switch(type) {
-		case 1: return "Student"; 
-		case 2: return "Professor"; 
-		default: return "Social";
+			case 0: return "Student"; 
+			case 1: return "Faculty"; 
+			case 2: return "Industrical Participant"; 
+			case 3: return "Government"; 
+			case 4: return "Others"; 
+			default: return "Unknown";
 		}
 	}
 }

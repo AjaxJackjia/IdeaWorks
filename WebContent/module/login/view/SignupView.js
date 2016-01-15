@@ -185,8 +185,10 @@ define([
 			'		<label for="usertype" class="control-label">' + i18n.login.SignupView.USERTYPE_TITLE + '</label> ' + 
 			'		<select id="usertype" class="form-control"> ' + 
 			'			<option value="0">' + i18n.login.SignupView.STUDENT + '</option>' +
-			'			<option value="1">' + i18n.login.SignupView.TEACHER + '</option>' +
-			'			<option value="2">' + i18n.login.SignupView.SOCIAL + '</option>' +
+			'			<option value="1">' + i18n.login.SignupView.FACULTY + '</option>' +
+			'			<option value="2">' + i18n.login.SignupView.INDUSTRICAL_PARTICIPANT + '</option>' +
+			'			<option value="3">' + i18n.login.SignupView.GOVERNMENT + '</option>' +
+			'			<option value="4">' + i18n.login.SignupView.OTHERS + '</option>' +
 			'		</select> ' + 
 			'	</div> ' + 
 			'	<div class="form-group"> ' + 

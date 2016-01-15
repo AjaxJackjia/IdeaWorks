@@ -5,7 +5,7 @@ public class Config {
 	public static final String PROJECT_IMG_BASE_DIR = "uploads/projects/";
 	public static final String PROJECT_FILE_BASE_DIR = "uploads/files/";
 	
-	//后台的操作码以及实体码,前端与后台需要统一
+	//后台的project操作码以及实体码,前端与后台需要统一
 	public static enum Action {
 		CREATE(100), 	//创建 
 		UPDATE(200), 	//修改
