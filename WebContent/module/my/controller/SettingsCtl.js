@@ -8,7 +8,7 @@ define([ 'backbone',
 		
 		//初始化侧边栏状态
 		setTimeout(function() {
-			$($('.navigation > .list-unstyled > li')[2]).click();
+			$($('.navigation > .list-unstyled > li')[3]).click();
 		}, 0);
 		
 		//若存在search view打开，则关闭

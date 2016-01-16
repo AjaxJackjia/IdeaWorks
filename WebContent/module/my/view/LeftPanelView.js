@@ -32,6 +32,11 @@ define([
 			    	icon: 'suitcase'
 			    },
 			    {
+			    	index: i18n.my.LeftPanelView.CHAT,
+			    	url: 'my.html#chat',
+			    	icon: 'comments'
+			    },
+			    {
 			    	index: i18n.my.LeftPanelView.SETTINGS,
 			    	url: 'my.html#settings',
 			    	icon: 'cog'

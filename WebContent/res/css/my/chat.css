@@ -1,0 +1,386 @@
+/* chat list view */
+.chat-list-view
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	width: 350px;
+
+	margin: 0;
+	padding: 0;
+}
+
+.chat-list-view > .chat-list-new-chat
+{
+	position: absolute;
+	left: 0;
+	top: 0;
+	padding: 10px 40px;
+	height: 50px;
+	width: 350px;
+	background-color: #f3f3f3;
+	border-right: 1px solid #dedede;
+}
+
+.chat-list-view > .chat-list-new-chat > .new-chat
+{
+	width: 100%;
+	height: 100%;
+	
+	border-radius: 40px;
+}
+
+.chat-list-view > .chat-list-content
+{
+	position: absolute;
+	left: 0;
+	top: 50px;
+	bottom: 0;
+	width: 350px;
+
+	margin: 0;
+	padding: 0;
+	border-right: 1px solid #dedede;
+	list-style: none;
+	overflow: auto;
+}
+
+.chat-list-view > .chat-list-content > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.chat-list-view > .chat-list-content > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view
+{
+	width: 100%;
+	height: 80px;
+
+	margin: 0;
+	padding: 15px 15px 15px 15px;
+	
+	cursor: pointer;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view > .logo
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+	text-align: center;
+    font-size: 35px;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view > .info
+{
+	margin-left: 65px;
+	color: #7b898d;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view > .info > .chat-title
+{
+	display: block;
+	font-size: 14px;
+	font-weight: 600;
+	line-height: 18px;
+	margin: 5px 0px 3px 0px;
+	padding: 0px;
+	color: #7b898d;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view > .info > .chat-modifytime
+{
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view.active
+{
+	border-left: 4px solid #23a8f5;
+	padding-left: 11px;
+	background-color: #f8fafb;
+}
+
+/* chat detail view */
+.chat-detail-view
+{
+	position: absolute;
+	left: 350px;
+	right: 0;
+	top: 0;
+	bottom: 0;
+
+	margin: 0;
+	padding: 0;
+}
+
+.chat-detail-view > .empty-place-holder
+{
+	position: absolute;
+	top: 120px;
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.chat-detail-view > .empty-place-holder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.chat-detail-view > .announcement-container
+{
+	position: absolute;
+	top: 30px;
+	left: 20px;
+	right: 20px;
+	min-height: 200px;
+	
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
+.chat-detail-view > .announcement-container > .heading
+
+
+
+.chat-detail-view > .chat-container
+{
+	position: absolute;
+	top: 30px;
+	bottom: 30px;
+	left: 20px;
+	right: 20px;
+	
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+}
+
+.chat-detail-view > .chat-container > .heading > .message-action
+{
+	display: inline-block;
+	margin-left: 10px;
+}
+
+.chat-detail-view > .chat-container > .heading > .message-action > .btn.btn-default
+{
+	display: inline-block;
+	border-radius: 40px;
+  	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.chat-detail-view > .chat-container > .heading > .message-action > .refresh-topic:hover
+{
+	background-color: #E0FFFF;
+	-webkit-transition: background-color .5s ease;
+	-moz-transition: background-color .5s ease;
+	transition: background-color .5s ease;
+}
+
+.chat-detail-view > .chat-container > .discussion-content
+{
+	max-height: 300px;
+	overflow-y: auto;
+	overflow-x: hidden;	
+}
+
+.chat-detail-view > .chat-container > .discussion-content > .placeholder
+{
+	margin: 0 auto;
+	margin-top: 20px;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+}
+
+.chat-detail-view > .chat-container > .discussion-content > .placeholder > h4
+{
+	margin: 0 auto;
+	padding: 0;
+	width: 100%;
+	height: 100px;
+	line-height: 100px;
+	color: #afb6ba;
+	text-align: center;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message
+{
+	position: relative;
+	width: 100%;
+	margin: 20px 5px;
+	
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.other > img
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.self > img
+{
+	float: right;
+	width: 50px;
+	height: 50px;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.other > .message-body
+{
+	position: relative;
+	float: left;
+	display: inline-block;
+	margin-left: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body
+{
+	position: relative;
+	float: right;
+	display: inline-block;
+	margin-right: 10px;
+	border-bottom: 1px solid #f1f6f8;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title 
+{
+	display: inline-block;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body > .message-title 
+{
+	float: right;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title > .message-from
+{
+	color: #23a8f5;
+	font-size: 14px;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title > .message-time
+{
+	color: #afb6ba;
+	font-size: 14px;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text
+{
+	display: block;
+	padding: 5px 10px 20px 10px;
+	max-width: 500px;
+	min-height: 1em;
+	vertical-align: top;
+	text-align: left;
+	font-size: 14px;
+	white-space: pre-wrap;
+	background-color: #eeeeee;
+	
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message,
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .remove-message
+{
+	float: right;
+	display: inline-block;
+	width: 15px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message-count
+{
+	float: right;
+	display: inline-block;
+	max-width: 80px;
+	height: 15px;
+	margin: -8px 5px 5px 5px;
+	text-align: center;
+    cursor: pointer;
+}
+
+.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body > .message-text
+{
+	clear: both;
+}
+
+.chat-detail-view > .chat-container .discussion-sender
+{
+	padding-top: 20px;
+	background-color: #fff;
+	color: #5f6a6d;
+	line-height: 30px;
+	border-top: 1px solid #dedede;
+}
+
+.chat-detail-view > .chat-container .discussion-sender > #send_content
+{
+	height: 150px;
+}
+
+.chat-detail-view > .chat-container .discussion-sender > .send-action > .btn.btn-primary
+{
+	display: inline-block;
+	border-radius: 40px;
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+
+.chat-detail-view > .chat-container .discussion-sender > .send-action
+{
+	display: block;
+	width: 100%;
+	/* clear float */
+	overflow:hidden;
+	zoom:1;
+}
+
+.chat-detail-view > .chat-container .discussion-sender > .send-action > .send
+{
+	float: right;
+	margin-top: 10px;
+	margin-right: 15px;
+	width: 120px;
+}

@@ -191,7 +191,7 @@ define({
     	},
     	'notification': {
     		'NotificationSideView': {
-    			'NOTIFICATIONS': '通知  ',
+    			'NOTIFICATIONS': '项目通知  ',
     			'NO_NOTIFICATIONS': '暂无通知...',
     			'CLOSE_NOTIFICATION': '关闭通知窗口',
     			'FETCH_NOTIFICATION_ERROR': '获取用户通知失败,请稍后重试.',
@@ -627,13 +627,14 @@ define({
     	'LeftPanelView': {
 			'DASHBOARD': '仪表盘',
     		'PROJECTS': '项目',
+    		'CHAT': '站内信',
     		'SETTINGS': '设置',
     		'NEW': '创建'
     	},
     	'TopPanelView': {
     		'SEARCH_TITLE': '搜索',
     		'SEARCH_INPUT_TITLE': '搜索...',
-    		'NOTIFICATION_TITLE': '通知',
+    		'NOTIFICATION_TITLE': '项目通知',
     		'ADVICE_TITLE': '反馈 & 建议',
     		'LOGOUT_TITLE': '退出',
     		'LOGOUT_CONFIRM': '确定退出当前用户?'

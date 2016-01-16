@@ -145,7 +145,7 @@ define([
 				'		<i class="fa fa-bell-o"></i>' +
 				'	</div>' +
 				'	<div class="advice-btn btn btn-default" title="' + i18n.my.TopPanelView.ADVICE_TITLE + '">' +
-				'		<i class="fa fa-comments"></i>' +
+				'		<i class="fa fa-info"></i>' +
 				'	</div>' +
 				'</div>';
 		return tpl;

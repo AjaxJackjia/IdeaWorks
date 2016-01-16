@@ -193,7 +193,7 @@ define({
     	},
     	'notification': {
     		'NotificationSideView': {
-    			'NOTIFICATIONS': 'Notifications  ',
+    			'NOTIFICATIONS': 'Project Notifications  ',
     			'NO_NOTIFICATIONS': 'No notifications...',
     			'CLOSE_NOTIFICATION': 'close notification',
     			'FETCH_NOTIFICATION_ERROR': 'Get user notifications failed. Please try again later!',
@@ -630,13 +630,14 @@ define({
     	'LeftPanelView': {
     		'DASHBOARD': 'Dashboard',
     		'PROJECTS': 'Projects',
+    		'CHAT': 'Internal Message',
     		'SETTINGS': 'Settings',
     		'NEW': 'New'
     	},
     	'TopPanelView': {
     		'SEARCH_TITLE': 'Search',
     		'SEARCH_INPUT_TITLE': 'Search...',
-    		'NOTIFICATION_TITLE': 'Notification',
+    		'NOTIFICATION_TITLE': 'Project Notification',
     		'ADVICE_TITLE': 'Advice & suggestion',
     		'LOGOUT_TITLE': 'Log out',
     		'LOGOUT_CONFIRM': 'Are you sure to logout?'

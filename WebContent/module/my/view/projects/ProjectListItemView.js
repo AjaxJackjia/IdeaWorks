@@ -1,8 +1,7 @@
 define([ 
-         'backbone', 'util', 'i18n!../../../../nls/translation',
-         'view/projects/ProjectDetailView'
+         'backbone', 'util', 'i18n!../../../../nls/translation'
        ], 
-    function(Backbone, util, i18n, ProjectDetailView) {
+    function(Backbone, util, i18n) {
 	var ProjectListItemView = Backbone.View.extend({
 		
 		tagName: 'li',

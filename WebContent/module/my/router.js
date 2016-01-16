@@ -21,6 +21,7 @@ define([ 'backbone', 'util',
     	"": './controller/IndexCtl',
     	'dashboard': './controller/DashboardCtl',
     	'projects': './controller/ProjectsCtl',
+    	'chat': './controller/ChatCtl',
     	'settings': './controller/SettingsCtl',
         '*error': './controller/PortalCtl',
     };
