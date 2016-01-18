@@ -51,17 +51,17 @@ define([
 	var ChatItem_template = function(chat) {
 		var type = chat.get('type');
 		var type_icon = (type == 'group' ? 'comments-o' : 'envelope-o');
-		console.log(type);
+		var type_title = (type == 'group' ? 'Internal Messages' : 'Announcement');
 		
 		//logo view dom
-		var logo_tpl =  '<div class="logo"> ' + 
+		var logo_tpl =  '<div class="logo" title="' + type_title + '"> ' + 
 						'	<i class="fa fa-' + type_icon + '"></i>' + 
 						'</div>';
 	
 		//info view dom
 		var info_tpl =  '<div class="info"> ' + 
 						'	<h4 class="chat-title" title="' + chat.get('title') + '">'+ chat.get('title') +'</h4>' + 
-						'	<p class="chat-modifytime">' + util.timeformat(new Date(chat.get('modifytime')), "smart") + '</p>' + 
+						'	<p class="chat-lastmodifytime">' + util.timeformat(new Date(chat.get('lastmodifytime')), "smart") + '</p>' + 
 						'</div>';
 		
 		return logo_tpl + info_tpl;

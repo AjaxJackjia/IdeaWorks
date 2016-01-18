@@ -4,9 +4,9 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 			'chatid': 0,
 			'title': '',
 			'type': '',
-			'userid': '',
 			'createtime': '',
-			'modifytime': ''
+			'lastmodifytime': '',
+			'tousertype': ''
 		},
 		
 		//fetch时设置id属性, 以便后续的update操作

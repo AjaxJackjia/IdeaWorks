@@ -108,7 +108,7 @@
 	overflow: hidden;
 }
 
-.chat-list-view > .chat-list-content > .chat-list-item-view > .info > .chat-modifytime
+.chat-list-view > .chat-list-content > .chat-list-item-view > .info > .chat-lastmodifytime
 {
 	white-space: nowrap;
 	text-overflow: ellipsis;
