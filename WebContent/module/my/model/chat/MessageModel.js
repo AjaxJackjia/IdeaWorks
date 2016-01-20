@@ -1,21 +1,18 @@
 define([ 'backbone', 'util' ], function(Backbone, util) {
-	var Chat = Backbone.Model.extend({
+	var Message = Backbone.Model.extend({
 		defaults: {
-			'chatid': 0,
-			'title': '',
-			'type': '',
+			'msgid': 0,
 			'creator': '',
-			'createtime': '',
-			'lastmodifytime': '',
-			'tousertype': -1
+			'msg': '',
+			'time': ''
 		},
 		
 		//fetch时设置id属性, 以便后续的update操作
 		parse: function(response) {
-			response.id = response.chatid ? response.chatid : "";
+			response.id = response.msgid ? response.msgid : "";
 		    return response;
 		}
 	});
 	
-	return Chat;
+	return Message;
 });

@@ -27,9 +27,6 @@ import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.api.BaseService;
-import com.cityu.iw.api.user.UserService;
-import com.cityu.iw.api.user.project.ProjectActivityService;
-import com.cityu.iw.api.user.project.ProjectNotificationService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 
@@ -61,16 +58,21 @@ public class ChatService extends BaseService {
 					 "	T1.id, " + 
 					 "	T1.type, " + 
 					 "	T1.title, " + 
+					 "	T1.creator as creator_id, " +
+					 "	T3.nickname as creator_nickname, " +
+					 "	T3.logo as creator_logo, " +
 					 "	T1.createtime, " + 
 					 "	T1.lastmodifytime, " + 
 					 "	T1.tousertype " + 
 					 "from " +
 					 "	ideaworks.im_chat T1, " + 
-					 "	ideaworks.im_chat_user T2 " + 
+					 "	ideaworks.im_chat_user T2, " +
+					 "	ideaworks.user T3 " +
 					 "where " + 
 					 "	T1.id = T2.chatid and " + 
 					 "	T2.userid = ? and " +
-					 "	T1.isDeleted = 0 " +
+					 "	T1.isDeleted = 0 and " +
+					 "	T1.creator = T3.id " + 
 					 "order by " + 
 					 "	lastmodifytime asc";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
@@ -81,12 +83,19 @@ public class ChatService extends BaseService {
 	
 		while(rs_stmt.next()) {
 			JSONObject chat = new JSONObject();
+			
+			JSONObject creator = new JSONObject();
+			creator.put("userid", rs_stmt.getString("creator_id"));
+			creator.put("nickname", rs_stmt.getString("creator_nickname"));
+			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
+			
 			chat.put("chatid", rs_stmt.getInt("id"));
-			chat.put("title", rs_stmt.getString("title"));
 			chat.put("type", rs_stmt.getString("type"));
+			chat.put("title", rs_stmt.getString("title"));
+			chat.put("creator", creator);
 			chat.put("createtime", rs_stmt.getTimestamp("createtime").getTime());
 			chat.put("lastmodifytime", rs_stmt.getTimestamp("lastmodifytime").getTime());
-			chat.put("tousertype", UserService.getUserType(rs_stmt.getInt("tousertype")));
+			chat.put("tousertype", rs_stmt.getInt("tousertype"));
 	
 			list.put(chat);
 		}
@@ -117,17 +126,22 @@ public class ChatService extends BaseService {
 					 "	T1.id, " + 
 					 "	T1.type, " + 
 					 "	T1.title, " + 
+					 "	T1.creator as creator_id, " +
+					 "	T3.nickname as creator_nickname, " +
+					 "	T3.logo as creator_logo, " +
 					 "	T1.createtime, " + 
 					 "	T1.lastmodifytime, " + 
 					 "	T1.tousertype " + 
 					 "from " +
 					 "	ideaworks.im_chat T1, " + 
-					 "	ideaworks.im_chat_user T2 " + 
+					 "	ideaworks.im_chat_user T2, " + 
+					 "	ideaworks.user T3 " +
 					 "where " + 
 					 "	T1.id = T2.chatid and " + 
 					 "	T2.userid = ? and " +
 					 "	T2.chatid = ? and " + 
-					 "	T1.isDeleted = 0 ";
+					 "	T1.isDeleted = 0 and " + 
+					 "	T1.creator = T3.id ";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid, p_chatid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
@@ -135,12 +149,18 @@ public class ChatService extends BaseService {
 		JSONObject chat = new JSONObject();
 	
 		while(rs_stmt.next()) {
+			JSONObject creator = new JSONObject();
+			creator.put("userid", rs_stmt.getString("creator_id"));
+			creator.put("nickname", rs_stmt.getString("creator_nickname"));
+			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
+			
 			chat.put("chatid", rs_stmt.getInt("id"));
-			chat.put("title", rs_stmt.getString("title"));
 			chat.put("type", rs_stmt.getString("type"));
+			chat.put("title", rs_stmt.getString("title"));
+			chat.put("creator", creator);
 			chat.put("createtime", rs_stmt.getTimestamp("createtime").getTime());
 			chat.put("lastmodifytime", rs_stmt.getTimestamp("lastmodifytime").getTime());
-			chat.put("tousertype", UserService.getUserType(rs_stmt.getInt("tousertype")));
+			chat.put("tousertype", rs_stmt.getInt("tousertype"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
@@ -176,24 +196,52 @@ public class ChatService extends BaseService {
 					 "	ideaworks.im_chat (" + 
 					 "		type, " + 
 					 "		title, " + 
+					 "		creator, " + 
 					 "		tousertype " + 
 					 "	) values ( ?, ?, ? )";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_type, p_title, p_tousertype);
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_type, p_title, p_userid, p_tousertype);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//2. 返回最新的chat
 		JSONObject chat = new JSONObject();
-		sql = "select * from ideaworks.im_chat where type = ? and title = ? and tousertype = ? order by createtime desc limit 1";
+		sql ="select " + 
+			 "	T1.id, " + 
+			 "	T1.type, " + 
+			 "	T1.title, " + 
+			 "	T1.creator as creator_id, " +
+			 "	T2.nickname as creator_nickname, " +
+			 "	T2.logo as creator_logo, " +
+			 "	T1.createtime, " + 
+			 "	T1.lastmodifytime, " + 
+			 "	T1.tousertype " + 
+			 "from " +
+			 "	ideaworks.im_chat T1, " + 
+			 "	ideaworks.user T2 " +
+			 "where " + 
+			 "	T1.type = ? and " + 
+			 "	T1.title = ? and " +
+			 "	T1.tousertype = ? and " + 
+			 "	T1.isDeleted = 0 and " + 
+			 "	T1.creator = T3.id " + 
+			 "order by " + 
+			 "	createtime desc " + 
+			 "limit 1";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, p_type, p_title, p_tousertype);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
+			JSONObject creator = new JSONObject();
+			creator.put("userid", rs_stmt.getString("creator_id"));
+			creator.put("nickname", rs_stmt.getString("creator_nickname"));
+			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
+			
 			chat.put("chatid", rs_stmt.getInt("id"));
-			chat.put("title", rs_stmt.getString("title"));
 			chat.put("type", rs_stmt.getString("type"));
+			chat.put("title", rs_stmt.getString("title"));
+			chat.put("creator", creator);
 			chat.put("createtime", rs_stmt.getTimestamp("createtime").getTime());
 			chat.put("lastmodifytime", rs_stmt.getTimestamp("lastmodifytime").getTime());
-			chat.put("tousertype", UserService.getUserType(rs_stmt.getInt("tousertype")));
+			chat.put("tousertype", rs_stmt.getInt("tousertype"));
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 
@@ -292,7 +340,7 @@ public class ChatService extends BaseService {
 					 "	T1.isDeleted = 0 " +
 					 "order by " + 
 					 "	time asc";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
 		//result
@@ -304,7 +352,7 @@ public class ChatService extends BaseService {
 			JSONObject creator = new JSONObject();
 			creator.put("userid", rs_stmt.getString("creator_id"));
 			creator.put("nickname", rs_stmt.getString("creator_nickname"));
-			creator.put("logo", rs_stmt.getString("creator_logo"));
+			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
 			
 			message.put("msgid", rs_stmt.getInt("id"));
 			message.put("creator", creator);
@@ -375,6 +423,57 @@ public class ChatService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		return null;
+	}
+	
+	@GET
+	@Path("/{chatid}/members")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getUserChatMembers(
+			@PathParam("userid") String p_userid,
+			@PathParam("chatid") int p_chatid ) throws Exception
+	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals(""))) {
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		//获取chat members
+		String sql = "select " + 
+					 "	T2.userid, " + 
+					 "	T3.nickname, " + 
+					 "	T3.logo " + 
+					 "from " +
+					 "	ideaworks.im_chat T1, " + 
+					 "	ideaworks.im_chat_user T2, " + 
+					 "	ideaworks.user T3 " + 
+					 "where " + 
+					 "	T1.id = ? and " +
+					 "	T1.id = T2.chatid and " +
+					 "	T2.userid = T3.id and " +
+					 "	T1.isDeleted = 0 ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		
+		//result
+		JSONArray members = new JSONArray();
+	
+		while(rs_stmt.next()) {
+			JSONObject member = new JSONObject();
+			member.put("userid", rs_stmt.getString("userid"));
+			member.put("nickname", rs_stmt.getString("nickname"));
+			member.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("logo"));
+			
+			members.put(member);
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		return buildResponse(OK, members);
 	}
 	
 	/*

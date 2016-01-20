@@ -135,7 +135,7 @@
 	padding: 0;
 }
 
-.chat-detail-view > .empty-place-holder
+.chat-detail-view .empty-place-holder
 {
 	position: absolute;
 	top: 120px;
@@ -145,7 +145,7 @@
 	height: 100px;
 }
 
-.chat-detail-view > .empty-place-holder > h4
+.chat-detail-view .empty-place-holder > h4
 {
 	margin: 0 auto;
 	padding: 0;
@@ -156,7 +156,8 @@
 	text-align: center;
 }
 
-.chat-detail-view > .announcement-container
+/* chat-detail-announcement-view */
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container
 {
 	position: absolute;
 	top: 30px;
@@ -169,11 +170,54 @@
 	line-height: 30px;
 }
 
-.chat-detail-view > .announcement-container > .heading
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .title
+{
+	font-size: 24px;
+	cursor: pointer;
+}
 
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta
+{
+	margin: 10px 0;
+	font-size: 18px;
+}
 
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta > .time
+{
+	float: left;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 110px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 15px;
+    color: #afb6ba;
+}
 
-.chat-detail-view > .chat-container
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta > .creator-logo
+{
+	float: left;
+    margin-right: 5px;
+    margin-top: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+}
+
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta > .to-user-type
+{
+	clear:both;
+	margin: 5px 0;
+}
+
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta > .to-user-type > .focus
+{
+	color: #23a8f5;
+	font-weight: 600;
+}
+
+/* chat-detail-group-view */
+.chat-detail-view > .chat-detail-group-view > .chat-container
 {
 	position: absolute;
 	top: 30px;
@@ -186,36 +230,44 @@
 	line-height: 30px;
 }
 
-.chat-detail-view > .chat-container > .heading > .message-action
+.chat-detail-view > .chat-detail-group-view > .chat-container > .heading
+{
+	text-align: center;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .heading > .title
 {
 	display: inline-block;
-	margin-left: 10px;
+	font-size: 24px;
+	text-align: center;
+	cursor: pointer;
 }
 
-.chat-detail-view > .chat-container > .heading > .message-action > .btn.btn-default
+.chat-detail-view > .chat-detail-group-view > .chat-container > .heading > .expand-icon
 {
 	display: inline-block;
-	border-radius: 40px;
-  	color: #7c8589;
-	border-color: #d8e3e7;
+    margin-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    color: #afb6ba;
+    cursor: pointer;
 }
 
-.chat-detail-view > .chat-container > .heading > .message-action > .refresh-topic:hover
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content 
 {
-	background-color: #E0FFFF;
-	-webkit-transition: background-color .5s ease;
-	-moz-transition: background-color .5s ease;
-	transition: background-color .5s ease;
-}
-
-.chat-detail-view > .chat-container > .discussion-content
-{
-	max-height: 300px;
+	position: absolute;
+	top: 60px;
+	bottom: 230px;
+	left: 30px;
+	right: 30px;
+	
+	min-height: 200px;
 	overflow-y: auto;
 	overflow-x: hidden;	
 }
 
-.chat-detail-view > .chat-container > .discussion-content > .placeholder
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .placeholder
 {
 	margin: 0 auto;
 	margin-top: 20px;
@@ -224,7 +276,7 @@
 	height: 100px;
 }
 
-.chat-detail-view > .chat-container > .discussion-content > .placeholder > h4
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .placeholder > h4
 {
 	margin: 0 auto;
 	padding: 0;
@@ -235,7 +287,7 @@
 	text-align: center;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message
 {
 	position: relative;
 	width: 100%;
@@ -246,21 +298,21 @@
 	zoom:1;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.other > img
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.other > img
 {
 	float: left;
 	width: 50px;
 	height: 50px;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.self > img
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.self > img
 {
 	float: right;
 	width: 50px;
 	height: 50px;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.other > .message-body
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.other > .message-body
 {
 	position: relative;
 	float: left;
@@ -269,7 +321,7 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.self > .message-body
 {
 	position: relative;
 	float: right;
@@ -278,32 +330,32 @@
 	border-bottom: 1px solid #f1f6f8;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title 
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-title 
 {
 	display: inline-block;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body > .message-title 
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.self > .message-body > .message-title 
 {
 	float: right;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title > .message-from
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-title > .message-from
 {
 	color: #23a8f5;
 	font-size: 14px;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-title > .message-time
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-title > .message-time
 {
 	color: #afb6ba;
 	font-size: 14px;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-text
 {
 	display: block;
-	padding: 5px 10px 20px 10px;
+	padding: 5px 10px 8px 10px;
 	max-width: 500px;
 	min-height: 1em;
 	vertical-align: top;
@@ -317,8 +369,8 @@
 	-webkit-border-radius: 3px;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message,
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .remove-message
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-text > .message-action > .reply-message,
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-text > .message-action > .remove-message
 {
 	float: right;
 	display: inline-block;
@@ -329,7 +381,7 @@
     cursor: pointer;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message > .message-body > .message-text > .message-action > .reply-message-count
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message > .message-body > .message-text > .message-action > .reply-message-count
 {
 	float: right;
 	display: inline-block;
@@ -340,26 +392,29 @@
     cursor: pointer;
 }
 
-.chat-detail-view > .chat-container .discussion-content > .message.self > .message-body > .message-text
+.chat-detail-view > .chat-detail-group-view > .chat-container > .content > .message.self > .message-body > .message-text
 {
 	clear: both;
 }
 
-.chat-detail-view > .chat-container .discussion-sender
+.chat-detail-view > .chat-detail-group-view > .chat-container > .sender
 {
-	padding-top: 20px;
+	position: absolute;
+	bottom: 10px;
+	left: 30px;
+	right: 30px;
+	
 	background-color: #fff;
 	color: #5f6a6d;
 	line-height: 30px;
-	border-top: 1px solid #dedede;
 }
 
-.chat-detail-view > .chat-container .discussion-sender > #send_content
+.chat-detail-view > .chat-detail-group-view > .chat-container > .sender > #send_content
 {
 	height: 150px;
 }
 
-.chat-detail-view > .chat-container .discussion-sender > .send-action > .btn.btn-primary
+.chat-detail-view > .chat-detail-group-view > .chat-container > .sender > .send-action > .btn.btn-primary
 {
 	display: inline-block;
 	border-radius: 40px;
@@ -368,7 +423,7 @@
 	border-color: #23a8f5;
 }
 
-.chat-detail-view > .chat-container .discussion-sender > .send-action
+.chat-detail-view > .chat-detail-group-view > .chat-container > .sender > .send-action
 {
 	display: block;
 	width: 100%;
@@ -377,10 +432,279 @@
 	zoom:1;
 }
 
-.chat-detail-view > .chat-container .discussion-sender > .send-action > .send
+.chat-detail-view > .chat-detail-group-view > .chat-container > .sender > .send-action > .send
 {
 	float: right;
 	margin-top: 10px;
 	margin-right: 15px;
 	width: 120px;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view
+{
+	position: absolute;
+	left: 30px;
+	right: 30px;
+	min-height: 160px;
+	max-height: 320px;
+	
+	z-index: 999;
+	
+	background: #f3f3f3;
+	box-shadow: 0px 2px 5px #dedede;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members
+{
+	min-height: 160px;
+	max-height: 320px;
+	width: 100%;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member
+{
+	display: inline-block;
+	cursor: pointer;
+	background-color: #ffffff;
+	border: 1px solid #D8E3E7;
+	box-shadow: 0px 1px 2px 0px rgba(95,105,109,0.09);
+	border-radius: 3px;
+	margin: 12px;
+	padding: 8px;
+	height: 140px;
+	width: 99px;
+	overflow: hidden;
+	text-decoration: none;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member > .member-photo
+{
+	position: relative;
+	width: 80px;
+	margin: 0 auto;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member > .member-photo > img
+{
+	width: 80px;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member > .info
+{
+	margin: 0 auto;
+	margin-top: 2px;
+	color: #7f8689;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member > .info > h4
+{
+	height: 25px;
+	font-size: 14px;
+	line-height: 25px;
+	margin: 0px 0px -5px 0px;
+	padding: 0;
+	color: #5f6a6d;
+	font-weight: 600;
+	text-align: center;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .chat-detail-group-members-view > .members > .member > .info > h4 > span
+{
+	height: 25px;
+	line-height: 25px;
+}
+
+/* new chat view */
+.add-chat-view .im-menu
+{
+	margin: 0 auto;
+    text-align: center;
+}
+
+.add-chat-view .im-menu > li
+{
+	display: inline-block;
+    float: none;
+    width: 200px;
+}
+
+.add-chat-view .im-menu > li.active
+{
+	border-bottom: 3px solid #23a8f5;
+}
+
+.add-chat-view .im-menu > li > a,
+.add-chat-view .im-menu > li > a:hover,
+.add-chat-view .im-menu > li > a:focus
+{
+    border: none;
+}
+
+/* im-message-view */
+.im-message-view
+{
+	margin: 20px 20px 0 20px;
+}
+
+.im-message-view > .message-members
+{
+	width: 100%;
+	height: 300px;
+	margin-bottom: 20px;
+}
+
+.im-message-view > .message-members > div
+{
+	display: inline-block;
+	float: left;
+}
+
+.im-message-view > .message-members > .left,
+.im-message-view > .message-members > .right
+{
+	width: 240px;
+	height: 300px;
+	border: 1px solid #dedede;
+	overflow: auto;
+}
+
+.im-message-view > .message-members > .middle
+{
+	width: 48px;
+	height: 300px;
+	line-height: 300px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.im-message-view > .message-members .member
+{
+	height: 50px;
+	width: 100%;
+	border-bottom: 1px solid #dedede;
+	background-color: #ffffff;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.im-message-view > .message-members .member:hover
+{
+	background-color: #dedede;
+}
+
+.im-message-view > .message-members .member > .photo
+{
+	float: left;
+	width: 50px;
+	height: 50px;
+	margin-left: 10px;
+	padding: 5px;
+}
+
+.im-message-view > .message-members .member > .photo > img
+{
+	width: 40px;
+}
+
+.im-message-view > .message-members .member > .info
+{
+	float: left;
+	margin-left: 5px;
+	height: 50px;
+	line-height: 50px;
+	max-width: 150px;
+	color: #000;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.im-message-view > .message-members .member > .remove
+{
+	float: right;
+	margin-right: 10px;
+	height: 50px;
+	line-height: 50px;
+	font-size: 22px;
+}
+
+.im-message-view > .actions
+{
+	text-align: right;
+}
+
+.im-message-view > .actions > .btn
+{
+	margin-left: 10px;
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.im-message-view > .actions > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.im-message-view > .actions > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
+}
+
+/* im-announcement-view */
+.im-announcement-view
+{
+	margin: 20px;
+	height: 450px;
+}
+
+.im-announcement-view > .detail
+{
+    font-size: 18px;
+    color: #000;
+}
+
+.im-announcement-view #announcement_content
+{
+    height: 235px;
+}
+
+.im-announcement-view > .actions
+{
+	text-align: right;
+}
+
+.im-announcement-view > .actions > .btn
+{
+	margin-left: 10px;
+	border-radius: 40px;
+	line-height: 24px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.im-announcement-view > .actions > .btn-default
+{
+	color: #7c8589;
+	border-color: #d8e3e7;
+}
+
+.im-announcement-view > .actions > .btn-primary
+{
+	color: #ffffff;
+	background-color: #23a8f5;
+	border-color: #23a8f5;
 }

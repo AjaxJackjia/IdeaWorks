@@ -20,7 +20,7 @@ public class MailUtil {
 	private static final String MAIL163_USERID = "ideaworks2016@163.com";
 	private static final String MAIL163_PASSWORD = "twvxzbxzbioftwqo";
 	//gmail 用户名密码
-	private static final String GMAIL_USERID = "2016ideaworks@gmail.com";
+	private static final String GMAIL_USERID = "o2oconf@gmail.com";
 	private static final String GMAIL_PASSWORD = "ideaworkscityu.";
 	
 	public static void sendMailTo(String p_email, JSONObject mailInfo) throws MessagingException, JSONException {

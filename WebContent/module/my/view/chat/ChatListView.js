@@ -1,15 +1,20 @@
 define([ 
          'backbone', 'util', 'i18n!../../../../nls/translation',
-         'view/chat/ChatListItemView'
+         'view/chat/ChatListItemView',
+         'view/chat/AddChatView'
        ], 
-    function(Backbone, util, i18n, ChatListItemView) {
+    function(Backbone, util, i18n, ChatListItemView, AddChatView) {
 	var ChatListView = Backbone.View.extend({
 		
 		className: 'chat-list-view',
 		
+		events: {
+			'click .new-chat': 'newChat'
+		},
+		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'addChatItem', 'removeChatItem', 'createChat', 'deleteChat');
+			_.bindAll(this, 'render', 'addChatItem', 'removeChatItem', 'createChat', 'deleteChat', 'newChat');
 			
 			//监听model变化
 			this.model.bind('add', this.addChatItem);			//add model at the top of the list(UI)
@@ -41,6 +46,9 @@ define([
 		
 		//method: 添加chat元素到list(UI)头部
 		addChatItem: function(chat) {
+			//设置每个project model的url
+			chat.url = this.model.url + '/' + chat.get('chatid');
+			
 			var $placeholder = $('.chat-list-content > .empty-place-holder', this.el);
 			if($placeholder.length > 0) {
 				$placeholder.remove();
@@ -97,6 +105,19 @@ define([
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
+		},
+		
+		//点击new chat按钮事件
+		newChat: function() {
+			var addChatView = new AddChatView();
+			
+			var $subView = $('#add_chat_view');
+			if($subView.length > 0) {
+				$subView.remove();
+			}
+			$('.content-panel').append($(addChatView.render().el));
+			//显示view
+			$('#add_chat_view').modal('toggle');
 		}
 	});
 	
