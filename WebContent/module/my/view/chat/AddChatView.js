@@ -103,7 +103,7 @@ define([
 			$title.append('<label for="message_title" class="control-label">Title: </label>');
 			$title.append('<input type="text" class="form-control" id="message_title" name="message_title" placeholder="internal message title...">');
 			
-			var $membersTitle = $('<label class="control-label">Members: </label>');
+			var $membersTitle = $('<label class="control-label">Members: (Double click member in the left container to add members)</label>');
 			var $membersContent = $('<div class="message-members">');
 			$membersContent.append('<div class="left"></div>');
 			$membersContent.append('<div class="middle"><i class="fa fa-arrow-right"></i></div>');
@@ -134,6 +134,10 @@ define([
 						}else{
 							_.each(self.members.models, function(member, index) {
 								$(self.el).find('.left').append(self.generateMemberItem(member));
+								//默认添加当前用户到已选择列表中
+								if(member.get('userid') == util.currentUser()) {
+									self.selected.add(member);
+								}
 							});
 						}
 					},
@@ -170,7 +174,12 @@ define([
 		
 		//向selected集合中添加元素(UI)
 		addItem: function(item) {
-			$(this.el).find('.right').append(this.generateSelectedMemberItem(item));
+			if(item.get('userid') == util.currentUser()) {
+				$(this.el).find('.right').append(this.generateMemberItem(item));
+			}else{
+				$(this.el).find('.right').append(this.generateSelectedMemberItem(item));
+			}
+			
 		},
 		
 		//从selected集合中删除元素(UI)
@@ -190,13 +199,28 @@ define([
 				return;
 			}
 			
-			//check member
-			if(this.selected.length == 0) {
+			//check member (至少两人)
+			if(this.selected.length < 2) {
 				alert('Please select member...');
+				return;
+			}else if(this.selected.length > 200) {
+				alert('The max size of member is 200!');
 				return;
 			}
 			
+			//构建请求参数
+			var userids = this.selected.pluck("userid");
+			var data = {};
+			data.userid = util.currentUser();
+			data.type = 'group';
+			data.title = $('#message_title', this.el).val();
+			data.members = userids.join();
 			
+			//触发全局事件
+			Backbone.trigger('ChatListView:createChat', data);
+			
+			//关闭new chat view浮层
+			$('#add_chat_view').modal('toggle');
 		},
 		
 		//view
@@ -250,8 +274,29 @@ define([
 		
 		createAnnouncement: function() {
 			//check param
+			if($('#announcement_title', this.el).val() == '') {
+				alert('Please input announcement title...');
+				return;
+			}
 			
-			//create
+			if($('#announcement_content', this.el).val() == '') {
+				alert('Please input announcement content...');
+				return;
+			}
+			
+			//构建请求参数
+			var data = {};
+			data.userid = util.currentUser();
+			data.type = 'announcement';
+			data.title = $('#announcement_title', this.el).val();
+			data.tousertype = $('#announcement_type', this.el).val();
+			data.content = $('#announcement_content', this.el).val();
+			
+			//触发全局事件
+			Backbone.trigger('ChatListView:createChat', data);
+			
+			//关闭new chat view浮层
+			$('#add_chat_view').modal('toggle');
 		},
 		
 		//view
@@ -266,9 +311,9 @@ define([
 			$type.find('#announcement_type').append('<option value="666">All Members</option>');
 			$type.find('#announcement_type').append('<option value="0">Student</option>');
 			$type.find('#announcement_type').append('<option value="1">Faculty</option>');
-			$type.find('#announcement_type').append('<option value="2">INDUSTRICAL_PARTICIPANT</option>');
-			$type.find('#announcement_type').append('<option value="3">GOVERNMENT</option>');
-			$type.find('#announcement_type').append('<option value="4">OTHERS</option>');
+			$type.find('#announcement_type').append('<option value="2">Industrical Participant</option>');
+			$type.find('#announcement_type').append('<option value="3">Government</option>');
+			$type.find('#announcement_type').append('<option value="4">Others</option>');
 			
 			var $content = $('<div class="form-group">');
 			$content.append('<label for="announcement_content" class="control-label">Content:</label>');

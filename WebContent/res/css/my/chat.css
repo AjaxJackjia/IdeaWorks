@@ -216,6 +216,14 @@
 	font-weight: 600;
 }
 
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .content
+{
+	white-space: pre-wrap;
+	min-height: 200px;
+	max-height: 400px;
+    overflow: auto;
+}
+
 /* chat-detail-group-view */
 .chat-detail-view > .chat-detail-group-view > .chat-container
 {

@@ -1,25 +1,31 @@
 define([ 
          'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
+         'model/chat/MessageModel', 
          'model/chat/MessageCollection', 
          'view/chat/ChatDetailGroupMembersView'
        ], 
-    function(Backbone, util, CheckLib, i18n, MessageCollection, ChatDetailGroupMembersView) {
+    function(Backbone, util, CheckLib, i18n, MessageModel, MessageCollection, ChatDetailGroupMembersView) {
 	var ChatDetailGroupView = Backbone.View.extend({
 		
 		className: 'chat-detail-group-view',
 
 		events: {
-			'click .expand-icon': 'toggleMembers'
+			'click .expand-icon': 'toggleMembers',
+			'click .chat-container .send': 'comment'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'unrender', 'toggleMembers');
+			_.bindAll(this, 'render', 'unrender', 'toggleMembers', 'comment', 'addMsgItem', 'removeMsgItem');
 			
 			//chat
 			this.chat = this.model;
 			//chat messages
 			this.messages = new MessageCollection();
 			this.messages.url = this.model.url + '/messages';
+			//监听model变化
+			this.messages.bind('add', this.addMsgItem);			
+			this.messages.bind('remove', this.removeMsgItem);	
+			
 			//chat members
 			this.membersview = new ChatDetailGroupMembersView({
 				model: this.chat
@@ -33,6 +39,19 @@ define([
 			$container.append(this.generateSendbox());
 			
 			$(this.el).html($container);
+			
+			//拉取消息
+			var self = this;
+			this.messages.fetch({
+				success: function() {
+					if(self.messages.length == 0) {
+						$content.html('No content...');
+					}
+				},
+				error: function(model, response, options) {
+					util.commonErrorHandler(response.responseJSON, 'Get internal messages failed. Please try again later!');
+				}
+			});
 			
 			return this;
 		},
@@ -58,6 +77,50 @@ define([
 			}
 		},
 		
+		//method: 添加msg元素到content中
+		addMsgItem: function(msg) {
+			msg.url = this.model.url + '/' + msg.get('msgid');
+			
+			var msgItem = this.generateMsg(msg)
+			$('.chat-container > .content', this.el).append(msgItem);
+			
+			//scroll to bottom
+			$('.chat-container > .content').scrollTop( $('.chat-container > .content')[0].scrollHeight );
+		},
+		
+		//method: 从content中删除msg元素
+		removeMsgItem: function(msg) {
+			_.each($('..chat-container > .content > .message', this.el), function(element, index, list){ 
+				if($(element).attr('cid') == chat.cid) {
+					$(element).remove();
+				}
+			});
+		},
+		
+		//评论
+		comment: function() {
+			//check param
+			if($('#send_content', this.el).val() == '') {
+				alert('Please input your message content...');
+				return;
+			}
+			
+			var msgModel = new MessageModel();
+			msgModel.set('chatid', this.chat.get('chatid'));
+			msgModel.set('msg', $('#send_content', this.el).val());
+			
+			this.messages.create(msgModel, {
+				 wait: true, 
+				 error: function(model, response, options) {
+					var alertMsg = i18n.my.projects.ProjectListView.CREATE_PROJECT_ERROR;
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				 }
+			});
+			
+			//清空content输入框
+			$('#send_content', this.el).val('');
+		},
+		
 		//render sub view
 		generateGroupHeader: function() {
 			var $header = $('<div class="heading">');
@@ -76,24 +139,7 @@ define([
 		},
 		
 		generateGroupContent: function() {
-			var self = this;
 			var $content = $('<div class="content">');
-			
-			this.messages.fetch({
-				success: function() {
-					if(self.messages.length == 0) {
-						$content.html('No content...');
-					}else{
-						_.each(self.messages.models, function(msg, index) {
-							$content.append(self.generateMsg(msg));
-						});
-					}
-				},
-				error: function(model, response, options) {
-					util.commonErrorHandler(response.responseJSON, 'Get internal messages failed. Please try again later!');
-				}
-			});
-			
 			return $content;
 		},
 		
@@ -110,6 +156,12 @@ define([
 		
 		generateMsg: function(message) {
 			var creator = message.get('creator');
+			var msg = '';
+			if(message.get('msg') == 'DEFAULT_CREATE_CHAT_MSG') {
+				msg = '创建了该消息群组';
+			}else{
+				msg = message.get('msg');
+			}
 			
 			var tpl = '';
 			if(creator.userid == util.currentUser()) {
@@ -124,7 +176,7 @@ define([
 				'			<span class="message-from">'+ creator.nickname +'</span>' + 
 				'			<span class="message-time">' + util.timeformat(new Date(message.get('time')), "smart") + '</span>' + 
 				'		</div> ' + 
-				'		<div class="message-text">'+ message.get('msg') +'</div>' + 
+				'		<div class="message-text">'+ msg +'</div>' + 
 				'	</div>' +
 				'</div>';
 			

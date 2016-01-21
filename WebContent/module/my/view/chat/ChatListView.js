@@ -1,9 +1,12 @@
 define([ 
          'backbone', 'util', 'i18n!../../../../nls/translation',
+         //model
+         'model/chat/ChatModel',
+         //view
          'view/chat/ChatListItemView',
          'view/chat/AddChatView'
        ], 
-    function(Backbone, util, i18n, ChatListItemView, AddChatView) {
+    function(Backbone, util, i18n, ChatModel, ChatListItemView, AddChatView) {
 	var ChatListView = Backbone.View.extend({
 		
 		className: 'chat-list-view',
@@ -46,7 +49,7 @@ define([
 		
 		//method: 添加chat元素到list(UI)头部
 		addChatItem: function(chat) {
-			//设置每个project model的url
+			//设置每个model的url
 			chat.url = this.model.url + '/' + chat.get('chatid');
 			
 			var $placeholder = $('.chat-list-content > .empty-place-holder', this.el);
@@ -75,36 +78,43 @@ define([
 		},
 		
 		//创建新的chat
-		createChat: function(project) {
+		createChat: function(chatData) {
 			var projectList = this.model;
-			projectList.create(project, {
-				 wait: true, 
-				 success: function() {	 
-					 //默认选中最新创建的project item
-					 $($('.project-list-content > li')[0]).click();
-				 }, 
-				 error: function(model, response, options) {
-					var alertMsg = i18n.my.projects.ProjectListView.CREATE_PROJECT_ERROR;
+			
+			//send request
+			$.ajax({
+			    url: 'api/users/' + util.currentUser() + '/chats',
+			    data: chatData,
+			    type: 'POST',
+			    success: function(result){
+			    	//创建新chat
+			    	var chat = new ChatModel();
+			    	chat.id = result.chatid;
+			    	chat.set('chatid', result.chatid);
+			    	chat.set('type', result.type);
+			    	chat.set('title', result.title);
+			    	chat.set('creator', result.creator);
+			    	chat.set('createtime', result.createtime);
+			    	chat.set('lastmodifytime', result.lastmodifytime);
+			    	chat.set('tousertype', result.tousertype);
+			    	
+			    	projectList.add(chat);
+			    	
+			    	//默认选中第一个元素
+			    	setTimeout(function() {
+			    		$($('.chat-list-content > li', this.el)[0]).click();
+			    	}, 100);
+			    },
+			    error: function(response) {
+					var alertMsg = 'error!';
 					util.commonErrorHandler(response.responseJSON, alertMsg);
-				 }
+				}
 			});
 		},
 		
 		//删除chat
 		deleteChat: function(project) {
-			var projectList = this.model;
-			project.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + project.id;
-			projectList.get(project.cid).destroy({
-				wait: true, 
-				success: function() {
-					//从list中删除project
-					projectList.remove(project);
-				},
-				error: function(model, response, options) {
-					var alertMsg = i18n.my.projects.ProjectListView.DELETE_PROJECT_ERROR;
-					util.commonErrorHandler(response.responseJSON, alertMsg);
-				}
-			});
+			//TODO
 		},
 		
 		//点击new chat按钮事件

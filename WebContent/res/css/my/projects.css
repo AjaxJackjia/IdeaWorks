@@ -332,6 +332,7 @@
 	color: #5f6a6d;
 	background-color: #fff;
   	word-wrap: break-word;
+  	white-space: pre-wrap;
 }
 
 .project-detail-abstract-view > .abstract-container > .placeholder
@@ -730,6 +731,7 @@
 {
 	color: #5f6a6d;
 	line-height: 30px;
+	white-space: pre-wrap;
 }
 
 /* project-detail-forum-view */
@@ -857,6 +859,13 @@
 	white-space: nowrap;
 	text-overflow: ellipsis;
 	overflow: hidden;
+}
+
+.project-detail-forum-view > .topics > .topic > .content > .body > .description-container > .description-content
+{
+	color: #5f6a6d;
+	line-height: 30px;
+	white-space: pre-wrap;
 }
 
 /* project-detail-forum-topic-view */

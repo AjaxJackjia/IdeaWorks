@@ -22,11 +22,12 @@ define([
 			var creator = this.chat.get('creator');
 			var user_type_title = '';
 			switch(this.chat.get('tousertype')) {
-				case 0: user_type_title = 'Student';break;
-				case 1: user_type_title = 'Faculty';break;
-				case 2: user_type_title = 'Industrical Participant';break;
-				case 3: user_type_title = 'Government';break;
-				case 4: user_type_title = 'Others';break;
+				case 666: user_type_title = 'All Members';break;
+				case 0: user_type_title = 'All Student';break;
+				case 1: user_type_title = 'All Faculty';break;
+				case 2: user_type_title = 'All Industrical Participant';break;
+				case 3: user_type_title = 'All Government';break;
+				case 4: user_type_title = 'All Others';break;
 				default: user_type_title = 'Unknown';break;
 			}
 			
@@ -36,7 +37,7 @@ define([
 						 '	<div class="meta">' + 
 						 '		<img class="creator-logo" img-circle" title="' + creator.userid + '" src="' + creator.logo + '">' + 
 						 '		<div class="time">' + util.timeformat(new Date(this.chat.get('createtime')), "smart")  + '</div>' + 
-						 '		<div class="to-user-type">To all <span class="focus">' + user_type_title + '</span></div>' + 
+						 '		<div class="to-user-type">To <span class="focus">' + user_type_title + '</span></div>' + 
 						 '	</div>' + 
 						 '</div>';
 			var content = null;

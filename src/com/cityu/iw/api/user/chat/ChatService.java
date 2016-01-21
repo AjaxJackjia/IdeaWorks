@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.api.BaseService;
@@ -36,12 +37,23 @@ public class ChatService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ChatService.class);
 	private static final int BULK_INSERTER_NO = 50;
 	private static final String DEFAULT_CREATE_CHAT_MSG = "DEFAULT_CREATE_CHAT_MSG";
+	
+	private static final String CHATTYPE_GROUP = "group";
+	private static final String CHATTYPE_ANNOUNCEMENT = "announcement";
+	
+	private static final int USERTYPE_ALL = 666;
+	private static final int USERTYPE_STUDENT = 0;
+	private static final int USERTYPE_FACULTY = 1;
+	private static final int USERTYPE_INDUSTRICAL_PARTITIPANT = 2;
+	private static final int USERTYPE_GOVERNMENT = 3;
+	private static final int USERTYPE_OTHER = 4;
+	
 	@Context HttpServletRequest request;
 	
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUserChatlistRequest(@PathParam("userid") String p_userid) throws Exception
+	public Response getUserChatlist(@PathParam("userid") String p_userid) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -174,8 +186,9 @@ public class ChatService extends BaseService {
 			@PathParam("userid") String p_userid,
 			@FormParam("type") String p_type, 
 			@FormParam("title") String p_title, 
+			@FormParam("members") String p_members,
 			@FormParam("tousertype") int p_tousertype,
-			@FormParam("members") String p_members ) throws Exception
+			@FormParam("content") String p_content ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -184,26 +197,50 @@ public class ChatService extends BaseService {
 		}
 		
 		//check param
-		if((p_title == null || p_title.equals("")) ||
-		   (p_userid == null || p_userid.equals("")) ||
-		   (p_type == null || p_type.equals("")) ||
-		   (p_members == null || p_members.equals("")) ) {
+		if((p_userid == null || p_userid.equals("")) ||
+		   (p_type == null || p_type.equals("") || (!p_type.equals("group") && !p_type.equals("announcement"))) || 
+		   (p_title == null || p_title.equals("")) ) {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
+		//check specific param
+		if(p_type.equals(CHATTYPE_GROUP) && (p_members == null || p_members.equals(""))) //群聊 chat
+		{ 
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		else 
+		if(p_type.equals(CHATTYPE_ANNOUNCEMENT) && (p_content == null || p_content.equals(""))) //公告 chat
+		{
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		//创建对应类型的chat
+		JSONObject chat = null;
+		if(p_type.equals(CHATTYPE_GROUP)) {
+			chat = createGroup(p_userid, p_title, p_members);
+		}
+		else if(p_type.equals(CHATTYPE_ANNOUNCEMENT))
+		{
+			chat = createAnnouncement(p_userid, p_title, p_tousertype, p_content);
+		}
+	
+		return buildResponse(OK, chat);
+	}
+	
+	//创建group
+	private JSONObject createGroup(String currentUserid, String title, String members) throws Exception {
 		//1. 创建chat
 		String sql = "insert into " +
 					 "	ideaworks.im_chat (" + 
 					 "		type, " + 
 					 "		title, " + 
-					 "		creator, " + 
-					 "		tousertype " + 
+					 "		creator " + 
 					 "	) values ( ?, ?, ? )";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_type, p_title, p_userid, p_tousertype);
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, CHATTYPE_GROUP, title, currentUserid);
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		//2. 返回最新的chat
+		//2. 最新的chat
 		JSONObject chat = new JSONObject();
 		sql ="select " + 
 			 "	T1.id, " + 
@@ -221,13 +258,12 @@ public class ChatService extends BaseService {
 			 "where " + 
 			 "	T1.type = ? and " + 
 			 "	T1.title = ? and " +
-			 "	T1.tousertype = ? and " + 
 			 "	T1.isDeleted = 0 and " + 
-			 "	T1.creator = T3.id " + 
+			 "	T1.creator = T2.id " + 
 			 "order by " + 
 			 "	createtime desc " + 
 			 "limit 1";
-		stmt = DBUtil.getInstance().createSqlStatement(sql, p_type, p_title, p_tousertype);
+		stmt = DBUtil.getInstance().createSqlStatement(sql, CHATTYPE_GROUP, title);
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
 			JSONObject creator = new JSONObject();
@@ -246,28 +282,146 @@ public class ChatService extends BaseService {
 		DBUtil.getInstance().closeStatementResource(stmt);
 
 		//3. 添加chat成员
-		String[] members = p_members.split(",");
+		String[] userids = members.split(",");
 		sql = "insert into " +
 			  "	ideaworks.im_chat_user (" + 
 			  "		chatid, " + 
 			  "		userid " + 
 			  "	) values ( ?, ? )";
 		stmt = DBUtil.getInstance().createSqlStatement(sql);
-		for(int i = 0;i<members.length;i++) {
+		for(int i = 0;i<userids.length;i++) {
 			stmt.setObject(1, chat.getInt("chatid"));
-			stmt.setObject(2, members[i]);
+			stmt.setObject(2, userids[i]);
 			stmt.addBatch();
 			
-			if(i%BULK_INSERTER_NO == 0 || i == members.length - 1) {
+			if(i%BULK_INSERTER_NO == 0 || i == userids.length - 1) {
 				stmt.executeBatch();
 			}
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//4. “创建chat”消息
-		createMessage(chat.getInt("chatid"), p_userid, DEFAULT_CREATE_CHAT_MSG);
+		createMessage(chat.getInt("chatid"), currentUserid, DEFAULT_CREATE_CHAT_MSG);
+		
+		//5. 返回最新的chat
+		return chat;
+	}
 	
-		return buildResponse(OK, chat);
+	//创建announcement
+	private JSONObject createAnnouncement(String currentUserid, String title, int tousertype, String content) throws Exception {
+		//1. 创建chat
+		String sql = "insert into " +
+					 "	ideaworks.im_chat (" + 
+					 "		type, " + 
+					 "		title, " + 
+					 "		creator, " +
+					 "		tousertype " +
+					 "	) values ( ?, ?, ?, ? )";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, CHATTYPE_ANNOUNCEMENT, title, currentUserid, tousertype);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//2. 最新的chat
+		JSONObject chat = new JSONObject();
+		sql ="select " + 
+			 "	T1.id, " + 
+			 "	T1.type, " + 
+			 "	T1.title, " + 
+			 "	T1.creator as creator_id, " +
+			 "	T2.nickname as creator_nickname, " +
+			 "	T2.logo as creator_logo, " +
+			 "	T1.createtime, " + 
+			 "	T1.lastmodifytime, " + 
+			 "	T1.tousertype " + 
+			 "from " +
+			 "	ideaworks.im_chat T1, " + 
+			 "	ideaworks.user T2 " +
+			 "where " + 
+			 "	T1.type = ? and " + 
+			 "	T1.title = ? and " +
+			 "	T1.tousertype = ? and " +
+			 "	T1.isDeleted = 0 and " + 
+			 "	T1.creator = T2.id " + 
+			 "order by " + 
+			 "	createtime desc " + 
+			 "limit 1";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, CHATTYPE_ANNOUNCEMENT, title, tousertype);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			JSONObject creator = new JSONObject();
+			creator.put("userid", rs_stmt.getString("creator_id"));
+			creator.put("nickname", rs_stmt.getString("creator_nickname"));
+			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
+			
+			chat.put("chatid", rs_stmt.getInt("id"));
+			chat.put("type", rs_stmt.getString("type"));
+			chat.put("title", rs_stmt.getString("title"));
+			chat.put("creator", creator);
+			chat.put("createtime", rs_stmt.getTimestamp("createtime").getTime());
+			chat.put("lastmodifytime", rs_stmt.getTimestamp("lastmodifytime").getTime());
+			chat.put("tousertype", rs_stmt.getInt("tousertype"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+
+		//3. 获取对应类型的chat成员
+		switch(tousertype) {
+		case USERTYPE_ALL: 
+			sql = "select distinct id from ideaworks.user";
+			break;
+		case USERTYPE_STUDENT:
+			sql = "select distinct id from ideaworks.user where usertype = " + USERTYPE_STUDENT;
+			break;
+		case USERTYPE_FACULTY:
+			sql = "select distinct id from ideaworks.user where usertype = " + USERTYPE_FACULTY;
+			break;
+		case USERTYPE_INDUSTRICAL_PARTITIPANT:
+			sql = "select distinct id from ideaworks.user where usertype = " + USERTYPE_INDUSTRICAL_PARTITIPANT;
+			break;
+		case USERTYPE_GOVERNMENT:
+			sql = "select distinct id from ideaworks.user where usertype = " + USERTYPE_GOVERNMENT;
+			break;
+		case USERTYPE_OTHER:
+			sql = "select distinct id from ideaworks.user where usertype = " + USERTYPE_OTHER;
+			break;
+		default: 
+			sql = "select distinct id from ideaworks.user";
+			break;
+		}
+		stmt = DBUtil.getInstance().createSqlStatement(sql);
+		rs_stmt = stmt.executeQuery();
+		ArrayList<String> userids = new ArrayList<String>();
+		while(rs_stmt.next()) {
+			userids.add(rs_stmt.getString("id"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		//将当前发送者也加入到通知队列 (若已存在，则不添加)
+		if(!userids.contains(currentUserid)) {
+			userids.add(currentUserid);
+		}
+		
+		//4. 添加chat成员
+		sql = "insert into " +
+			  "	ideaworks.im_chat_user (" + 
+			  "		chatid, " + 
+			  "		userid " + 
+			  "	) values ( ?, ? )";
+		stmt = DBUtil.getInstance().createSqlStatement(sql);
+		for(int i = 0;i<userids.size();i++) {
+			stmt.setObject(1, chat.getInt("chatid"));
+			stmt.setObject(2, userids.get(i));
+			stmt.addBatch();
+			
+			if(i%BULK_INSERTER_NO == 0 || i == userids.size() - 1) {
+				stmt.executeBatch();
+			}
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//5. “创建chat”消息 - announcement
+		createMessage(chat.getInt("chatid"), currentUserid, content);
+		
+		//6. 返回最新的chat
+		return chat;
 	}
 	
 	@DELETE
@@ -326,6 +480,7 @@ public class ChatService extends BaseService {
 		//2. 获取chat信息
 		String sql = "select " + 
 					 "	T1.id, " + 
+					 "	T1.chatid, " + 
 					 "	T1.creator as creator_id, " + 
 					 "	T2.nickname as creator_nickname, " + 
 					 "	T2.logo as creator_logo, " + 
@@ -355,6 +510,7 @@ public class ChatService extends BaseService {
 			creator.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
 			
 			message.put("msgid", rs_stmt.getInt("id"));
+			message.put("chatid", rs_stmt.getInt("chatid"));
 			message.put("creator", creator);
 			message.put("msg", rs_stmt.getString("msg"));
 			message.put("time", rs_stmt.getTimestamp("time").getTime());
@@ -387,9 +543,9 @@ public class ChatService extends BaseService {
 		}
 		
 		//创建消息
-		createMessage(p_chatid, p_userid, p_msg);
+		JSONObject msg = createMessage(p_chatid, p_userid, p_msg);
 		
-		return buildResponse(OK, null);
+		return buildResponse(OK, msg);
 	}
 	
 	@DELETE
@@ -479,8 +635,10 @@ public class ChatService extends BaseService {
 	/*
 	 * private internal functions
 	 * */
-	private void createMessage(int chatid, String creator, String msg) throws SQLException
+	private JSONObject createMessage(int chatid, String creator, String msg) throws Exception
 	{
+		JSONObject returnMsg = new JSONObject();
+		
 		//1. 创建消息
 		String sql = "insert into " +
 					  "	ideaworks.im_msg (" + 
@@ -492,11 +650,41 @@ public class ChatService extends BaseService {
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		sql = "select * from ideaworks.im_msg where chatid = ? and creator = ? and msg = ? order by time desc limit 1";
+		sql= "select " + 
+			 "	T1.id, " + 
+			 "	T1.chatid, " + 
+			 "	T1.creator as creator_id, " + 
+			 "	T2.nickname as creator_nickname, " + 
+			 "	T2.logo as creator_logo, " + 
+			 "	T1.msg, " + 
+			 "	T1.time " + 
+			 "from " +
+			 "	ideaworks.im_msg T1, " + 
+			 "	ideaworks.user T2 " + 
+			 "where " + 
+			 "	T1.chatid = ? and " +
+			 "	T1.creator = ? and " + 
+			 "	T1.msg = ? and " + 
+			 "	T1.creator = T2.id and " + 
+			 "	T1.isDeleted = 0 " +
+			 "order by " + 
+			 "	time desc " + 
+			 "limit 1";
 		stmt = DBUtil.getInstance().createSqlStatement(sql, chatid, creator, msg);
 		int current_msgid = 0;
 		ResultSet rs_stmt = stmt.executeQuery();
 		while(rs_stmt.next()) {
+			JSONObject creatorObj = new JSONObject();
+			creatorObj.put("userid", rs_stmt.getString("creator_id"));
+			creatorObj.put("nickname", rs_stmt.getString("creator_nickname"));
+			creatorObj.put("logo", Config.USER_IMG_BASE_DIR + rs_stmt.getString("creator_logo"));
+			
+			returnMsg.put("msgid", rs_stmt.getInt("id"));
+			returnMsg.put("chatid", rs_stmt.getInt("chatid"));
+			returnMsg.put("creator", creatorObj);
+			returnMsg.put("msg", rs_stmt.getString("msg"));
+			returnMsg.put("time", rs_stmt.getTimestamp("time").getTime());
+			
 			current_msgid = rs_stmt.getInt("id");
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
@@ -514,7 +702,7 @@ public class ChatService extends BaseService {
 		//3. 发送消息给chat成员
 		sql = "insert into " +
 			  "	ideaworks.im_msg_user (" + 
-			  "		chatid, " + 
+			  "		msgid, " + 
 			  "		userid " + 
 			  "	) values ( ?, ? )";
 		stmt = DBUtil.getInstance().createSqlStatement(sql);
@@ -528,6 +716,8 @@ public class ChatService extends BaseService {
 			}
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		return returnMsg;
 	}
 	
 	private void markChatMessageRead(String p_userid, int p_chatid) throws SQLException

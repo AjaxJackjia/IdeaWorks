@@ -46,7 +46,6 @@ define([
 		},
 		
 		show: function() {
-			console.log($(this.render().el));
 			$('.chat-container').append($(this.render().el));
 		},
 		

@@ -2,6 +2,7 @@ define([ 'backbone', 'util' ], function(Backbone, util) {
 	var Message = Backbone.Model.extend({
 		defaults: {
 			'msgid': 0,
+			'chatid': 0,
 			'creator': '',
 			'msg': '',
 			'time': ''
