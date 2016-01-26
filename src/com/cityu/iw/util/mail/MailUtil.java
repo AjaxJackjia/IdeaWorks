@@ -1,4 +1,4 @@
-package com.cityu.iw.util;
+package com.cityu.iw.util.mail;
 
 import java.util.Properties;
 
@@ -75,19 +75,5 @@ public class MailUtil {
 		props.put("mail.smtp.auth", "true");
 		
 		return props;
-	}
-}
-
-class MyAuthenticator extends javax.mail.Authenticator {
-	private String strUser;
-	private String strPwd;
-	
-	public MyAuthenticator(String user, String password) {
-		this.strUser = user;
-		this.strPwd = password;
-	}
-
-	protected PasswordAuthentication getPasswordAuthentication() {
-		return new PasswordAuthentication(strUser, strPwd);
 	}
 }

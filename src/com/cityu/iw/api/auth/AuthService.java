@@ -17,8 +17,10 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
-import com.cityu.iw.util.MailUtil;
 import com.cityu.iw.util.Util;
+import com.cityu.iw.util.mail.MailBean;
+import com.cityu.iw.util.mail.MailSender;
+import com.cityu.iw.util.mail.MailUtil;
 import com.sun.jersey.multipart.FormDataParam;
 
 
@@ -258,18 +260,19 @@ public class AuthService extends BaseService {
 			//send email to user
 			try{
 				StringBuilder sb = new StringBuilder();
-				sb.append("Dear " + p_userid + ": \n");
-				sb.append("\t You have reset your password. \n");
-				sb.append("\t The new password is " + newPwd + ". \n");
-				sb.append("\t Please login in IdeaWorks in your new password. Thank you. \n\n");
-				sb.append("\t This email is sent automatically. Please do not reply this email.\n");
-				sb.append("Best Regards, ");
+				sb.append("Dear " + p_userid + ", <br/>");
+				sb.append("You have reset your password. <br/>");
+				sb.append("The new password is <b>" + newPwd + "</b>. <br/>");
+				sb.append("Please login in IdeaWorks in your new password. Thank you. <br/><br/>");
+				sb.append("Best Regards, <br/>");
 				sb.append("IdeaWorks Development Team");
 				
-				JSONObject mailInfo = new JSONObject();
-				mailInfo.put("subject", "[ideaworks] Password reset confirm email");
-				mailInfo.put("content", sb.toString());
-				MailUtil.sendMailTo(db_email, mailInfo);
+				MailSender mailSender = MailSender.getInstance();
+				MailBean mail = new MailBean();
+				mail.setToAddress(db_email);
+				mail.setSubject("[ideaworks] Password reset confirm email");
+				mail.setContent(sb.toString());
+				mailSender.send(mail);
 			}catch(Exception ex){
 				//异常事件
 				result.put("ret", "-3");

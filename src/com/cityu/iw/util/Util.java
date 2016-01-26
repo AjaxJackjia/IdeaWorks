@@ -1,10 +1,23 @@
 package com.cityu.iw.util;
 
-import java.net.URL;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.util.Properties;
 import java.util.Random;
 
 public class Util {
+	public static Properties loadProperties(String filename) {
+		Properties props = new Properties();
+		try {
+			//InputStream input = Util.class.getClassLoader().getResourceAsStream(filename);
+			ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+			props.load(classLoader.getResourceAsStream(filename));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return props;
+	}
 	
 	//根据指定长度生成字母和数字的随机数
     //0~9的ASCII为48~57
