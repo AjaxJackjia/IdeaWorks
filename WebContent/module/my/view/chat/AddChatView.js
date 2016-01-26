@@ -82,11 +82,13 @@ define([
 		events: {
 			'dblclick .left > .member': 'select',
 			'click 	  .right > .member > .remove': 'remove',
-			'click	  .actions > .create': 'createMessages'
+			'click	  .actions > .create': 'createMessages',
+			'keyup	  #member_search': 'search'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'fetchMembers', 'select', 'remove', 'addItem', 'removeItem', 'generateMemberItem', 'generateSelectedMemberItem');
+			_.bindAll(this, 'render', 'fetchMembers', 'select', 'remove', 'addItem', 'removeItem', 
+					'createMessages', 'search', 'generateMemberItem', 'generateSelectedMemberItem');
 			
 			//members
 			this.members = new MemberCollection();
@@ -96,6 +98,9 @@ define([
 			this.selected = new MemberCollection();
 			this.selected.bind('add', this.addItem);
 			this.selected.bind('remove', this.removeItem);
+			
+			//search members
+			this.searchMembers = new MemberCollection();
 		},
 		
 		render: function(){
@@ -104,6 +109,11 @@ define([
 			$title.append('<input type="text" class="form-control" id="message_title" name="message_title" placeholder="internal message title...">');
 			
 			var $membersTitle = $('<label class="control-label">Members: (Double click member in the left container to add members)</label>');
+			
+			var $memberSearch = $('<div class="input-group search-group">');
+			$memberSearch.append('<span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>');
+			$memberSearch.append('<input type="text" class="form-control" id="member_search" name="member_search" placeholder="search member..." aria-describedby="basic-addon1">');
+			
 			var $membersContent = $('<div class="message-members">');
 			$membersContent.append('<div class="left"></div>');
 			$membersContent.append('<div class="middle"><i class="fa fa-arrow-right"></i></div>');
@@ -115,6 +125,7 @@ define([
 			
 			$(this.el).append($title);
 			$(this.el).append($membersTitle);
+			$(this.el).append($memberSearch);
 			$(this.el).append($membersContent);
 			$(this.el).append($actions);
 			
@@ -154,13 +165,12 @@ define([
 			if($item == null) return ;
 			
 			//判断是否在已选择集合中
-			var cid = $item.attr('cid');
-			var userid = this.members.get(cid).get('userid');
+			var userid = $item.attr('userid');
 			if(this.selected.where({userid: userid}).length > 0) return; //若已经选择，则直接略过
 			if(userid == util.currentUser()) return; //不能选择自己
 			
 			//若没有被选择，则直接加入已选择集合
-			this.selected.add(this.members.get(cid));
+			this.selected.add(this.members.where({userid: userid})[0]);
 		},
 		
 		//移除member
@@ -168,12 +178,21 @@ define([
 			var $item = $(event.target).closest('.member');
 			if($item == null) return ;
 			
-			var cid = $item.attr('cid');
-			this.selected.remove(cid);
+			var userid = $item.attr('userid');
+			var users = this.selected.where({userid: userid});
+			var self = this;
+			_.each(users, function(user, index) {
+				self.selected.remove(user);
+			});
 		},
 		
 		//向selected集合中添加元素(UI)
 		addItem: function(item) {
+			var $placeholder = $('.right > .empty-place-holder', this.el);
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			
 			if(item.get('userid') == util.currentUser()) {
 				$(this.el).find('.right').append(this.generateMemberItem(item));
 			}else{
@@ -185,10 +204,15 @@ define([
 		//从selected集合中删除元素(UI)
 		removeItem: function(item) {
 			_.each($('.right > .member', this.el), function(element, index, list){ 
-				if($(element).attr('cid') == item.cid) {
+				if($(element).attr('userid') == item.get('userid')) {
 					$(element).remove();
 				}
 			});
+			
+			//if list is empty, then add placeholder 
+			if($('.right > div', this.el).length == 0) {
+				$('.right', this.el).append('<div class="empty-place-holder"><h4>No members...</h4></div>');
+			}
 		},
 		
 		//创建消息群
@@ -223,10 +247,54 @@ define([
 			$('#add_chat_view').modal('toggle');
 		},
 		
+		//查找member
+		search: function() {
+			var self = this;
+			//清空左侧container
+			this.cleanLeftContainer();
+			
+			var value = $('#member_search').val();
+			if(value == '') {
+				_.each(self.members.models, function(member, index) {
+					$(self.el).find('.left').append(self.generateMemberItem(member));
+				});
+			}else{
+				//check param, 需要是字母或者数字
+				var patten = new RegExp(/^\w+$/g);
+				if(!patten.test(value)) return;
+				
+				this.searchMembers.url = '/IdeaWorks/api/users/' + util.currentUser() + '/search/persons?key=' + value;
+				this.searchMembers.reset();
+				this.searchMembers.fetch({
+					success: function() {
+						if(self.searchMembers.length == 0) {
+							$(self.el).find('.left').html('No members...');
+						}else{
+							_.each(self.searchMembers.models, function(member, index) {
+								$(self.el).find('.left').append(self.generateMemberItem(member));
+							});
+						}
+					},
+					error: function(model, response, options) {
+						util.commonErrorHandler(response.responseJSON, 'new internal messages add members fetch failed. Please try again later!');
+					}
+				});
+			}
+		},
+		
+		cleanLeftContainer: function() {
+			var $members = $('.left > .member', this.el);
+			$.each($members, function(index, value) {
+				value.remove();
+			});
+			
+			$('.left', this.el).html('');
+		},
+		
 		//view
 		generateMemberItem: function(member) {
 			var tpl = 
-				'<div class="member" cid="' + member.cid + '"> ' + 
+				'<div class="member" userid="' + member.get('userid') + '"> ' + 
 	        	'	<div class="photo"> ' +
 	        	'		<img class="img-circle" src="' + member.get('logo') + '"> ' +
 	        	'	</div> ' +
@@ -239,7 +307,7 @@ define([
 		
 		generateSelectedMemberItem: function(member) {
 			var tpl = 
-				'<div class="member" cid="' + member.cid + '"> ' + 
+				'<div class="member" userid="' + member.get('userid') + '"> ' + 
 	        	'	<div class="photo"> ' +
 	        	'		<img class="img-circle" src="' + member.get('logo') + '"> ' +
 	        	'	</div> ' +
