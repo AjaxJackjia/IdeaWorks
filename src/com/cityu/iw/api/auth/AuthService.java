@@ -20,7 +20,6 @@ import com.cityu.iw.util.Config;
 import com.cityu.iw.util.Util;
 import com.cityu.iw.util.mail.MailBean;
 import com.cityu.iw.util.mail.MailSender;
-import com.cityu.iw.util.mail.MailUtil;
 import com.sun.jersey.multipart.FormDataParam;
 
 
@@ -276,7 +275,7 @@ public class AuthService extends BaseService {
 			}catch(Exception ex){
 				//异常事件
 				result.put("ret", "-3");
-				result.put("msg", "Server busy!");
+				result.put("msg", "Server busy! </br>" + ex.toString());
 				return result;
 			}
 			

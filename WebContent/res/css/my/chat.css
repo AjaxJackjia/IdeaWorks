@@ -675,6 +675,31 @@
 	border-color: #23a8f5;
 }
 
+.im-message-view > .actions > .messages-email
+{
+	float: left;
+	display: inline-block;
+	width: 220px;
+	height: 38px;
+    line-height: 38px;
+}
+
+.im-message-view > .actions > .messages-email > input
+{
+	float: left;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.im-message-view > .actions > .messages-email > .title
+{
+	display: inline-block;
+	font-size: 16px;
+}
+
 /* im-announcement-view */
 .im-announcement-view
 {
@@ -721,3 +746,29 @@
 	background-color: #23a8f5;
 	border-color: #23a8f5;
 }
+
+.im-announcement-view > .actions > .announcement-email
+{
+	float: left;
+	display: inline-block;
+	width: 260px;
+	height: 38px;
+    line-height: 38px;
+}
+
+.im-announcement-view > .actions > .announcement-email > input
+{
+	float: left;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.im-announcement-view > .actions > .announcement-email > .title
+{
+	display: inline-block;
+	font-size: 16px;
+}
+

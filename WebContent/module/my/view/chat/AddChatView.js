@@ -120,6 +120,7 @@ define([
 			$membersContent.append('<div class="right"></div>');
 			
 			var $actions = $('<div class="actions">');
+			$actions.append('<div class="messages-email"><input type="checkbox" /><div class="title">send notification via email</div></div>');
 			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
 			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
 			
@@ -388,6 +389,7 @@ define([
 			$content.append('<textarea class="form-control" id="announcement_content" name="announcement_content" placeholder="Please type in your announcement content..."></textarea> ');
 			
 			var $actions = $('<div class="actions">');
+			$actions.append('<div class="announcement-email"><input type="checkbox" /><div class="title">send via email at the same time</div></div>');
 			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
 			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
 			

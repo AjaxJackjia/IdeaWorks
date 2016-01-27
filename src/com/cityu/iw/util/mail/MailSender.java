@@ -8,6 +8,7 @@ import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -49,7 +50,7 @@ public abstract class MailSender {
 
 	public abstract Properties prepare(Properties mailProps);
 
-	public void send(MailBean mail) {
+	public void send(MailBean mail) throws AddressException, MessagingException {
 		Properties props = prepare(mailProps);
 
 		final String userName = mailProps.getProperty("mail.username");
@@ -60,32 +61,29 @@ public abstract class MailSender {
           
         // 创建邮件对象  
         Message msg = new MimeMessage(session);  
-        try {
-        	// 设置发件人
-        	String from = mail.getFromAddress() == null ? mailProps.getProperty("mail.username") : mail.getFromAddress();
-			msg.setFrom(new InternetAddress(from));
-		
-	        // 设置收件人
-	        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getToAddress()));
-	        // 设置主题
-	        msg.setSubject(mail.getSubject());
+        
+    	// 设置发件人
+    	String from = mail.getFromAddress() == null ? mailProps.getProperty("mail.username") : mail.getFromAddress();
+		msg.setFrom(new InternetAddress(from));
 	
-			Multipart multipart = new MimeMultipart();
-			// 加入文本内容
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			// 让其支持HTML内容
-			mimeBodyPart.setContent(mail.getContent(), "text/html;charset=utf8");
-			multipart.addBodyPart(mimeBodyPart);
-			msg.setContent(multipart);
-			
-	        msg.saveChanges();
-	        Transport.send(msg);
-        } catch (MessagingException e) {
-			e.printStackTrace();
-		}
+        // 设置收件人
+        msg.addRecipient(Message.RecipientType.TO, new InternetAddress(mail.getToAddress()));
+        // 设置主题
+        msg.setSubject(mail.getSubject());
+
+		Multipart multipart = new MimeMultipart();
+		// 加入文本内容
+		MimeBodyPart mimeBodyPart = new MimeBodyPart();
+		// 让其支持HTML内容
+		mimeBodyPart.setContent(mail.getContent(), "text/html;charset=utf8");
+		multipart.addBodyPart(mimeBodyPart);
+		msg.setContent(multipart);
+		
+        msg.saveChanges();
+        Transport.send(msg);
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws AddressException, MessagingException {
 		MailSender mailSender = MailSender.getInstance();
 		MailBean mail = new MailBean();
 		mail.setToAddress("nju_jackjia@163.com");

@@ -8,11 +8,10 @@ public class GmailSenderTLS extends MailSender {
 	public Properties prepare(Properties mailProps) {
 		Properties props = new Properties();
 		
-		props.put("mail.smtp.auth", mailProps.getProperty("mail.gmail.ssl.smtp.auth"));
-		props.put("mail.smtp.socketFactory.port", mailProps.getProperty("mail.gmail.ssl.smtp.socketFactory.port"));
-		props.put("mail.smtp.socketFactory.class", mailProps.getProperty("mail.gmail.ssl.smtp.socketFactory.class"));
-		props.put("mail.smtp.host", mailProps.getProperty("mail.gmail.ssl.smtp.host"));
-		props.put("mail.smtp.port", mailProps.getProperty("mail.gmail.ssl.smtp.port"));
+		props.put("mail.smtp.auth", mailProps.getProperty("mail.gmail.tls.smtp.auth"));
+		props.put("mail.smtp.starttls.enable", mailProps.getProperty("mail.gmail.tls.smtp.starttls.enable"));
+		props.put("mail.smtp.host", mailProps.getProperty("mail.gmail.tls.smtp.host"));
+		props.put("mail.smtp.port", mailProps.getProperty("mail.gmail.tls.smtp.port"));
 		
 		return props;
 	}
