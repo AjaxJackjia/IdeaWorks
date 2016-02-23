@@ -7,8 +7,12 @@ define([
 		
 		className: 'chat-detail-announcement-view',
 		
+		events: {
+			'click .actions > .fa-trash': 'deleteAnnouncement'
+		},
+		
 		initialize: function(){
-			_.bindAll(this, 'render', 'unrender');
+			_.bindAll(this, 'render', 'unrender', 'deleteAnnouncement');
 			
 			//chat
 			this.chat = this.model;
@@ -37,6 +41,7 @@ define([
 						 '	<div class="meta">' + 
 						 '		<img class="creator-logo" img-circle" title="' + creator.userid + '" src="' + creator.logo + '">' + 
 						 '		<div class="time">' + util.timeformat(new Date(this.chat.get('createtime')), "smart")  + '</div>' + 
+						 '		<div class="actions"><i class="fa fa-trash" title="delete this announcement"></i></div>' + 
 						 '		<div class="to-user-type">To <span class="focus">' + user_type_title + '</span></div>' + 
 						 '	</div>' + 
 						 '</div>';
@@ -67,6 +72,12 @@ define([
 		
 		unrender: function() {
 			$(this.el).remove();
+		},
+		
+		deleteAnnouncement: function() {
+			if(confirm('Do you want to delete this internal message announcement?')) {
+				Backbone.trigger('ChatListView:deleteChat', this.model);
+			}
 		}
 	});
 	

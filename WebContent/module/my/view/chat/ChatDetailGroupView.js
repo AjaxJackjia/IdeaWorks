@@ -11,11 +11,12 @@ define([
 
 		events: {
 			'click .expand-icon': 'toggleMembers',
-			'click .chat-container .send': 'comment'
+			'click .chat-container .send': 'comment',
+			'click .actions > .fa-sign-out': 'deleteGroup'
 		},
 		
 		initialize: function(){
-			_.bindAll(this, 'render', 'unrender', 'toggleMembers', 'comment', 'addMsgItem', 'removeMsgItem');
+			_.bindAll(this, 'render', 'unrender', 'toggleMembers', 'comment', 'deleteGroup', 'addMsgItem', 'removeMsgItem');
 			
 			//chat
 			this.chat = this.model;
@@ -121,6 +122,13 @@ define([
 			$('#send_content', this.el).val('');
 		},
 		
+		//删除chat
+		deleteGroup: function() {
+			if(confirm('Do you want to exit this internal message group?')) {
+				Backbone.trigger('ChatListView:deleteChat', this.model);
+			}
+		},
+		
 		//render sub view
 		generateGroupHeader: function() {
 			var $header = $('<div class="heading">');
@@ -132,8 +140,12 @@ define([
 			var $angledown = $('<div class="expand-icon" title="show internal messages members">');
 			$angledown.append('<i class="fa fa-angle-down"></i>');
 			
+			var $actions = $('<div class="actions">');
+			$actions.append('<i class="fa fa-sign-out" title="exit this group"></i>');
+			
 			$header.append($title);
 			$header.append($angledown);
+			$header.append($actions);
 			
 			return $header;
 		},

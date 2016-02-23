@@ -380,11 +380,11 @@ define([
 			$type.append('<label for="announcement_type" class="control-label">To:</label>');
 			$type.append('<select id="announcement_type" class="form-control">');
 			$type.find('#announcement_type').append('<option value="666">All Members</option>');
-			$type.find('#announcement_type').append('<option value="0">Student</option>');
-			$type.find('#announcement_type').append('<option value="1">Faculty</option>');
-			$type.find('#announcement_type').append('<option value="2">Industrical Participant</option>');
-			$type.find('#announcement_type').append('<option value="3">Government</option>');
-			$type.find('#announcement_type').append('<option value="4">Others</option>');
+			$type.find('#announcement_type').append('<option value="0">All Student</option>');
+			$type.find('#announcement_type').append('<option value="1">All Faculty</option>');
+			$type.find('#announcement_type').append('<option value="2">All Industrical Participant</option>');
+			$type.find('#announcement_type').append('<option value="3">All Government</option>');
+			$type.find('#announcement_type').append('<option value="4">All Others</option>');
 			
 			var $content = $('<div class="form-group">');
 			$content.append('<label for="announcement_content" class="control-label">Content:</label>');

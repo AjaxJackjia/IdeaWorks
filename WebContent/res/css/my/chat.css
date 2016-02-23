@@ -187,7 +187,6 @@
 	float: left;
     margin-left: 5px;
     margin-right: 5px;
-    width: 110px;
     height: 40px;
     line-height: 40px;
     font-size: 15px;
@@ -214,6 +213,17 @@
 {
 	color: #23a8f5;
 	font-weight: 600;
+}
+
+.chat-detail-view > .chat-detail-announcement-view > .announcement-container > .heading > .meta > .actions
+{
+	display: inline-block;
+    margin-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    color: #afb6ba;
+    cursor: pointer;
 }
 
 .chat-detail-view > .chat-detail-announcement-view > .announcement-container > .content
@@ -255,6 +265,18 @@
 {
 	display: inline-block;
     margin-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    font-size: 20px;
+    color: #afb6ba;
+    cursor: pointer;
+}
+
+.chat-detail-view > .chat-detail-group-view > .chat-container > .heading > .actions
+{
+	float: right;
+	display: inline-block;
+    margin-right: 25px;
     height: 40px;
     line-height: 40px;
     font-size: 20px;

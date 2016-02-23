@@ -465,16 +465,42 @@ public class ChatService extends BaseService {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 
-		//删除chat, 更新标志位
-		String sql = "update from " +
+		//在im_chat_user表中删除user与chat对应关系其实就是用户删除chat
+		String sql = "delete from " +
+					 "	ideaworks.im_chat_user " + 
+					 "where " + 
+					 "	chatid = ? and userid = ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid, p_userid);
+		stmt.execute();
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//统计chat人数
+		int count = 0;
+		sql = 	 "select " +
+				 "	count(*) as num " + 
+				 "from " + 
+				 "	ideaworks.im_chat_user " + 
+				 "where " + 
+				 "	chatid = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		while(rs_stmt.next()) {
+			count = rs_stmt.getInt("num");
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//当im_chat_user中没有im_chat的chat对应的user时，设置im_chat的chat deleted为1
+		if(count == 0) {
+			sql = 	 "update " +
 					 "	ideaworks.im_chat " + 
 					 "set " + 
 					 "	isDeleted = 1 " + 
 					 "where " + 
 					 "	id = ? ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid);
-		stmt.execute();
-		DBUtil.getInstance().closeStatementResource(stmt);
+			stmt = DBUtil.getInstance().createSqlStatement(sql, p_chatid);
+			stmt.execute();
+			DBUtil.getInstance().closeStatementResource(stmt);
+		}
 		
 		return null;
 	}
@@ -591,7 +617,7 @@ public class ChatService extends BaseService {
 		}
 
 		//删除chat message, 标记messsage已删除标识为1
-		String sql = "update from " +
+		String sql = "update " +
 					 "	ideaworks.im_msg " + 
 					 "set " + 
 					 "	isDeleted = 1 " + 

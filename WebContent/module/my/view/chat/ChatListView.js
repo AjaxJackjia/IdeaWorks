@@ -113,8 +113,19 @@ define([
 		},
 		
 		//删除chat
-		deleteChat: function(project) {
-			//TODO
+		deleteChat: function(chat) {
+			var projectList = this.model;
+			projectList.get(chat.cid).destroy({
+				wait: true, 
+				success: function() {
+					//从list中删除chat
+					projectList.remove(chat);
+				},
+				error: function(model, response, options) {
+					var alertMsg = 'error!';
+					util.commonErrorHandler(response.responseJSON, alertMsg);
+				}
+			});
 		},
 		
 		//点击new chat按钮事件
