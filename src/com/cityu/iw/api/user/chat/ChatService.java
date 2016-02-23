@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -30,6 +32,7 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.RequestUtil;
 
 
 @Path("/users/{userid}/chats")
@@ -49,6 +52,7 @@ public class ChatService extends BaseService {
 	private static final int USERTYPE_OTHER = 4;
 	
 	@Context HttpServletRequest request;
+	@Context UriInfo uriInfo;
 	
 	@GET
 	@Path("")
@@ -187,6 +191,7 @@ public class ChatService extends BaseService {
 			@FormParam("type") String p_type, 
 			@FormParam("title") String p_title, 
 			@FormParam("members") String p_members,
+			@FormParam("isViaEmail") boolean p_isViaEmail,
 			@FormParam("tousertype") int p_tousertype,
 			@FormParam("content") String p_content ) throws Exception
 	{
@@ -218,10 +223,28 @@ public class ChatService extends BaseService {
 		JSONObject chat = null;
 		if(p_type.equals(CHATTYPE_GROUP)) {
 			chat = createGroup(p_userid, p_title, p_members);
+			
+			//send email to user
+			if(p_isViaEmail && chat.getInt("chatid") > 0) {
+				HashMap<String, String> params = new HashMap<String, String>();
+				params.put("creator", p_userid);
+				params.put("title", p_title);
+				params.put("members", p_members);
+				RequestUtil.postWithoutResult(uriInfo.getBaseUri().toURL() + "users/" + p_userid + "/mail/im-create-group", params);
+			}
 		}
 		else if(p_type.equals(CHATTYPE_ANNOUNCEMENT))
 		{
 			chat = createAnnouncement(p_userid, p_title, p_tousertype, p_content);
+			//send email to user
+			if(p_isViaEmail && chat.getInt("chatid") > 0) {
+				HashMap<String, String> params = new HashMap<String, String>();
+				params.put("creator", p_userid);
+				params.put("title", p_title);
+				params.put("tousertype", String.valueOf(p_tousertype));
+				params.put("content", p_content);
+				RequestUtil.postWithoutResult(uriInfo.getBaseUri().toURL() + "users/" + p_userid + "/mail/im-create-announcement", params);
+			}
 		}
 	
 		return buildResponse(OK, chat);

@@ -621,7 +621,7 @@ define({
     			'SET_PRIVACY_ERROR': 'Set privacy failed. Please try again later!'
     		},
     		'SettingDetailAdvancedView': {
-    			'SYNC': 'Synchronize current browse state',
+    			'SYNC': 'System email notification',
     			'SELECT_LNG': 'Select language',
     			'SET_COMPLETE': 'Set complete! This setting will be activated after it auto refresh.',
     			'SET_ADVANCED_ERROR': 'Set advanced settings failed. Please try again later!'

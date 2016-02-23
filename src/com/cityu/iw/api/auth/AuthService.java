@@ -2,8 +2,10 @@ package com.cityu.iw.api.auth;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
@@ -11,12 +13,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import org.codehaus.jettison.json.JSONObject;
 
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.RequestUtil;
 import com.cityu.iw.util.Util;
 import com.cityu.iw.util.mail.MailBean;
 import com.cityu.iw.util.mail.MailSender;
@@ -27,6 +31,7 @@ import com.sun.jersey.multipart.FormDataParam;
 public class AuthService extends BaseService {
 	private static final String DEFAULT_USER_LOGO = "default_user_logo.jpg";
 	@Context HttpServletRequest request;
+	@Context UriInfo uriInfo;
 	
 	@POST
 	@Path("/login")
@@ -129,7 +134,7 @@ public class AuthService extends BaseService {
 		// Step 2. create user
 		String notifications = "{\"project\":true,\"member\":true,\"milestone\":true,\"forum\":true,\"discussion\":true,\"file\":true}"; //淇℃伅閫氱煡璁剧疆
 		int privacy = 2;			//默认profile组内可见
-		int sync = 0;				//默认不同步
+		int sync = 1;				//默认使用email同步通知
 		String language = "en-us";  //默认语言为英语
 		
 		sql = "insert into " +
@@ -257,27 +262,10 @@ public class AuthService extends BaseService {
 			DBUtil.getInstance().closeStatementResource(stmt);
 			
 			//send email to user
-			try{
-				StringBuilder sb = new StringBuilder();
-				sb.append("Dear " + p_userid + ", <br/>");
-				sb.append("You have reset your password. <br/>");
-				sb.append("The new password is <b>" + newPwd + "</b>. <br/>");
-				sb.append("Please login in IdeaWorks in your new password. Thank you. <br/><br/>");
-				sb.append("Best Regards, <br/>");
-				sb.append("IdeaWorks Development Team");
-				
-				MailSender mailSender = MailSender.getInstance();
-				MailBean mail = new MailBean();
-				mail.setToAddress(db_email);
-				mail.setSubject("[ideaworks] Password reset confirm email");
-				mail.setContent(sb.toString());
-				mailSender.send(mail);
-			}catch(Exception ex){
-				//异常事件
-				result.put("ret", "-3");
-				result.put("msg", "Server busy! </br>" + ex.toString());
-				return result;
-			}
+			HashMap<String, String> params = new HashMap<String, String>();
+			params.put("toEmail", db_email);
+			params.put("newPwd", newPwd);
+			RequestUtil.postWithoutResult(uriInfo.getBaseUri().toURL() + "users/jackjia/mail/forget-password", params);
 			
 			result.put("ret", "0");
 			result.put("msg", "ok");

@@ -65,4 +65,21 @@ public class Config {
 			return this.code;
 		}
 	};
+	
+	public static enum UserType {
+		STUDENT(0),
+		FACULTY(1),
+		INDUSTRICAL_PARTICIPANT(2),
+		GOVERNMENT(3),
+		OTHERS(4);
+			
+		//attributes
+		private int code;
+		private UserType(int code) {
+			this.code = code;
+		}
+		public int getValue() {
+			return this.code;
+		}
+	};
 }

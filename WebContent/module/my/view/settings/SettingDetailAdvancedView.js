@@ -51,10 +51,13 @@ define([
 			    type: 'POST',
 			    success: function(result){
 			    	if(result.ret == 0) {
-			    		alert(i18n.my.settings.SettingDetailAdvancedView.SET_COMPLETE);
-			    		//刷新页面生效
-			    		sessionStorage.setItem('userlang', data.language);
-			    		location.reload();
+			    		//如果改变语言，则重新刷新页面；否则无额外行为
+			    		if(sessionStorage.getItem('userlang') != data.language) {
+			    			alert(i18n.my.settings.SettingDetailAdvancedView.SET_COMPLETE);
+				    		//刷新页面生效
+				    		sessionStorage.setItem('userlang', data.language);
+				    		location.reload();
+			    		}
 			    	}else{
 			    		alert(result.msg);
 			    	}
@@ -69,7 +72,7 @@ define([
 	
 	var SyncItem = function() {
 		var tpl = 
-			'<div class="sync" style="display: none;">' + 
+			'<div class="sync">' + 
 		    '	<input type="checkbox" />' + 
 			'	<div class="option truncate">' + i18n.my.settings.SettingDetailAdvancedView.SYNC + '</div>' + 
 			'</div>';

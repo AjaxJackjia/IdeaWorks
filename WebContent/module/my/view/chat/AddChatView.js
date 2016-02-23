@@ -120,7 +120,7 @@ define([
 			$membersContent.append('<div class="right"></div>');
 			
 			var $actions = $('<div class="actions">');
-			$actions.append('<div class="messages-email"><input type="checkbox" /><div class="title">send notification via email</div></div>');
+			$actions.append('<div class="messages-email"><input id="message_email_notice" type="checkbox" /><label class="title" for="message_email_notice">send notification via email</label></div>');
 			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
 			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
 			
@@ -240,6 +240,7 @@ define([
 			data.type = 'group';
 			data.title = $('#message_title', this.el).val();
 			data.members = userids.join();
+			data.isViaEmail = $('#message_email_notice', this.el).is(':checked');
 			
 			//触发全局事件
 			Backbone.trigger('ChatListView:createChat', data);
@@ -360,6 +361,7 @@ define([
 			data.title = $('#announcement_title', this.el).val();
 			data.tousertype = $('#announcement_type', this.el).val();
 			data.content = $('#announcement_content', this.el).val();
+			data.isViaEmail = $('#announcement_email_notice', this.el).is(':checked');
 			
 			//触发全局事件
 			Backbone.trigger('ChatListView:createChat', data);
@@ -389,7 +391,7 @@ define([
 			$content.append('<textarea class="form-control" id="announcement_content" name="announcement_content" placeholder="Please type in your announcement content..."></textarea> ');
 			
 			var $actions = $('<div class="actions">');
-			$actions.append('<div class="announcement-email"><input type="checkbox" /><div class="title">send via email at the same time</div></div>');
+			$actions.append('<div class="announcement-email"><input id="announcement_email_notice" type="checkbox" /><label class="title" for="announcement_email_notice">send via email at the same time</label></div>');
 			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
 			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
 			
