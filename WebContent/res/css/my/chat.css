@@ -115,6 +115,17 @@
 	overflow: hidden;
 }
 
+.chat-list-view > .chat-list-content > .chat-list-item-view > .unread
+{
+	float: right;
+	margin-top: -45px;
+}
+
+.chat-list-view > .chat-list-content > .chat-list-item-view > .unread > .badge
+{
+	background-color: #d9534f;
+}
+
 .chat-list-view > .chat-list-content > .chat-list-item-view.active
 {
 	border-left: 4px solid #23a8f5;
@@ -701,7 +712,7 @@
 {
 	float: left;
 	display: inline-block;
-	width: 220px;
+	width: 240px;
 	height: 38px;
     line-height: 38px;
 }
@@ -773,7 +784,7 @@
 {
 	float: left;
 	display: inline-block;
-	width: 260px;
+	width: 270px;
 	height: 38px;
     line-height: 38px;
 }

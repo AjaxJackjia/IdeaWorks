@@ -43,6 +43,9 @@ define([
 			$('li.chat-list-item-view').removeClass('active');
 			$(this.el).addClass('active');
 		
+			//未读消息标记为已读
+			this.model.set('unread', 0);
+			
 			//展示相应type的internal message具体内容
 			Backbone.trigger('ChatDetailView:showChatDetail', this.model);
 		}
@@ -52,6 +55,7 @@ define([
 		var type = chat.get('type');
 		var type_icon = (type == 'group' ? 'comments-o' : 'envelope-o');
 		var type_title = (type == 'group' ? 'Internal Messages' : 'Announcement');
+		var unread = chat.get('unread');
 		
 		//logo view dom
 		var logo_tpl =  '<div class="logo" title="' + type_title + '"> ' + 
@@ -64,7 +68,16 @@ define([
 						'	<p class="chat-lastmodifytime">' + util.timeformat(new Date(chat.get('lastmodifytime')), "smart") + '</p>' + 
 						'</div>';
 		
-		return logo_tpl + info_tpl;
+		var final_tpl = logo_tpl + info_tpl;
+		if(unread > 0) {
+			//unread view dom
+			var unread_tpl = '<div class="unread"> ' + 
+							 '	<span class="badge">' + unread + '</span>' + 
+							 '</div>';
+			final_tpl += unread_tpl;
+		}
+		
+		return final_tpl;
 	};
 	
 	return ChatListItemView;

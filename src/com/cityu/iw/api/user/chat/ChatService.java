@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -40,6 +41,7 @@ public class ChatService extends BaseService {
 	private static final Logger LOGGER = Logger.getLogger(ChatService.class);
 	private static final int BULK_INSERTER_NO = 50;
 	private static final String DEFAULT_CREATE_CHAT_MSG = "DEFAULT_CREATE_CHAT_MSG";
+	private static final String DEFAULT_EXIT_CHAT_MSG = "DEFAULT_EXIT_CHAT_MSG";
 	
 	private static final String CHATTYPE_GROUP = "group";
 	private static final String CHATTYPE_ANNOUNCEMENT = "announcement";
@@ -88,7 +90,7 @@ public class ChatService extends BaseService {
 					 "	T1.id = T2.chatid and " + 
 					 "	T2.userid = ? and " +
 					 "	T1.isDeleted = 0 and " +
-					 "	T1.creator = T3.id " + 
+					 "	T1.creator = T3.id " +
 					 "order by " + 
 					 "	lastmodifytime asc";
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
@@ -96,8 +98,13 @@ public class ChatService extends BaseService {
 		
 		//result
 		JSONArray list = new JSONArray();
+		ArrayList<String> chatids = new ArrayList<String>();
 	
 		while(rs_stmt.next()) {
+			//chat id
+			chatids.add(rs_stmt.getString("id"));
+			
+			//chat info
 			JSONObject chat = new JSONObject();
 			
 			JSONObject creator = new JSONObject();
@@ -116,6 +123,48 @@ public class ChatService extends BaseService {
 			list.put(chat);
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//获取每个chat的未读信息数量
+		ArrayList<String> sql_placeholder = new ArrayList<String>(chatids);
+		for(int i = 0;i<sql_placeholder.size();i++) {
+			sql_placeholder.set(i, "?");
+		}
+		String joined_sql_placeholder = StringUtils.join(sql_placeholder, ",");
+		sql ="select " + 
+			 "	T1.chatid, " + 
+			 "	count(T1.chatid) as unread " + 
+			 "from " +
+			 "	ideaworks.im_msg T1, " + 
+			 "	ideaworks.im_msg_user T2 " +
+			 "where " + 
+			 "	T1.id = T2.msgid and " + 
+			 "	T2.userid = ? and " +
+			 "	T2.isread = 0 and " + 
+			 "	T1.chatid in ( " + joined_sql_placeholder + " ) " + 
+			 "group by " +
+			 "	T1.chatid ";
+			 
+		stmt = DBUtil.getInstance().createSqlStatement(sql);
+		stmt.setObject(1, p_userid);
+		for(int i = 0;i<sql_placeholder.size();i++) {
+			stmt.setObject(2 + i, chatids.get(i));
+		}
+		rs_stmt = stmt.executeQuery();
+	
+		HashMap<Integer, Integer> chatUnreadCount = new HashMap<Integer, Integer>();
+		while(rs_stmt.next()) {
+			chatUnreadCount.put(rs_stmt.getInt("chatid"), rs_stmt.getInt("unread"));
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		for(int index = 0;index<list.length();index++) {
+			int currentChatid = list.getJSONObject(index).getInt("chatid");
+			if(chatUnreadCount.containsKey(currentChatid)) {
+				list.getJSONObject(index).put("unread", chatUnreadCount.get(currentChatid));
+			}else{
+				list.getJSONObject(index).put("unread", 0);
+			}
+		}
 		
 		return buildResponse(OK, list);
 	}
@@ -502,6 +551,9 @@ public class ChatService extends BaseService {
 			DBUtil.getInstance().closeStatementResource(stmt);
 		}
 		
+		//4.“退出chat”消息
+		createMessage(p_chatid, p_userid, DEFAULT_EXIT_CHAT_MSG);
+		
 		return null;
 	}
 	
@@ -752,18 +804,31 @@ public class ChatService extends BaseService {
 		sql = "insert into " +
 			  "	ideaworks.im_msg_user (" + 
 			  "		msgid, " + 
-			  "		userid " + 
-			  "	) values ( ?, ? )";
+			  "		userid, " +
+			  "		isread " +
+			  "	) values ( ?, ?, ? )";
 		stmt = DBUtil.getInstance().createSqlStatement(sql);
 		for(int i = 0;i<members.size();i++) {
 			stmt.setObject(1, current_msgid);
 			stmt.setObject(2, members.get(i));
+			stmt.setObject(3, members.get(i).equals(creator) ? 1 : 0); //creator的消息为已读，其他人为未读
 			stmt.addBatch();
 			
 			if(i%BULK_INSERTER_NO == 0 || i == members.size() - 1) {
 				stmt.executeBatch();
 			}
 		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		//4. 修改chat的最近修改时间
+		sql = "update " +
+			  "	ideaworks.im_chat " + 
+			  "set " + 
+			  "	lastmodifytime = ? " + 
+			  "where " + 
+			  "	id = ? ";
+		stmt = DBUtil.getInstance().createSqlStatement(sql, new Date(), chatid);
+		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		return returnMsg;

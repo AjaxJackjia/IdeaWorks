@@ -171,6 +171,8 @@ define([
 			var msg = '';
 			if(message.get('msg') == 'DEFAULT_CREATE_CHAT_MSG') {
 				msg = '创建了该消息群组';
+			}else if(message.get('msg') == 'DEFAULT_EXIT_CHAT_MSG') {
+				msg = '退出了该消息群组';
 			}else{
 				msg = message.get('msg');
 			}
