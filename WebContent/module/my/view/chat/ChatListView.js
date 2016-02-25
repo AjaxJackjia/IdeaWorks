@@ -36,12 +36,12 @@ define([
 		
 		render: function(){
 			var $newChatContent = $('<div class="chat-list-new-chat">');
-			$newChatContent.append('<a type="button" class="new-chat btn btn-default"><span><i class="fa fa-plus"></i></span></a>');
+			$newChatContent.append('<a type="button" class="new-chat btn btn-default" title="' + i18n.my.chat.ChatListView.CREATE_CHAT_TIPS + '"><span><i class="fa fa-plus"></i></span></a>');
 			$(this.el).append($newChatContent);
 			
 			//chat list content
 			var $listContent = $('<ul class="chat-list-content">');
-			$listContent.append('<div class="empty-place-holder"><h4>No internal messages</h4></div>');
+			$listContent.append('<div class="empty-place-holder"><h4>' + i18n.my.chat.ChatListView.NO_IM + '</h4></div>');
 			$(this.el).append($listContent);
 			
 		    return this;
@@ -73,7 +73,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.chat-list-content > li', this.el).length == 0) {
-				$('.chat-list-content', this.el).append('<div class="empty-place-holder"><h4>No internal messages</h4></div>');
+				$('.chat-list-content', this.el).append('<div class="empty-place-holder"><h4>' + i18n.my.chat.ChatListView.NO_IM + '</h4></div>');
 			}
 		},
 		
@@ -106,7 +106,7 @@ define([
 			    	}, 100);
 			    },
 			    error: function(response) {
-					var alertMsg = 'error!';
+					var alertMsg = i18n.my.chat.ChatListView.NEW_CHAT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
@@ -122,7 +122,7 @@ define([
 					projectList.remove(chat);
 				},
 				error: function(model, response, options) {
-					var alertMsg = 'error!';
+					var alertMsg = i18n.my.chat.ChatListView.DELETE_CHAT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});

@@ -54,7 +54,7 @@ define([
 	var ChatItem_template = function(chat) {
 		var type = chat.get('type');
 		var type_icon = (type == 'group' ? 'comments-o' : 'envelope-o');
-		var type_title = (type == 'group' ? 'Internal Messages' : 'Announcement');
+		var type_title = (type == 'group' ? i18n.my.chat.ChatListItemView.IM_TITLE : i18n.my.chat.ChatListItemView.ANNOUNCEMENT_TITLE);
 		var unread = chat.get('unread');
 		
 		//logo view dom

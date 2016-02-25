@@ -46,7 +46,7 @@ define([
 			this.messages.fetch({
 				success: function() {
 					if(self.messages.length == 0) {
-						$content.html('No content...');
+						$content.html(i18n.my.chat.ChatDetailGroupView.NO_CONTENT);
 					}
 				},
 				error: function(model, response, options) {
@@ -102,7 +102,7 @@ define([
 		comment: function() {
 			//check param
 			if($('#send_content', this.el).val() == '') {
-				alert('Please input your message content...');
+				alert(i18n.my.chat.ChatDetailGroupView.COMMENT_CONTENT_CHECK);
 				return;
 			}
 			
@@ -113,7 +113,7 @@ define([
 			this.messages.create(msgModel, {
 				 wait: true, 
 				 error: function(model, response, options) {
-					var alertMsg = i18n.my.projects.ProjectListView.CREATE_PROJECT_ERROR;
+					var alertMsg = i18n.my.chat.ChatDetailGroupView.COMMENT_ERROR;
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				 }
 			});
@@ -124,7 +124,7 @@ define([
 		
 		//删除chat
 		deleteGroup: function() {
-			if(confirm('Do you want to exit this internal message group?')) {
+			if(confirm(i18n.my.chat.ChatDetailGroupView.EXIT_CONFIRM)) {
 				Backbone.trigger('ChatListView:deleteChat', this.model);
 			}
 		},
@@ -137,11 +137,11 @@ define([
 			$title.attr('title', this.chat.get('title'));
 			$title.html(this.chat.get('title'));
 			
-			var $angledown = $('<div class="expand-icon" title="show internal messages members">');
+			var $angledown = $('<div class="expand-icon" title="' + i18n.my.chat.ChatDetailGroupView.SHOW_IM_MEMBERS + '">');
 			$angledown.append('<i class="fa fa-angle-down"></i>');
 			
 			var $actions = $('<div class="actions">');
-			$actions.append('<i class="fa fa-sign-out" title="exit this group"></i>');
+			$actions.append('<i class="fa fa-sign-out" title="' + i18n.my.chat.ChatDetailGroupView.EXIT_TIPS + '"></i>');
 			
 			$header.append($title);
 			$header.append($angledown);
@@ -157,9 +157,9 @@ define([
 		
 		generateSendbox: function() {
 			var $sender = 	'<div class="sender">' + 
-							'	<textarea class="form-control" id="send_content" placeholder="Say something..."></textarea>' +
+							'	<textarea class="form-control" id="send_content" placeholder="' + i18n.my.chat.ChatDetailGroupView.SAY_STH + '"></textarea>' +
 							'	<div class="send-action"> ' + 
-							'		<a class="send btn btn-primary">Comment</a> ' + 
+							'		<a class="send btn btn-primary">' + i18n.my.chat.ChatDetailGroupView.SEND + '</a> ' + 
 							'	</div> ' + 
 							'</div>';
 			
@@ -170,9 +170,9 @@ define([
 			var creator = message.get('creator');
 			var msg = '';
 			if(message.get('msg') == 'DEFAULT_CREATE_CHAT_MSG') {
-				msg = '创建了该消息群组';
+				msg = i18n.my.chat.ChatDetailGroupView.DEFAULT_CREATE_CHAT_MSG;
 			}else if(message.get('msg') == 'DEFAULT_EXIT_CHAT_MSG') {
-				msg = '退出了该消息群组';
+				msg = i18n.my.chat.ChatDetailGroupView.DEFAULT_EXIT_CHAT_MSG;
 			}else{
 				msg = message.get('msg');
 			}

@@ -50,7 +50,7 @@ define([
 		var tpl = 
 			'<div class="modal-header"> ' + 
 			'	<a type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></a> ' + 
-			'	<h3 class="modal-title">New Internal Messages</h3> ' + 
+			'	<h3 class="modal-title">' + i18n.my.chat.AddChatView.NEW_IM_TITLE + '</h3> ' + 
 			'</div>';
 		return tpl;
 	};
@@ -59,10 +59,10 @@ define([
 		var menu_tpl = 
 			'<ul class="im-menu nav nav-tabs" role="tablist">' + 
 			'  <li role="presentation" class="active">' + 
-			'		<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">Messages</a>' + 
+			'		<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">' + i18n.my.chat.AddChatView.IM_MSG_TAB_TITLE + '</a>' + 
 			'  </li>' + 
 			'  <li role="presentation">' + 
-			'  		<a href="#announcement" aria-controls="announcement" role="tab" data-toggle="tab">Announcement</a>' + 
+			'  		<a href="#announcement" aria-controls="announcement" role="tab" data-toggle="tab">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TAB_TITLE + '</a>' + 
 			'  </li>' + 
 			'</ul>';
 		
@@ -105,24 +105,24 @@ define([
 		
 		render: function(){
 			var $title = $('<div class="form-group">');
-			$title.append('<label for="message_title" class="control-label">Title: </label>');
-			$title.append('<input type="text" class="form-control" id="message_title" name="message_title" placeholder="internal message title...">');
+			$title.append('<label for="message_title" class="control-label">' + i18n.my.chat.AddChatView.IM_MSG_TITLE + '</label>');
+			$title.append('<input type="text" class="form-control" id="message_title" name="message_title" placeholder="' + i18n.my.chat.AddChatView.IM_MSG_TITLE_PLACEHOLDER + '">');
 			
-			var $membersTitle = $('<label class="control-label">Members: (Double click member in the left container to add members)</label>');
+			var $membersTitle = $('<label class="control-label">' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS + '</label>');
 			
 			var $memberSearch = $('<div class="input-group search-group">');
 			$memberSearch.append('<span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>');
-			$memberSearch.append('<input type="text" class="form-control" id="member_search" name="member_search" placeholder="search member..." aria-describedby="basic-addon1">');
+			$memberSearch.append('<input type="text" class="form-control" id="member_search" name="member_search" placeholder="' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS_SEARCH + '" aria-describedby="basic-addon1">');
 			
 			var $membersContent = $('<div class="message-members">');
 			$membersContent.append('<div class="left"></div>');
-			$membersContent.append('<div class="middle"><i class="fa fa-arrow-right"></i></div>');
+			$membersContent.append('<div class="middle"><i class="fa fa-arrow-right" title="' + i18n.my.chat.AddChatView.IM_MSG_ADD_MEMBERS_TIPS + '"></i></div>');
 			$membersContent.append('<div class="right"></div>');
 			
 			var $actions = $('<div class="actions">');
-			$actions.append('<div class="messages-email"><input id="message_email_notice" type="checkbox" /><label class="title" for="message_email_notice">send notification via email</label></div>');
-			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
-			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
+			$actions.append('<div class="messages-email"><input id="message_email_notice" type="checkbox" /><label class="title" for="message_email_notice">' + i18n.my.chat.AddChatView.IM_MSG_EMAIL_TIPS + '</label></div>');
+			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.chat.AddChatView.IM_MSG_CANCEL + '</a>');
+			$actions.append('<a type="submit" class="create btn btn-primary">' + i18n.my.chat.AddChatView.IM_MSG_CREATE + '</a>');
 			
 			$(this.el).append($title);
 			$(this.el).append($membersTitle);
@@ -142,7 +142,7 @@ define([
 				self.members.fetch({
 					success: function() {
 						if(self.members.length == 0) {
-							$(self.el).find('.left').html('No members...');
+							$(self.el).find('.left').html(i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER);
 						}else{
 							_.each(self.members.models, function(member, index) {
 								$(self.el).find('.left').append(self.generateMemberItem(member));
@@ -212,7 +212,7 @@ define([
 			
 			//if list is empty, then add placeholder 
 			if($('.right > div', this.el).length == 0) {
-				$('.right', this.el).append('<div class="empty-place-holder"><h4>No members...</h4></div>');
+				$('.right', this.el).append('<div class="empty-place-holder"><h4>' + i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER + '</h4></div>');
 			}
 		},
 		
@@ -220,16 +220,16 @@ define([
 		createMessages: function() {
 			//check title
 			if($('#message_title', this.el).val() == '') {
-				alert('Please input internal messages title...');
+				alert(i18n.my.chat.AddChatView.IM_MSG_CREATE_TITLE_CHECK);
 				return;
 			}
 			
 			//check member (至少两人)
 			if(this.selected.length < 2) {
-				alert('Please select member...');
+				alert(i18n.my.chat.AddChatView.IM_MSG_CREATE_MEMBER_CHECK);
 				return;
 			}else if(this.selected.length > 200) {
-				alert('The max size of member is 200!');
+				alert(i18n.my.chat.AddChatView.IM_MSG_CREATE_MEMBER_NUM_CHECK);
 				return;
 			}
 			
@@ -270,7 +270,7 @@ define([
 				this.searchMembers.fetch({
 					success: function() {
 						if(self.searchMembers.length == 0) {
-							$(self.el).find('.left').html('No members...');
+							$(self.el).find('.left').html(i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER);
 						}else{
 							_.each(self.searchMembers.models, function(member, index) {
 								$(self.el).find('.left').append(self.generateMemberItem(member));
@@ -278,7 +278,7 @@ define([
 						}
 					},
 					error: function(model, response, options) {
-						util.commonErrorHandler(response.responseJSON, 'new internal messages add members fetch failed. Please try again later!');
+						util.commonErrorHandler(response.responseJSON, 'new internal messages search members failed. Please try again later!');
 					}
 				});
 			}
@@ -345,12 +345,12 @@ define([
 		createAnnouncement: function() {
 			//check param
 			if($('#announcement_title', this.el).val() == '') {
-				alert('Please input announcement title...');
+				alert(i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TITLE_CHECK);
 				return;
 			}
 			
 			if($('#announcement_content', this.el).val() == '') {
-				alert('Please input announcement content...');
+				alert(i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_CONTENT_CHECK);
 				return;
 			}
 			
@@ -373,27 +373,27 @@ define([
 		//view
 		generateAuthorizedView: function() {
 			var $title = $('<div class="form-group">');
-			$title.append('<label for="announcement_title" class="control-label">Title: </label>');
-			$title.append('<input type="text" class="form-control" id="announcement_title" name="announcement_title" placeholder="announcement title...">');
+			$title.append('<label for="announcement_title" class="control-label">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TITLE + '</label>');
+			$title.append('<input type="text" class="form-control" id="announcement_title" name="announcement_title" placeholder="' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TITLE_PLACEHOLDER + '">');
 			
 			var $type = $('<div class="form-group">');
-			$type.append('<label for="announcement_type" class="control-label">To:</label>');
+			$type.append('<label for="announcement_type" class="control-label">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO + '</label>');
 			$type.append('<select id="announcement_type" class="form-control">');
-			$type.find('#announcement_type').append('<option value="666">All Members</option>');
-			$type.find('#announcement_type').append('<option value="0">All Student</option>');
-			$type.find('#announcement_type').append('<option value="1">All Faculty</option>');
-			$type.find('#announcement_type').append('<option value="2">All Industrical Participant</option>');
-			$type.find('#announcement_type').append('<option value="3">All Government</option>');
-			$type.find('#announcement_type').append('<option value="4">All Others</option>');
+			$type.find('#announcement_type').append('<option value="666">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_MEMBERS + '</option>');
+			$type.find('#announcement_type').append('<option value="0">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_STUDENT + '</option>');
+			$type.find('#announcement_type').append('<option value="1">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_FACULTY + '</option>');
+			$type.find('#announcement_type').append('<option value="2">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_INDUSTRICAL + '</option>');
+			$type.find('#announcement_type').append('<option value="3">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_GOVERNMENT + '</option>');
+			$type.find('#announcement_type').append('<option value="4">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_TO_ALL_OTHERS + '</option>');
 			
 			var $content = $('<div class="form-group">');
-			$content.append('<label for="announcement_content" class="control-label">Content:</label>');
-			$content.append('<textarea class="form-control" id="announcement_content" name="announcement_content" placeholder="Please type in your announcement content..."></textarea> ');
+			$content.append('<label for="announcement_content" class="control-label">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_CONTENT + '</label>');
+			$content.append('<textarea class="form-control" id="announcement_content" name="announcement_content" placeholder="' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_CONTENT_PLACEHOLDER + '"></textarea> ');
 			
 			var $actions = $('<div class="actions">');
-			$actions.append('<div class="announcement-email"><input id="announcement_email_notice" type="checkbox" /><label class="title" for="announcement_email_notice">send via email at the same time</label></div>');
-			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">Cancel</a>');
-			$actions.append('<a type="submit" class="create btn btn-primary">Create</a>');
+			$actions.append('<div class="announcement-email"><input id="announcement_email_notice" type="checkbox" /><label class="title" for="announcement_email_notice">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_EMAIL_TIPS + '</label></div>');
+			$actions.append('<a type="button" class="cancel btn btn-default" data-dismiss="modal">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_CANCEL + '</a>');
+			$actions.append('<a type="submit" class="create btn btn-primary">' + i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_CREATE + '</a>');
 			
 			$(this.el).append($title);
 			$(this.el).append($type);
@@ -403,7 +403,7 @@ define([
 		
 		generateUnauthorizedView: function() {
 			var $title = $('<div class="detail">');
-			$title.html('You don\'t have permission to create announcement. Please apply administrator for the permission...');
+			$title.html(i18n.my.chat.AddChatView.IM_ANNOUNCEMENT_PERMISSION);
 			
 			$(this.el).append($title);
 		}

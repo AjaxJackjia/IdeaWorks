@@ -624,6 +624,84 @@ define({
     			'SET_ADVANCED_ERROR': '设置失败,请稍后重试.'
     		}
     	},
+    	'chat': {
+    		'AddChatView': {
+    			'NEW_IM_TITLE': '新建站内信',
+    			'IM_MSG_TAB_TITLE': '群组消息',
+    			'IM_MSG_TITLE': '标题:',
+    			'IM_MSG_TITLE_PLACEHOLDER': '群组标题...',
+    			'IM_MSG_MEMBERS': '成员: (双击左侧成员列表来添加用户)',
+    			'IM_MSG_MEMBERS_SEARCH': '查找成员...',
+    			'IM_MSG_ADD_MEMBERS_TIPS': '双击左侧成员列表来添加用户',
+    			'IM_MSG_EMAIL_TIPS': '同时通过邮件发送创建通知',
+    			'IM_MSG_CANCEL': '取消',
+    			'IM_MSG_CREATE': '创建',
+    			'IM_MSG_CREATE_TITLE_CHECK': '请输入群组标题...',
+    			'IM_MSG_CREATE_MEMBER_CHECK': '请选择成员...',
+    			'IM_MSG_CREATE_MEMBER_NUM_CHECK': '成员数量最大为200!',
+    			'IM_MSG_CREATE_NO_MEMBER': '暂无成员...',
+    			'IM_ANNOUNCEMENT_TAB_TITLE': '公告',
+    			'IM_ANNOUNCEMENT_TITLE': '标题:',
+    			'IM_ANNOUNCEMENT_TITLE_PLACEHOLDER': '公告标题...',
+    			'IM_ANNOUNCEMENT_TO': '发送给:',
+    			'IM_ANNOUNCEMENT_TO_ALL_MEMBERS': '所有成员',
+    			'IM_ANNOUNCEMENT_TO_ALL_STUDENT': '所有学生',
+    			'IM_ANNOUNCEMENT_TO_ALL_FACULTY': '所有教职员工',
+    			'IM_ANNOUNCEMENT_TO_ALL_INDUSTRICAL': '所有工业界人士',
+    			'IM_ANNOUNCEMENT_TO_ALL_GOVERNMENT': '所有政府人员',
+    			'IM_ANNOUNCEMENT_TO_ALL_OTHERS': '所有其他成员',
+    			'IM_ANNOUNCEMENT_CONTENT': '内容:',
+    			'IM_ANNOUNCEMENT_CONTENT_PLACEHOLDER': '请输入公告内容...',
+    			'IM_ANNOUNCEMENT_EMAIL_TIPS': '同时使用邮件发送',
+    			'IM_ANNOUNCEMENT_CANCEL': '取消',
+    			'IM_ANNOUNCEMENT_CREATE': '创建',
+    			'IM_ANNOUNCEMENT_PERMISSION': '你没有权限创建并发送公告，请跟管理员申请权限...',
+    			'IM_ANNOUNCEMENT_TITLE_CHECK': '请输入公告标题...',
+    			'IM_ANNOUNCEMENT_CONTENT_CHECK': '请输入公告内容...'
+    		},
+    		'ChatDetailAnnouncementView': {
+    			'ANNOUNCEMENT_TAG': '公告',
+    			'ANNOUNCEMENT_TO': '发送给',
+    			'ANNOUNCEMENT_DELETE_TITLE': '删除公告',
+    			'ANNOUNCEMENT_CONFIRM_DELETE_TITLE': '确认删除此条公告?',
+    			'ANNOUNCEMENT_NO_CONTENT': '没有内容...',
+    			'IM_ANNOUNCEMENT_TO_ALL_MEMBERS': '所有成员',
+    			'IM_ANNOUNCEMENT_TO_ALL_STUDENT': '所有学生',
+    			'IM_ANNOUNCEMENT_TO_ALL_FACULTY': '所有教职员工',
+    			'IM_ANNOUNCEMENT_TO_ALL_INDUSTRICAL': '所有工业界人士',
+    			'IM_ANNOUNCEMENT_TO_ALL_GOVERNMENT': '所有政府人员',
+    			'IM_ANNOUNCEMENT_TO_ALL_OTHERS': '所有其他成员',
+    			'IM_ANNOUNCEMENT_TO_UNKNOWN': '未知'
+    		},
+    		'ChatDetailGroupMembersView': {
+    			
+    		},
+    		'ChatDetailGroupView': {
+    			'NO_CONTENT': '暂无内容...',
+    			'COMMENT_CONTENT_CHECK': '请输入消息内容...',
+    			'COMMENT_ERROR': '站内信发送失败!',
+    			'EXIT_CONFIRM': '你想退出这个站内信小组吗？',
+    			'EXIT_TIPS': '退出小组',
+    			'SHOW_IM_MEMBERS': '查看成员',
+    			'SAY_STH': '说点啥吧...',
+    			'SEND': '发送',
+    			'DEFAULT_CREATE_CHAT_MSG': '创建了这个站内信小组。 ',
+    			'DEFAULT_EXIT_CHAT_MSG': '退出了这个站内信小组。 '
+    		},
+    		'ChatDetailView': {
+    			'NO_IM_SELECT': '暂无站内信选中...'
+    		},
+    		'ChatListItemView': {
+    			'IM_TITLE': '群组消息',
+    			'ANNOUNCEMENT_TITLE': '公告'
+    		},
+    		'ChatListView': {
+    			'CREATE_CHAT_TIPS': '新建站内信',
+    			'NO_IM': '暂无站内信',
+    			'NEW_CHAT_ERROR': '创建站内信失败!',
+    			'DELETE_CHAT_ERROR': '删除站内信失败!'
+    		}
+    	},
     	'LeftPanelView': {
 			'DASHBOARD': '仪表盘',
     		'PROJECTS': '项目',

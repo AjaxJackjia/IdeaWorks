@@ -627,6 +627,84 @@ define({
     			'SET_ADVANCED_ERROR': 'Set advanced settings failed. Please try again later!'
     		}
     	},
+    	'chat': {
+    		'AddChatView': {
+    			'NEW_IM_TITLE': 'New Internal Messages',
+    			'IM_MSG_TAB_TITLE': 'Messages',
+    			'IM_MSG_TITLE': 'Title:',
+    			'IM_MSG_TITLE_PLACEHOLDER': 'internal message title...',
+    			'IM_MSG_MEMBERS': 'Members: (Double click member in the left container to add members)',
+    			'IM_MSG_MEMBERS_SEARCH': 'search member...',
+    			'IM_MSG_ADD_MEMBERS_TIPS': 'Double click member in the left container to add members',
+    			'IM_MSG_EMAIL_TIPS': 'send create notification via email',
+    			'IM_MSG_CANCEL': 'Cancel',
+    			'IM_MSG_CREATE': 'Create',
+    			'IM_MSG_CREATE_TITLE_CHECK': 'Please input internal messages title...',
+    			'IM_MSG_CREATE_MEMBER_CHECK': 'Please select member...',
+    			'IM_MSG_CREATE_MEMBER_NUM_CHECK': 'The max size of member is 200!',
+    			'IM_MSG_CREATE_NO_MEMBER': 'No members...',
+    			'IM_ANNOUNCEMENT_TAB_TITLE': 'Announcement',
+    			'IM_ANNOUNCEMENT_TITLE': 'Title:',
+    			'IM_ANNOUNCEMENT_TITLE_PLACEHOLDER': 'announcement title...',
+    			'IM_ANNOUNCEMENT_TO': 'To:',
+    			'IM_ANNOUNCEMENT_TO_ALL_MEMBERS': 'All Members',
+    			'IM_ANNOUNCEMENT_TO_ALL_STUDENT': 'All Student',
+    			'IM_ANNOUNCEMENT_TO_ALL_FACULTY': 'All Faculty',
+    			'IM_ANNOUNCEMENT_TO_ALL_INDUSTRICAL': 'All Industrical Participant',
+    			'IM_ANNOUNCEMENT_TO_ALL_GOVERNMENT': 'All Government',
+    			'IM_ANNOUNCEMENT_TO_ALL_OTHERS': 'All Others',
+    			'IM_ANNOUNCEMENT_CONTENT': 'Content:',
+    			'IM_ANNOUNCEMENT_CONTENT_PLACEHOLDER': 'Please type in your announcement content...',
+    			'IM_ANNOUNCEMENT_EMAIL_TIPS': 'send via email at the same time',
+    			'IM_ANNOUNCEMENT_CANCEL': 'Cancel',
+    			'IM_ANNOUNCEMENT_CREATE': 'Create',
+    			'IM_ANNOUNCEMENT_PERMISSION': 'You don\'t have permission to create announcement. Please apply administrator for the permission...',
+    			'IM_ANNOUNCEMENT_TITLE_CHECK': 'Please input announcement title...',
+    			'IM_ANNOUNCEMENT_CONTENT_CHECK': 'Please input announcement content...'
+    		},
+    		'ChatDetailAnnouncementView': {
+    			'ANNOUNCEMENT_TAG': 'Announcement',
+    			'ANNOUNCEMENT_TO': 'To',
+    			'ANNOUNCEMENT_DELETE_TITLE': 'delete this announcement',
+    			'ANNOUNCEMENT_CONFIRM_DELETE_TITLE': 'Do you want to delete this internal message announcement?',
+    			'ANNOUNCEMENT_NO_CONTENT': 'No content...',
+    			'IM_ANNOUNCEMENT_TO_ALL_MEMBERS': 'All Members',
+    			'IM_ANNOUNCEMENT_TO_ALL_STUDENT': 'All Student',
+    			'IM_ANNOUNCEMENT_TO_ALL_FACULTY': 'All Faculty',
+    			'IM_ANNOUNCEMENT_TO_ALL_INDUSTRICAL': 'All Industrical Participant',
+    			'IM_ANNOUNCEMENT_TO_ALL_GOVERNMENT': 'All Government',
+    			'IM_ANNOUNCEMENT_TO_ALL_OTHERS': 'All Others',
+    			'IM_ANNOUNCEMENT_TO_UNKNOWN': 'Unknown'
+    		},
+    		'ChatDetailGroupMembersView': {
+    			
+    		},
+    		'ChatDetailGroupView': {
+    			'NO_CONTENT': 'No content...',
+    			'COMMENT_CONTENT_CHECK': 'Please input your message content...',
+    			'COMMENT_ERROR': 'internal messages comment error!',
+    			'EXIT_CONFIRM': 'Do you want to exit this internal message group?',
+    			'EXIT_TIPS': 'exit this group',
+    			'SHOW_IM_MEMBERS': 'show internal messages members',
+    			'SAY_STH': 'Say something...',
+    			'SEND': 'Send',
+    			'DEFAULT_CREATE_CHAT_MSG': 'Create this internal messages group. ',
+    			'DEFAULT_EXIT_CHAT_MSG': 'Exit this internal messages group. '
+    		},
+    		'ChatDetailView': {
+    			'NO_IM_SELECT': 'No Internal Message Selected...'
+    		},
+    		'ChatListItemView': {
+    			'IM_TITLE': 'Internal Messages',
+    			'ANNOUNCEMENT_TITLE': 'Announcement'
+    		},
+    		'ChatListView': {
+    			'CREATE_CHAT_TIPS': 'Create new internal message',
+    			'NO_IM': 'No internal messages',
+    			'NEW_CHAT_ERROR': 'new internal message error!',
+    			'DELETE_CHAT_ERROR': 'delete internal message error!'
+    		}
+    	},
     	'LeftPanelView': {
     		'DASHBOARD': 'Dashboard',
     		'PROJECTS': 'Projects',

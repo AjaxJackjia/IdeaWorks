@@ -27,7 +27,7 @@ define([
 		render: function(){
 			if(this.initFlag == true || this.model == null) {
 				var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
-				$emtpy_placeholder.append('<h4>No Internal Message Selected...</h4>');
+				$emtpy_placeholder.append('<h4>' + i18n.my.chat.ChatDetailView.NO_IM_SELECT + '</h4>');
 				$(this.el).html($emtpy_placeholder);
 				
 				//reset init flag
@@ -56,7 +56,7 @@ define([
 		
 		unrender: function() {
 			var $emtpy_placeholder = $('<div class="empty-place-holder"></div>');
-			$emtpy_placeholder.append('<h4>' + i18n.my.projects.ProjectDetailView.NO_PROJECT_SELECT + '</h4>');
+			$emtpy_placeholder.append('<h4>' + i18n.my.chat.ChatDetailView.NO_IM_SELECT + '</h4>');
 			$(this.el).html($emtpy_placeholder);
 		},
 		
