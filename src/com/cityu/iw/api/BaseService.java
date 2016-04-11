@@ -22,6 +22,7 @@ public class BaseService
 	public static final int OK = 1;
 	public static final int PARAMETER_INVALID = 2;
 	public static final int TOKEN_INVALID = 3;
+	public static final int INTERNAL_ERROR = 4;
 	
     public Response buildResponse(int responseType, Object p_result) throws JSONException
     {
@@ -50,6 +51,12 @@ public class BaseService
     		token_invalid.put("ret", "401");
     		token_invalid.put("msg", "Session time out!");
     		builder = Response.status(Status.UNAUTHORIZED).entity(token_invalid).type("application/json");
+    		break;
+    	case INTERNAL_ERROR:
+    		JSONObject internal_error = new JSONObject();
+    		internal_error.put("ret", "500");
+    		internal_error.put("msg", "Server busy!");
+    		builder = Response.status(Status.INTERNAL_SERVER_ERROR).entity(internal_error).type("application/json");
     		break;
     	default:
     		JSONObject ok_response = new JSONObject();

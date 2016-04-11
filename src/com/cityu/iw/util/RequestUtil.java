@@ -60,9 +60,9 @@ public class RequestUtil {
  		ClientResponse response = builder.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(ClientResponse.class, formData);
  		
  		if ((response.getStatus() / 100) == 2) {
- 			LOGGER.info("send request ok, " + response.getStatus());
+ 			//LOGGER.info("send request ok, " + response.getStatus());
  		}else{
- 			LOGGER.info("send request fail, " + response.getStatus());
+ 			//LOGGER.info("send request fail, " + response.getStatus());
  		}
 	}
 	

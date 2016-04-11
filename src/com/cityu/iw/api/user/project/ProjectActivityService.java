@@ -59,7 +59,7 @@ public class ProjectActivityService extends BaseService {
 		try {
 			stmt.execute();
 		} catch (SQLException e) {
-			LOGGER.info(e.toString());
+			//LOGGER.info(e.toString());
 		}
 		
 		DBUtil.getInstance().closeStatementResource(stmt);

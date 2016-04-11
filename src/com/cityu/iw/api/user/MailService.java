@@ -29,7 +29,7 @@ import com.cityu.iw.util.mail.MailSender;
 
 @Path("/users/{userid}/mail/")
 public class MailService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(MailService.class);
+	
 	//email request list
 	public static final String EMAIL_REQ_FORGET_PASSWORD 			= "forget-password";
 	public static final String EMAIL_REQ_IM_CREATE_GROUP 			= "im-create-group";
@@ -113,9 +113,9 @@ public class MailService extends BaseService {
 			
 			try {
 				sendEmail(title, user.getString("email"), content.toString());
-				LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice successfully!");
+				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice successfully!");
 			} catch (MessagingException e) {
-				LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice error!");
+				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice error!");
 			}
 		}
 	}
@@ -159,9 +159,9 @@ public class MailService extends BaseService {
 			
 			try {
 				sendEmail(title, user.getString("email"), content.toString());
-				LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice successfully!");
+				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice successfully!");
 			} catch (MessagingException e) {
-				LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice error!");
+				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice error!");
 			}
 		}
 	}

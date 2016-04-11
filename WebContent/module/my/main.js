@@ -65,9 +65,9 @@
 	         './controller/DashboardCtl', 
 	         './controller/IndexCtl',
 	         './controller/ProjectsCtl',
-	         //'./controller/ChatCtl', 
+	         './controller/ChatCtl', 
 	         './controller/SettingsCtl'
-	        ], function(Backbone, bootstrap, router, DashboardCtl, DashboardCtl, ProjectsCtl, /*ChatCtl,*/ SettingsCtl) {
+	        ], function(Backbone, bootstrap, router, DashboardCtl, DashboardCtl, ProjectsCtl, ChatCtl, SettingsCtl) {
 		
 		//start monitoring
 	    Backbone.history.start();
