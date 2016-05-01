@@ -25,6 +25,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -34,11 +36,15 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.RequestUtil;
+import com.cityu.iw.util.Util;
 
 
 @Path("/users/{userid}/chats")
 public class ChatService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ChatService.class);
+	private static final String CURRENT_SERVICE = "ChatService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	private static final int BULK_INSERTER_NO = 50;
 	private static final String DEFAULT_CREATE_CHAT_MSG = "DEFAULT_CREATE_CHAT_MSG";
 	private static final String DEFAULT_EXIT_CHAT_MSG = "DEFAULT_EXIT_CHAT_MSG";
@@ -64,11 +70,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatlist token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatlist parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -166,6 +176,7 @@ public class ChatService extends BaseService {
 			}
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatlist success"));
 		return buildResponse(OK, list);
 	}
 	
@@ -179,11 +190,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -229,6 +244,7 @@ public class ChatService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "getUserChatById success"));
 		return buildResponse(OK, chat);
 	}
 	
@@ -247,6 +263,8 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createChat token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -254,6 +272,8 @@ public class ChatService extends BaseService {
 		if((p_userid == null || p_userid.equals("")) ||
 		   (p_type == null || p_type.equals("") || (!p_type.equals("group") && !p_type.equals("announcement"))) || 
 		   (p_title == null || p_title.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createChat parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -296,6 +316,7 @@ public class ChatService extends BaseService {
 			}
 		}
 	
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + chat.getInt("chatid"), "createChat success"));
 		return buildResponse(OK, chat);
 	}
 	
@@ -506,11 +527,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserChat token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if(p_userid == null || p_userid.equals("")) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserChat parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 
@@ -554,6 +579,7 @@ public class ChatService extends BaseService {
 		//4.“退出chat”消息
 		createMessage(p_chatid, p_userid, DEFAULT_EXIT_CHAT_MSG);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "deleteUserChat success"));
 		return null;
 	}
 	
@@ -567,11 +593,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatMessages token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatMessages parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -620,6 +650,7 @@ public class ChatService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "getUserChatMessages success"));
 		return buildResponse(OK, messages);
 	}
 	
@@ -634,18 +665,23 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createChatMessage token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) ||
 		   (p_msg == null || p_msg.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createChatMessage parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
 		//创建消息
 		JSONObject msg = createMessage(p_chatid, p_userid, p_msg);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "createChatMessage success"));
 		return buildResponse(OK, msg);
 	}
 	
@@ -660,11 +696,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserChatMessageById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if(p_userid == null || p_userid.equals("")) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserChatMessageById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 
@@ -679,6 +719,7 @@ public class ChatService extends BaseService {
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "deleteUserChatMessageById success"));
 		return null;
 	}
 	
@@ -692,11 +733,15 @@ public class ChatService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatMembers token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserChatMembers parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -730,6 +775,7 @@ public class ChatService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "chatid: " + p_chatid, "getUserChatMembers success"));
 		return buildResponse(OK, members);
 	}
 	

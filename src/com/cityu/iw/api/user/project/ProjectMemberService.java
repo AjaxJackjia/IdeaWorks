@@ -25,6 +25,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -32,12 +34,16 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.api.representation.Form;
 
 
 @Path("/users/{userid}/projects/{projectid}/members")
 public class ProjectMemberService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectMemberService.class);
+	private static final String CURRENT_SERVICE = "ProjectMemberService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -50,11 +56,15 @@ public class ProjectMemberService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMembers token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMembers token invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -110,6 +120,7 @@ public class ProjectMemberService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectMembers success"));
 		return buildResponse(OK, members);
 	}
 	
@@ -124,6 +135,8 @@ public class ProjectMemberService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "addUserProjectMembers token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -132,6 +145,8 @@ public class ProjectMemberService extends BaseService {
 		
 		//检查参数
 		if(form.isEmpty() || p_projectid <= 0 || p_userid == null || p_userid.equals("")) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "addUserProjectMembers token invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -206,6 +221,7 @@ public class ProjectMemberService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.ADD, Config.Entity.MEMEBER, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "members: " + StringUtils.join(newMembers, ","), "addUserProjectMembers success"));
 		return buildResponse(OK, members);
 	}
 }

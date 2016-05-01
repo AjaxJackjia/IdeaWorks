@@ -27,6 +27,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -35,6 +37,7 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -46,7 +49,10 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/users/{userid}/projects/{projectid}/applications")
 public class ProjectApplicationService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectApplicationService.class);
+	private static final String CURRENT_SERVICE = "ProjectApplicationService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -59,11 +65,15 @@ public class ProjectApplicationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getApplications token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getApplications parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -128,6 +138,7 @@ public class ProjectApplicationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getApplications success"));
 		return buildResponse(OK, applications);
 	}
 	
@@ -142,11 +153,15 @@ public class ProjectApplicationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getApplicationsById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || p_applicationid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getApplicationsById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -166,6 +181,8 @@ public class ProjectApplicationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		if(!isUserValid) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getApplicationsById - current user is illegal"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -206,6 +223,7 @@ public class ProjectApplicationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "applicationid: " + p_applicationid, "getApplicationsById success"));
 		return buildResponse(OK, application);
 	}
 	
@@ -222,12 +240,16 @@ public class ProjectApplicationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createApplications token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
 		   (p_proposer == null || p_proposer.equals("")) || p_applyprojectid == 0 ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createApplications parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		if(p_msg == null) {
@@ -242,6 +264,8 @@ public class ProjectApplicationService extends BaseService {
 			JSONObject alreadyJoin = new JSONObject();
 			alreadyJoin.put("ret", "0");
 			alreadyJoin.put("msg", "joined");
+			
+			FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "proposer: " + p_proposer, "apply_project: " + p_applyprojectid, "createApplications - current user already join this project"));
 			return buildResponse(OK, alreadyJoin);
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
@@ -277,11 +301,15 @@ public class ProjectApplicationService extends BaseService {
 			JSONObject normal = new JSONObject();
 			normal.put("ret", "0");
 			normal.put("msg", "ok");
+			
+			FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, p_userid, "proposer: " + p_proposer, "apply_project: " + p_applyprojectid, "createApplications success"));
 			return buildResponse(OK, normal);
 		}else{
 			JSONObject alreadySend = new JSONObject();
 			alreadySend.put("ret", "0");
 			alreadySend.put("msg", "sent");
+			
+			FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, p_userid, "proposer: " + p_proposer, "apply_project: " + p_applyprojectid, "createApplications - already send request"));
 			return buildResponse(OK, alreadySend);
 		}
 	}
@@ -300,12 +328,16 @@ public class ProjectApplicationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateApplications token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
 		   (p_proposer == null || p_proposer.equals("")) || p_applyprojectid <= 0 || p_status > 2 || p_status < 0 ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateApplications parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -399,6 +431,7 @@ public class ProjectApplicationService extends BaseService {
 			ProjectNotificationService.notifyProjectCertainMember(p_projectid, p_userid, Config.Action.REJECT, Config.Entity.APPLICATION, info);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "proposer: " + p_proposer, "apply_project: " + p_applyprojectid, "updateApplications success"));
 		return buildResponse(OK, application);
 	}
 }

@@ -15,6 +15,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -24,11 +26,15 @@ import com.cityu.iw.api.user.chat.ChatService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.RequestUtil;
+import com.cityu.iw.util.Util;
 import com.cityu.iw.util.mail.MailBean;
 import com.cityu.iw.util.mail.MailSender;
 
 @Path("/users/{userid}/mail/")
 public class MailService extends BaseService {
+	private static final String CURRENT_SERVICE = "MailService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
 	
 	//email request list
 	public static final String EMAIL_REQ_FORGET_PASSWORD 			= "forget-password";
@@ -49,7 +55,7 @@ public class MailService extends BaseService {
 		   (p_toEmail == null || p_toEmail.equals("")) ||
 		   (p_newPwd == null || p_newPwd.equals("")) ) {
 			//log
-			System.out.println("validate param error!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "sendForgetPasswordMail parameter invalid!"));
 		}
 		
 		//send email
@@ -65,9 +71,9 @@ public class MailService extends BaseService {
 		
 		try {
 			sendEmail(title, toAddress, content.toString());
-			System.out.println(p_userid + " forget password test successfully!");
+			FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "send forget password mail success!"));
 		} catch (MessagingException e) {
-			System.out.println(p_userid + " forget password test error!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "send forget password mail failed!", e.getMessage()));
 		}
 	}
 	
@@ -83,7 +89,7 @@ public class MailService extends BaseService {
 		   (p_title == null || p_title.equals("")) ||
 		   (p_members == null || p_members.equals("")) ) {
 			//log
-			System.out.println("validate param error!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "sendIMCreateGroupMail parameter invalid!"));
 		}
 		
 		//send email
@@ -113,9 +119,9 @@ public class MailService extends BaseService {
 			
 			try {
 				sendEmail(title, user.getString("email"), content.toString());
-				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice successfully!");
+				FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "from:" + p_creator + ",to:" + getNameWithId(user.getString("id"), user.getString("nickname")), "sendIMCreateGroupMail success!"));
 			} catch (MessagingException e) {
-				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Group Notice error!");
+				ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "from:" + p_creator + ",to:" + getNameWithId(user.getString("id"), user.getString("nickname")), "sendIMCreateGroupMail failed!", e.getMessage()));
 			}
 		}
 	}
@@ -134,7 +140,7 @@ public class MailService extends BaseService {
 		   (p_tousertype == null || p_tousertype.equals("")) || 
 		   (p_content == null || p_content.equals("")) ) {
 			//log
-			System.out.println("validate param error!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "sendIMCreateAnnouncementMail parameter invalid!"));
 		}
 		
 		//send email
@@ -159,9 +165,9 @@ public class MailService extends BaseService {
 			
 			try {
 				sendEmail(title, user.getString("email"), content.toString());
-				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice successfully!");
+				FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "from:" + p_creator + ",to:" + getNameWithId(user.getString("id"), user.getString("nickname")), "sendIMCreateAnnouncementMail success!"));
 			} catch (MessagingException e) {
-				//LOGGER.info(getNameWithId(user.getString("id"), user.getString("nickname")) + "|" + user.getString("email") + " Internal Message - New Announcement Notice error!");
+				ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_creator, "from:" + p_creator + ",to:" + getNameWithId(user.getString("id"), user.getString("nickname")), "sendIMCreateAnnouncementMail failed!", e.getMessage()));
 			}
 		}
 	}

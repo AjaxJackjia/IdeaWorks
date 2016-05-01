@@ -27,6 +27,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -36,6 +38,7 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -47,7 +50,10 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/users/{userid}/notifications")
 public class ProjectNotificationService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectNotificationService.class);
+	private static final String CURRENT_SERVICE = "ProjectNotificationService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -58,11 +64,15 @@ public class ProjectNotificationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotifications token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotifications parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -125,6 +135,7 @@ public class ProjectNotificationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotifications success"));
 		return buildResponse(OK, notifications);
 	}
 	
@@ -138,11 +149,15 @@ public class ProjectNotificationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotificationsById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_notificationid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotificationsById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -199,6 +214,7 @@ public class ProjectNotificationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "notificationid: " + p_notificationid, "getNotificationsById success"));
 		return buildResponse(OK, notification);
 	}
 	
@@ -411,15 +427,19 @@ public class ProjectNotificationService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateNotificationById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_notificationid == 0 || p_isRead > 1 || p_isRead < 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateNotificationById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
-		//创建加入project请求
+		//更新用户通知状态
 		//status: 0为未读;1为已读;
 		String sql = 
 				 "update " +
@@ -482,6 +502,7 @@ public class ProjectNotificationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "notificationid: " + p_notificationid, "isRead: " + p_isRead, "updateNotificationById success"));
 		return buildResponse(OK, notification);
 	}
 }

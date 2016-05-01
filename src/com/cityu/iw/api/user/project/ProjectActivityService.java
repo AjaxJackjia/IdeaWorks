@@ -22,6 +22,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -29,10 +31,14 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.Util;
 
 @Path("/users/{userid}/projects/{projectid}/activities")
 public class ProjectActivityService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectActivityService.class);
+	private static final String CURRENT_SERVICE = "ProjectActivityService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	/*
@@ -63,6 +69,9 @@ public class ProjectActivityService extends BaseService {
 		}
 		
 		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, "projectid:" + projectid, "operator:" + operator, 
+				"action:" + action, "entity:" + entity, "info:" + info.toString(), "recordActivity success"));
 	}
 	
 	@GET
@@ -75,11 +84,15 @@ public class ProjectActivityService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectActivities token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectActivities parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -124,7 +137,8 @@ public class ProjectActivityService extends BaseService {
 			activities.put(activity);
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
-
+		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectActivities success"));
 		return buildResponse(OK, activities);
 	}
 }

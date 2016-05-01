@@ -25,6 +25,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -34,6 +36,7 @@ import com.cityu.iw.api.user.UserService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -45,7 +48,10 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/users/{userid}/search")
 public class ProjectSearchService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectSearchService.class);
+	private static final String CURRENT_SERVICE = "ProjectSearchService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -58,12 +64,16 @@ public class ProjectSearchService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchProjects token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || 
 		   (p_search == null || p_search.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchProjects parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		//检索p_userid参与的项目
@@ -125,6 +135,7 @@ public class ProjectSearchService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "key: " + p_search, "getSearchProjects success"));
 		return buildResponse(OK, list);
 	}
 	
@@ -138,11 +149,15 @@ public class ProjectSearchService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchProjectsById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchProjectsById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -218,6 +233,7 @@ public class ProjectSearchService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getSearchProjectsById success"));
 		return buildResponse(OK, project);
 	}
 	
@@ -231,12 +247,16 @@ public class ProjectSearchService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchPersons token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || 
 		   (p_search == null || p_search.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchPersons parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -270,6 +290,7 @@ public class ProjectSearchService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "key: " + p_search, "getSearchPersons success"));
 		return buildResponse(OK, members);
 	}
 	
@@ -283,12 +304,16 @@ public class ProjectSearchService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchPersonsById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || 
 		   (p_personid == null || p_personid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getSearchPersonsById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -359,6 +384,7 @@ public class ProjectSearchService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "personid: " + p_personid, "getSearchPersonsById success"));
 		return buildResponse(OK, user);
 	}
 }

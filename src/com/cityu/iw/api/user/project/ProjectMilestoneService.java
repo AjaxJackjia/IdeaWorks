@@ -22,6 +22,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -29,11 +31,15 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.Util;
 
 
 @Path("/users/{userid}/projects/{projectid}/milestones")
 public class ProjectMilestoneService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectMilestoneService.class);
+	private static final String CURRENT_SERVICE = "ProjectMilestoneService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -46,11 +52,15 @@ public class ProjectMilestoneService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMilestones token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMilestones parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -94,6 +104,7 @@ public class ProjectMilestoneService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectMilestones success"));
 		return buildResponse(OK, milestones);
 	}
 	
@@ -108,11 +119,15 @@ public class ProjectMilestoneService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMilestoneById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || p_milestoneid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectMilestoneById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -150,6 +165,7 @@ public class ProjectMilestoneService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectMilestoneById success"));
 		return buildResponse(OK, milestone);
 	}
 	
@@ -166,6 +182,8 @@ public class ProjectMilestoneService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectMilestones token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -174,6 +192,8 @@ public class ProjectMilestoneService extends BaseService {
 		   (p_title == null || p_title.equals("")) ||
 		   (p_creator == null || p_creator.equals("")) ||
 		   (p_description == null || p_description.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectMilestones parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -238,6 +258,7 @@ public class ProjectMilestoneService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.MILESTONE, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "createUserProjectMilestones success"));
 		return buildResponse(OK, milestone);
 	}
 	
@@ -254,6 +275,8 @@ public class ProjectMilestoneService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectMiletones token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -261,6 +284,8 @@ public class ProjectMilestoneService extends BaseService {
 		if((p_projectid == 0) || 
 		   (p_title == null || p_title.equals("")) ||
 		   (p_description == null || p_description.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectMiletones parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -354,6 +379,7 @@ public class ProjectMilestoneService extends BaseService {
 			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.MILESTONE_DESCRIPTION, info);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "updateUserProjectMiletones success"));
 		return buildResponse(OK, milestone);
 	}
 	
@@ -368,12 +394,16 @@ public class ProjectMilestoneService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectMilestones token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_milestoneid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectMilestones parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 
@@ -410,6 +440,7 @@ public class ProjectMilestoneService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.MILESTONE, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "milestone: " + msg, "deleteUserProjectMilestones success"));
 		return null;
 	}
 }

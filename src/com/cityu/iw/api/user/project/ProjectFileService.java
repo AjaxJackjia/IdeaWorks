@@ -32,6 +32,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -40,6 +42,7 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -47,7 +50,10 @@ import com.sun.jersey.multipart.FormDataParam;
 
 @Path("/users/{userid}/projects/{projectid}/files")
 public class ProjectFileService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectFileService.class);
+	private static final String CURRENT_SERVICE = "ProjectFileService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	private static HashMap<String, String> SUPPORT_MIME_FILE_TYPE; //支持上传的文件类型
 	@Context HttpServletRequest request;
 	
@@ -81,11 +87,15 @@ public class ProjectFileService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectFiles token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectFiles parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -135,6 +145,7 @@ public class ProjectFileService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectFiles success"));
 		return buildResponse(OK, files);
 	}
 	
@@ -149,11 +160,15 @@ public class ProjectFileService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectFilesById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || p_fileid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectFilesById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -198,6 +213,7 @@ public class ProjectFileService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "fileid: " + p_fileid, "getUserProjectFilesById success"));
 		return buildResponse(OK, file);
 	}
 	
@@ -253,6 +269,7 @@ public class ProjectFileService extends BaseService {
 			fis.read(byteArray);
 			response.setHeader("Content-Disposition","attachment;filename=" + URLEncoder.encode(fileName, "utf-8"));//为文件命名
 			response.addHeader("content-type", filetype);
+			
 			return byteArray;
 		}else{
 			return null;
@@ -270,6 +287,8 @@ public class ProjectFileService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectFiles token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 				
@@ -302,6 +321,8 @@ public class ProjectFileService extends BaseService {
 		   (filetype == null || filetype.equals("")) ||
 		   (filename == null || filename.equals("")) ||
 		   (creator == null || creator.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectFiles parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -311,6 +332,7 @@ public class ProjectFileService extends BaseService {
 	    String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
+	    	ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "filename:" + filename, "creator:" + creator, "createUserProjectFiles failed"));
 			return null;
 		}
 	    
@@ -353,6 +375,7 @@ public class ProjectFileService extends BaseService {
 			stmt = DBUtil.getInstance().createSqlStatement(sqlUpdate, p_projectid, filename, filesize, filetype, creator, description, fileid);
 		}
 		stmt.execute();
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "fileid: " + fileid, "filename:" + filename, "creator:" + creator, "createUserProjectFiles success"));
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
 		//record activity
@@ -378,12 +401,16 @@ public class ProjectFileService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectFiles token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 				
 		//check param
 		if((p_projectid == 0) || (p_fileid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectFiles parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -414,6 +441,7 @@ public class ProjectFileService extends BaseService {
 		//删除file文件
 		String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_FILE_BASE_DIR + "prj_" + p_projectid + "/" + URLDecoder.decode(filename, "utf-8");
 		FileUtil.delete(fileLocation);
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "fileid:" + p_fileid, "filename:" + filename, "deleteUserProjectFiles success"));
 		
 		//record activity
 		JSONObject info = new JSONObject();

@@ -21,6 +21,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,11 +30,15 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.Util;
 
 
 @Path("/users/{userid}/dashboard/")
 public class DashboardService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(DashboardService.class);
+	private static final String CURRENT_SERVICE = "DashboardService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -43,11 +49,15 @@ public class DashboardService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserDashboardBrief token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserDashboardBrief parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -135,6 +145,7 @@ public class DashboardService extends BaseService {
 		brief.put("relatedMemberNo", relatedMemberNo);
 		brief.put("forumParticipationNo", forumParticipationNo);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserDashboardBrief success"));
 		return buildResponse(OK, brief);
 	}
 	
@@ -146,11 +157,15 @@ public class DashboardService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getPopularTopics token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 				
 		//check param
 		if((p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getPopularTopics parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -202,6 +217,7 @@ public class DashboardService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getPopularTopics success"));
 		return buildResponse(OK, topics);
 	}
 	
@@ -213,11 +229,15 @@ public class DashboardService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getRecentActivities token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 				
 		//check param
 		if((p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getRecentActivities parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -271,6 +291,7 @@ public class DashboardService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getRecentActivities success"));
 		return buildResponse(OK, list);
 	}
 }

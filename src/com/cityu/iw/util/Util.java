@@ -5,6 +5,8 @@ import java.security.MessageDigest;
 import java.util.Properties;
 import java.util.Random;
 
+import org.apache.commons.lang.StringUtils;
+
 public class Util {
 	public static Properties loadProperties(String filename) {
 		Properties props = new Properties();
@@ -17,6 +19,11 @@ public class Util {
 		}
 		
 		return props;
+	}
+	
+	//log输出字符串连接工具
+	public static String logJoin(String... params) {
+		return StringUtils.join(params, "|");
 	}
 	
 	//根据指定长度生成字母和数字的随机数

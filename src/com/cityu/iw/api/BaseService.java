@@ -9,6 +9,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -18,6 +20,9 @@ import com.cityu.iw.util.Util;
 
 public class BaseService
 {
+	private static final String CURRENT_SERVICE = "BaseService";
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	private static final String SESSION_PRIVATE_KEY = "IdeaWorks";
 	public static final int OK = 1;
 	public static final int PARAMETER_INVALID = 2;
@@ -79,16 +84,19 @@ public class BaseService
     		return false;
     	}
     	
-    	//校验session token的准确性
-    	String sql = "select * from ideaworks.user where id = ?";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_id);
-		ResultSet rs_stmt = stmt.executeQuery();
-		String db_password = "";
-		while(rs_stmt.next()) {
-			db_password = rs_stmt.getString("password");
-		}
-		DBUtil.getInstance().closeStatementResource(stmt);
-		
+    	String db_password = "";
+    	try{
+    		//校验session token的准确性
+        	String sql = "select password from ideaworks.user where id = ?";
+    		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_id);
+    		ResultSet rs_stmt = stmt.executeQuery();
+    		while(rs_stmt.next()) {
+    			db_password = rs_stmt.getString("password");
+    		}
+    		DBUtil.getInstance().closeStatementResource(stmt);
+    	}catch(Exception ex) {
+    		ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_id, "validate token exception", ex.getMessage()));
+    	}
     	String genToken = generateToken(p_id, db_password);
     	
     	return genToken == null ? false : genToken.equals(p_token);

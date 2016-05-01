@@ -25,6 +25,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -33,6 +35,7 @@ import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
 import com.cityu.iw.util.FileUtil;
+import com.cityu.iw.util.Util;
 import com.sun.jersey.core.header.FormDataContentDisposition;
 import com.sun.jersey.multipart.FormDataBodyPart;
 import com.sun.jersey.multipart.FormDataMultiPart;
@@ -43,7 +46,10 @@ import com.sun.jersey.multipart.FormDataMultiPart;
 
 @Path("/users/{userid}/projects")
 public class ProjectService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectService.class);
+	private static final String CURRENT_SERVICE = "ProjectService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	private static final String DEFAULT_PROJECT_LOGO = "default_prj_logo.png";
 	private static final int STATUS_ONGOING_FLAG = 0;	//项目正在进行
 	private static final int STATUS_COMPLETE_FLAG = 1;	//项目已经结束
@@ -60,11 +66,15 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjects token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjects parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -131,6 +141,7 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjects success"));
 		return buildResponse(OK, list);
 	}
 	
@@ -144,11 +155,15 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectsById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectsById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -210,6 +225,7 @@ public class ProjectService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectsById success"));
 		return buildResponse(OK, project);
 	}
 	
@@ -225,6 +241,8 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjects token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -233,6 +251,8 @@ public class ProjectService extends BaseService {
 		   (p_title == null || p_title.equals("")) || 
 		   (p_creator == null || p_creator.equals("")) || 
 		   (p_advisor == null || p_advisor.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjects parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -349,7 +369,8 @@ public class ProjectService extends BaseService {
 		
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(projectid, p_userid, Config.Action.CREATE, Config.Entity.PROJECT, info);
-				
+		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + projectid, "createUserProjects success"));
 		return buildResponse(OK, project);
 	}
 	
@@ -364,6 +385,8 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectsLogo token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 				
@@ -380,6 +403,8 @@ public class ProjectService extends BaseService {
 		 * Step 2. 校验参数
 		 * */
 		if((p_projectid == 0) || (p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectsLogo parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -392,6 +417,7 @@ public class ProjectService extends BaseService {
 	    String fileLocation = getWebAppAbsolutePath() + Config.PROJECT_IMG_BASE_DIR + URLDecoder.decode(filename, "utf-8");
 		boolean writeLFlag = FileUtil.create(fileInputStream, fileLocation);
 	    if(!writeLFlag) { //若写入磁盘失败，则直接返回空
+	    	ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "updateUserProjectsLogo - write logo file failed"));
 			return null;
 		}
 	    
@@ -433,6 +459,7 @@ public class ProjectService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_LOGO, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "updateUserProjectsLogo success"));
 		return buildResponse(OK, logoObj);
 	}
 	
@@ -451,6 +478,8 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjects token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -458,6 +487,8 @@ public class ProjectService extends BaseService {
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 || 
 		   (p_status < 0 || p_status > 1) || (p_security < 0 || p_security > 1) || 
 		   (p_title == null || p_title.equals("")) || (p_advisor == null || p_advisor.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjects parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -626,6 +657,7 @@ public class ProjectService extends BaseService {
 			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.PROJECT_SECURITY, info);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "updateUserProjects success"));
 		return buildResponse(OK, project);
 	}
 	
@@ -639,11 +671,15 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjects token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0 ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjects parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -682,6 +718,7 @@ public class ProjectService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.PROJECT_TITLE, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "deleteUserProjects success"));
 		return buildResponse(OK, null);
 	}
 	
@@ -695,11 +732,15 @@ public class ProjectService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "exitUserProject token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_userid == null || p_userid.equals("")) || p_projectid == 0) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "exitUserProject parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -737,6 +778,7 @@ public class ProjectService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.LEAVE, Config.Entity.PROJECT, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "exitUserProject success"));
 		return buildResponse(OK, null);
 	}
 }

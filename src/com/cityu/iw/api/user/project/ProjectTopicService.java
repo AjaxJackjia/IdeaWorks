@@ -23,6 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
@@ -30,10 +32,14 @@ import org.codehaus.jettison.json.JSONObject;
 import com.cityu.iw.api.BaseService;
 import com.cityu.iw.db.DBUtil;
 import com.cityu.iw.util.Config;
+import com.cityu.iw.util.Util;
 
 @Path("/users/{userid}/projects/{projectid}/topics")
 public class ProjectTopicService extends BaseService {
-	private static final Logger LOGGER = Logger.getLogger(ProjectTopicService.class);
+	private static final String CURRENT_SERVICE = "ProjectTopicService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@Context HttpServletRequest request;
 	
 	@GET
@@ -46,11 +52,15 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopics token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopics parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -94,6 +104,7 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectTopics success"));
 		return buildResponse(OK, topics);
 	}
 	
@@ -108,12 +119,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -152,6 +167,7 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "getUserProjectTopicById success"));
 		return buildResponse(OK, topic);
 	}
 	
@@ -168,6 +184,8 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectTopics token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -176,6 +194,8 @@ public class ProjectTopicService extends BaseService {
 		   (p_userid == null || p_userid.equals("")) ||
 		   (p_title == null || p_title.equals("")) || 
 		   (p_creator == null || p_creator.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectTopics parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -243,6 +263,7 @@ public class ProjectTopicService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.CREATE, Config.Entity.TOPIC, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + topic.get("topicid"), "createUserProjectTopics success"));
 		return buildResponse(OK, topic);
 	}
 	
@@ -260,6 +281,8 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectTopics token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -268,6 +291,8 @@ public class ProjectTopicService extends BaseService {
 		   (p_userid == null || p_userid.equals("")) ||
 		   (p_title == null || p_title.equals("")) || 
 		   (p_creator == null || p_creator.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "updateUserProjectTopics parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -360,6 +385,7 @@ public class ProjectTopicService extends BaseService {
 			ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.UPDATE, Config.Entity.TOPIC_DESCRIPTION, info);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + topic.get("topicid"), "updateUserProjectTopics success"));
 		return buildResponse(OK, topic);
 	}
 	
@@ -374,12 +400,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectTopics token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectTopics parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -416,6 +446,7 @@ public class ProjectTopicService extends BaseService {
 		//通知该project中的所有成员
 		ProjectNotificationService.notifyProjectAllMembers(p_projectid, p_userid, Config.Action.DELETE, Config.Entity.TOPIC, info);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "deleteUserProjectTopics success"));
 		return null;
 	}
 	
@@ -430,12 +461,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessages token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessages parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -533,6 +568,7 @@ public class ProjectTopicService extends BaseService {
 			message.put("replyCount", (pid_sub_msg_count.get(messageid)==null) ? 0 : pid_sub_msg_count.get(messageid));
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "getUserProjectTopicsMessages success"));
 		return buildResponse(OK, messages);
 	}
 	
@@ -548,12 +584,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessagesById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_messageid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessagesById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -636,6 +676,7 @@ public class ProjectTopicService extends BaseService {
 			message.put("replyCount", 0);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "messageid: " + p_messageid, "getUserProjectTopicsMessagesById success"));
 		return buildResponse(OK, message);
 	}
 	
@@ -651,12 +692,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessagesReplyListById token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) ||
 		   (p_messageid == 0) || (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectTopicsMessagesReplyListById parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -720,6 +765,7 @@ public class ProjectTopicService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "messageid: " + p_messageid, "getUserProjectTopicsMessagesReplyListById success"));
 		return buildResponse(OK, replyList);
 	}
 	
@@ -738,6 +784,8 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectTopicsMessages token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
@@ -746,6 +794,8 @@ public class ProjectTopicService extends BaseService {
 		   (p_userid == null || p_userid.equals("")) || 
 		   (p_from == null || p_from.equals("")) ||
 		   (p_msg == null || p_msg.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "createUserProjectTopicsMessages parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
@@ -855,6 +905,7 @@ public class ProjectTopicService extends BaseService {
 					p_projectid, operator, Config.Action.REPLY, Config.Entity.MESSAGE, info);
 		}
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "messageid: " + message.get("messageid"), "createUserProjectTopicsMessages success"));
 		return buildResponse(OK, message);
 	}
 	
@@ -870,12 +921,16 @@ public class ProjectTopicService extends BaseService {
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
 		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectTopicsMessages token invalid!"));
+			
 			return buildResponse(TOKEN_INVALID, null);
 		}
 		
 		//check param
 		if((p_projectid == 0) || (p_topicid == 0) || (p_messageid == 0) ||
 		   (p_userid == null || p_userid.equals("")) ) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "deleteUserProjectTopicsMessages parameter invalid!"));
+			
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 				
@@ -888,6 +943,7 @@ public class ProjectTopicService extends BaseService {
 		stmt.execute();
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "topicid: " + p_topicid, "messageid: " + p_messageid, "deleteUserProjectTopicsMessages success"));
 		return null;
 	}
 }

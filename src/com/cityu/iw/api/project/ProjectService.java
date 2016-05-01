@@ -11,6 +11,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -21,7 +23,10 @@ import com.cityu.iw.util.Config;
 
 @Path("/projects")
 public class ProjectService extends BaseService {
-
+	private static final String CURRENT_SERVICE = "ProjectService";
+	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
+	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)

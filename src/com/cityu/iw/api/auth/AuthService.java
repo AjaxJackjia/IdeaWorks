@@ -27,6 +27,7 @@ import com.cityu.iw.util.Util;
 
 @Path("/auth")
 public class AuthService extends BaseService {
+	private static final String CURRENT_SERVICE = "AuthService";
 	private static final Log FLOW_LOGGER = LogFactory.getLog("FlowLog");
 	private static final Log ERROR_LOGGER = LogFactory.getLog("ErrorLog");
 	
@@ -47,7 +48,7 @@ public class AuthService extends BaseService {
 		   (p_password == null || p_password.equals("")) ) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			ERROR_LOGGER.error(p_userid + " parameter invalid!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE,p_userid, "login parameter invalid!"));
 			
 			return result;
 		}
@@ -81,7 +82,7 @@ public class AuthService extends BaseService {
 					result.put("userid", p_userid);
 					result.put("password", "*******");
 					
-					FLOW_LOGGER.info(p_userid + " | login token miss match");
+					ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "login token miss match"));
 				}else{
 					result.put("ret", "0");
 					result.put("msg", "ok");
@@ -92,7 +93,7 @@ public class AuthService extends BaseService {
 					result.put("userlogo", userlogo);
 					result.put("userlang", userlang);
 					
-					FLOW_LOGGER.info(p_userid + " | login successfully");
+					FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "login successfully"));
 				}
 			}else{
 				result.put("ret", "-3");
@@ -100,13 +101,13 @@ public class AuthService extends BaseService {
 				result.put("userid", p_userid);
 				result.put("password", "*******");
 				
-				FLOW_LOGGER.info(p_userid + " | login password incorrect");
+				ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "login password incorrect"));
 			}
 		}catch (Exception ex) {
 			result.put("ret", "-4");
 			result.put("msg", "Server busy!");
 			
-			ERROR_LOGGER.error(p_userid + " " + ex.getMessage());
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "login failed", ex.getMessage()));
 		}
 		
 		return result;
@@ -128,14 +129,14 @@ public class AuthService extends BaseService {
 		   (p_email == null || p_email.equals(""))) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			ERROR_LOGGER.error(p_username + " parameter invalid!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_username, "sign up parameter invalid!"));
 			
 			return result;
 		}
 		
 		try{
 			// Step 1. Check id whether signed up
-			String sql = "select * from ideaworks.user where id = ?";
+			String sql = "select id from ideaworks.user where id = ?";
 			PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_username);
 			ResultSet rs_stmt = stmt.executeQuery();
 			String id = "";
@@ -147,7 +148,7 @@ public class AuthService extends BaseService {
 			if(!id.equals("")) {
 				result.put("ret", "-3");
 				result.put("msg", "This username has been signed up! Plase change another one!");
-				FLOW_LOGGER.info(p_username + " | This username has been signed up");
+				FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_username, "This username has been signed up"));
 				
 				return result;
 			}
@@ -178,7 +179,7 @@ public class AuthService extends BaseService {
 			DBUtil.getInstance().closeStatementResource(stmt);
 			
 			//Step 3. return result
-			sql = "select * from ideaworks.user where id = ?";
+			sql = "select id from ideaworks.user where id = ?";
 			stmt = DBUtil.getInstance().createSqlStatement(sql, p_username);
 			rs_stmt = stmt.executeQuery();
 			id = "";
@@ -190,11 +191,11 @@ public class AuthService extends BaseService {
 			if(id.equals("")) throw new Exception("no id");
 			result.put("ret", "0");
 			result.put("msg", "ok");
-			FLOW_LOGGER.info(p_username + " | signed up successfully");
+			FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_username, "signed up successfully"));
 		}catch(Exception ex) {
 			result.put("ret", "-2");
 			result.put("msg", "sign up failed! Please try again later!");
-			ERROR_LOGGER.info(p_username + " | sign up failed | " + ex.getMessage());
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_username, "sign up failed", ex.getMessage()));
 		}
 		
 		return result;
@@ -215,14 +216,14 @@ public class AuthService extends BaseService {
 		   (p_new_password == null || p_new_password.equals("")) ) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			ERROR_LOGGER.error(p_userid + " parameter invalid!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "change password parameter invalid!"));
 			
 			return result;
 		}
 		
 		try{
 			//check old password
-			String sql = "select * from ideaworks.user where id = ?";
+			String sql = "select password from ideaworks.user where id = ?";
 			PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 			ResultSet rs_stmt = stmt.executeQuery();
 			//get password from db by id;
@@ -245,14 +246,14 @@ public class AuthService extends BaseService {
 				//update token 
 				String token = generateToken(p_userid, p_new_password);
 				request.getSession().setAttribute("token", token);
-				FLOW_LOGGER.info(p_userid + " | change password successfully");
+				FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "change password successfully"));
 			}else{
 				result.put("ret", "-2");
 				result.put("msg", "old password invalid");
-				FLOW_LOGGER.info(p_userid + " | old password invalid");
+				ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "old password invalid"));
 			}
 		}catch(Exception ex) {
-			ERROR_LOGGER.error(p_userid + " | change password | " + ex.getMessage());
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "change password", ex.getMessage()));
 		}
 		
 		return result;
@@ -271,7 +272,7 @@ public class AuthService extends BaseService {
 		   (p_email == null || p_email.equals("")) ) {
 			result.put("ret", "-1");
 			result.put("msg", "parameter invalid");
-			ERROR_LOGGER.error(p_userid + " parameter invalid!");
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "forget password parameter invalid!"));
 			
 			return result;
 		}
@@ -303,14 +304,14 @@ public class AuthService extends BaseService {
 				
 				result.put("ret", "0");
 				result.put("msg", "ok");
-				FLOW_LOGGER.info(p_userid + " | get new password successfully");
+				FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "get new password successfully through forget password function"));
 			}else{
 				result.put("ret", "-2");
 				result.put("msg", "username or email address is invalid!");
-				FLOW_LOGGER.info(p_userid + " | username or email address is invalid");
+				ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "username or email address is invalid in forget password function"));
 			}
 		}catch(Exception ex) {
-			ERROR_LOGGER.info(p_userid + " | forget password failed | " + ex.getMessage());
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "get new password failed through forget password function", ex.getMessage()));
 		}
 		
 		return result;
