@@ -197,6 +197,7 @@ define({
     			'NO_NOTIFICATIONS': 'No notifications...',
     			'CLOSE_NOTIFICATION': 'close notification',
     			'FETCH_NOTIFICATION_ERROR': 'Get user notifications failed. Please try again later!',
+    			'LOAD_MORE': 'Load more...'
     		},
     		'NotificationItemView': {
     			'MARK_READ_ERROR': 'Mark notification read failed. Please try again later!',
@@ -473,6 +474,9 @@ define({
     			'CREATOR': 'Creator:',
     			'CREATE_TIME': 'Create time:',
     			'DESCRIPTION': 'Description:'
+    		},
+    		'ProjectDetailActivityView': {
+    			'LOAD_MORE': 'Load more...'
     		}
     	},
     	'search': {

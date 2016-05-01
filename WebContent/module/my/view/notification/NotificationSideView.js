@@ -12,7 +12,7 @@ define([
 		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'unrender', 'addNotificationItem', 'updateUnreadState', 'fetchLatestNotifications', 'setupFetchInterval', 'clearFetchInterval');
+			_.bindAll(this, 'render', 'unrender', 'addNotificationItem', 'addLoadMoreItem', 'addPlaceHolderItem', 'loadMoreNotifications', 'updateUnreadState');
 			
 			//注册全局事件
 			Backbone.
@@ -20,21 +20,21 @@ define([
 				on('NotificationSideView:updateUnreadState', this.updateUnreadState, this);
 			
 			//用户通知集合
-			this.notifications = new NotificationCollection();
+			this.notifications = null;
 			
-			//进入主界面时需要拉取一次notifications, 拉取成功之后设置定时器
-			var self = this;
-			self.fetchLatestNotifications(function() {
-				//设置定时器
-				self.setupFetchInterval();
-			});
+			//进入主界面时需要拉取一次notifications未读数量
+			this.updateUnreadState();
 		},
 		
 		render: function(){
+			//新建用户通知集合
+			this.notifications = new NotificationCollection();
+			
 			$(this.el).html(HeaderItem());
 			$(this.el).append(BodyItem());
 			
 			//向该view的父容器类添加遮罩层,并添加点击事件
+			var self = this;
 			setTimeout(function() {
 				$(self.el).parent().append('<div class="notification-view-cover"></div>');
 				$('.notification-view-cover').click(function() {
@@ -53,16 +53,9 @@ define([
 				}); //300毫秒
 			});
 			
-			//取消拉取notification定时器, 并且拉取最新一次来渲染notifications view
-			var self = this;
-			self.clearFetchInterval();
-			self.fetchLatestNotifications(function() {
-				_.each(self.notifications.models, function(notification, index) {
-					self.addNotificationItem(notification);
-				});
-				//更新数量
-				self.updateUnreadState();
-			});
+			//拉取notification，并更新notification数量
+			this.loadMoreNotifications();
+			this.updateUnreadState();
 			
 		    return this;
 		},
@@ -78,18 +71,21 @@ define([
 			}, 0);
 			$(self.el).remove();
 			
-			//清空notification,并同时恢复notification定时器
+			//清空notification
 			var $notifications = $('.notification', this.el);
 			_.each($notifications, function(item, index) {
 				var cid = $(item).attr('cid');
 				$('.notification[cid=' + cid + ']').remove();
 			});
-			this.setupFetchInterval();
+			this.notifications = null;
+			
+			//更新notification数量
+			this.updateUnreadState();
 		},
 		
 		addNotificationItem: function(notification) {
 			//设置每个notification model的url
-			notification.url = this.notifications.url + '/' + notification.get('notificationid');
+			notification.url = this.notifications.orginUrl + '/' + notification.get('notificationid');
 			
 			var $placeholder = $('.notifications > .placeholder');
 			if($placeholder.length > 0) {
@@ -102,57 +98,67 @@ define([
 			$('.notifications').append($(notificationItemView.render().el));
 		},
 		
-		updateUnreadState: function() {
-			var unreadCount = this.notifications.where({'isRead': 0}).length;
-			var totalCount = this.notifications.length;
-			//1. 更新 top panel 未读消息数量
-			$('.msg-btn').find('.unread').remove();
-			if(unreadCount != 0) {
-				var number = (unreadCount > 99 ? '...' : unreadCount);
-				var $unread = $('<div class="unread">' + number + '</div>');
-				$('.msg-btn').append($unread);
-			}
-			
-			//2. 更新 Notification view 标题旁的未读消息数量
-			if(totalCount == 0) {
-				$('.heading > .title > .count', this.el).html("");
-			}else{
-				$('.heading > .title > .count', this.el).html("(" + unreadCount + "/" + totalCount + ")");
-			}
+		addLoadMoreItem: function() {
+			var self = this;
+			$('.notifications').append('<div class="load-more">' + i18n.my.notification.NotificationSideView.LOAD_MORE + '</div>');
+			$('.notifications').find('.load-more').click(function() {
+				self.loadMoreNotifications();
+			});
 		},
 		
-		//拉取最新notifications, callback为拉取成功之后的回调函数
-		fetchLatestNotifications: function(callback) {
-			//清空collection
-			this.notifications.reset();
-			
+		addPlaceHolderItem: function() {
+			$('.notifications').append('<div class="placeholder"><h4>No Notification...</h4></div>');
+		},
+		
+		loadMoreNotifications: function() {
 			//获取最新
 			var self = this;
-			this.notifications.fetch({
-				success: function() {
-					if(typeof callback != null && typeof callback == 'function') {
-						callback();
+			this.notifications.fetchErrorMsg = i18n.my.notification.NotificationSideView.FETCH_NOTIFICATION_ERROR;
+			this.notifications.nextPage(function() {
+				var $content = $(self.el).find('.notifications');
+				var $placeholder = $content.find('.placeholder');
+				if($placeholder.length > 0) {
+					$placeholder.remove();
+				}
+				var $more = $content.find('.load-more');
+				if($more.length > 0) {
+					$more.remove();
+				}
+				
+				if(self.notifications.totalCount != 0 || self.notifications.models != 0) { //当有model时，加载notification
+					_.each(self.notifications.models, function(notification, index) {
+						self.addNotificationItem(notification);
+					});
+					
+					//若没有完全加载则显示“加载更多按钮”
+					if(!self.notifications.isLoadAll) {
+						self.addLoadMoreItem();
 					}
-					self.updateUnreadState();
-				},
-				error: function(model, response, options) {
-					util.commonErrorHandler(response.responseJSON, i18n.my.notification.NotificationSideView.FETCH_NOTIFICATION_ERROR);
+				}else{ //当没有model时，添加placeholder
+					self.addPlaceHolderItem();
 				}
 			});
 		},
 		
-		//设置定时拉取
-		setupFetchInterval: function() {
-			var self = this;
-			var timeInterval = 5 * 60 * 1000; //拉取频率为5min 1次
-			this.notificationInterval = setInterval(function() {
-				self.fetchLatestNotifications();
-			}, timeInterval);
-		},
-		
-		//取消定时拉取
-		clearFetchInterval: function() {
-			window.clearInterval(this.notificationInterval);
+		updateUnreadState: function() {
+			$.get('/IdeaWorks/api/users/' + util.currentUser() + '/notifications/number', function(data) {
+				var unreadCount = data.unRead;
+				var totalCount = data.total;
+				//1. 更新 top panel 未读消息数量
+				$('.msg-btn').find('.unread').remove();
+				if(unreadCount != 0) {
+					var number = (unreadCount > 99 ? '...' : unreadCount);
+					var $unread = $('<div class="unread">' + number + '</div>');
+					$('.msg-btn').append($unread);
+				}
+				
+				//2. 更新 Notification view 标题旁的未读消息数量
+				if(totalCount == 0) {
+					$('.heading > .title > .count', this.el).html("");
+				}else{
+					$('.heading > .title > .count', this.el).html("(" + unreadCount + "/" + totalCount + ")");
+				}
+			});
 		}
 	});
 	

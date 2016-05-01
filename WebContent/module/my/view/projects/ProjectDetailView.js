@@ -170,13 +170,8 @@ define([
 			}else if(target == i18n.my.projects.ProjectDetailView.ACTIVITY) {//每次点击activity tab的时候都刷新
 				//activity model
 				var activities = new ActivityCollection();
-				activities.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/activities';
-				activities.fetch({
-					error: function(model, response, options) {
-			    		var alertMsg = i18n.my.projects.ProjectDetailView.FETCH_ACTIVITIES_ERROR;
-						util.commonErrorHandler(response.responseJSON, alertMsg);
-		    		}
-				});
+				activities.originUrl = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + currentProject.get('projectid') + '/activities';
+				activities.fetchErrorMsg = i18n.my.projects.ProjectDetailView.FETCH_ACTIVITIES_ERROR;
 				//activity view
 				var activityView = new ProjectDetailActivityView({
 					model: activities

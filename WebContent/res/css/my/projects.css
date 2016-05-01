@@ -1443,6 +1443,19 @@
 	word-wrap: break-word;
 }
 
+.project-detail-activity-view > .activities > .activity > .content > .load-more-content
+{
+	margin: 15px 0px 0px 0px;
+	width: 500px;
+	word-wrap: break-word;
+	cursor: pointer;
+}
+
+.project-detail-activity-view > .activities > .activity > .content > .load-more-content:hover
+{
+	font-weight: 600;
+}
+
 /* project modal dialog common */
 .modal .modal-header,
 .modal .modal-footer

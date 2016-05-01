@@ -195,6 +195,7 @@ define({
     			'NO_NOTIFICATIONS': '暂无通知...',
     			'CLOSE_NOTIFICATION': '关闭通知窗口',
     			'FETCH_NOTIFICATION_ERROR': '获取用户通知失败,请稍后重试.',
+    			'LOAD_MORE': '加载更多...'
     		},
     		'NotificationItemView': {
     			'MARK_READ_ERROR': '标记通知已读失败,请稍后重试.',
@@ -470,6 +471,9 @@ define({
     			'CREATOR': '创建者:',
     			'CREATE_TIME': '创建时间:',
     			'DESCRIPTION': '描述:'
+    		},
+    		'ProjectDetailActivityView': {
+    			'LOAD_MORE': '加载更多...'
     		}
     	},
     	'search': {

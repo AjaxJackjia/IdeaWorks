@@ -18,6 +18,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -79,7 +80,9 @@ public class ProjectActivityService extends BaseService {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUserProjectActivities(
 			@PathParam("userid") String p_userid, 
-			@PathParam("projectid") int p_projectid) throws Exception
+			@PathParam("projectid") int p_projectid,
+			@QueryParam("currentPage") int p_currentPage,
+			@QueryParam("pageSize") int p_pageSize ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -94,6 +97,14 @@ public class ProjectActivityService extends BaseService {
 			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getUserProjectActivities parameter invalid!"));
 			
 			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		//check pagination param
+		if(p_currentPage < 0) {
+			p_currentPage = 0;
+		}
+		if(p_pageSize <= 0 || p_pageSize > 30) {
+			p_pageSize = 30; //max page size is 30
 		}
 				
 		String sql = "select " + 
@@ -113,13 +124,15 @@ public class ProjectActivityService extends BaseService {
 					 "	T1.projectid = ? and " + 
 					 "	T1.operator = T2.id " + 
 					 "order by " + 
-					 "	time asc";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid);
+					 "	time desc " + 
+					 "limit ? , ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_projectid, p_currentPage * p_pageSize, p_pageSize);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
 		//result
+		JSONObject result = new JSONObject();
+		
 		JSONArray activities = new JSONArray();
-	
 		while(rs_stmt.next()) {
 			JSONObject activity = new JSONObject();
 			activity.put("activityid", rs_stmt.getInt("id"));
@@ -138,7 +151,11 @@ public class ProjectActivityService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "getUserProjectActivities success"));
-		return buildResponse(OK, activities);
+		result.put("currentPage", p_currentPage);
+		result.put("pageSize", p_pageSize);
+		result.put("activities", activities);
+		
+		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "projectid: " + p_projectid, "currentPage: " + p_currentPage, "pageSize: " + p_pageSize, "getUserProjectActivities success"));
+		return buildResponse(OK, result);
 	}
 }

@@ -59,7 +59,10 @@ public class ProjectNotificationService extends BaseService {
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getNotifications( @PathParam("userid") String p_userid ) throws Exception
+	public Response getNotifications(
+			@PathParam("userid") String p_userid,
+			@QueryParam("currentPage") int p_currentPage,
+			@QueryParam("pageSize") int p_pageSize ) throws Exception
 	{
 		//每次请求都需要校验token的合法性；
 		String token = (String) request.getSession().getAttribute("token");
@@ -76,6 +79,15 @@ public class ProjectNotificationService extends BaseService {
 			return buildResponse(PARAMETER_INVALID, null);
 		}
 		
+		//check pagination param
+		if(p_currentPage < 0) {
+			p_currentPage = 0;
+		}
+		if(p_pageSize <= 0 || p_pageSize > 30) {
+			p_pageSize = 30; //max page size is 30
+		}
+		
+		//select notifications
 		String sql = "select " + 
 					 "	T1.id, " + 
 					 "	T1.userid as userid, " + 
@@ -103,9 +115,13 @@ public class ProjectNotificationService extends BaseService {
 					 "	T1.projectid = T4.id " +
 					 "order by " + 
 					 "	T1.time desc " + 
-					 "limit 200 ";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+					 "limit ? , ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid, p_currentPage * p_pageSize, p_pageSize);
 		ResultSet rs_stmt = stmt.executeQuery();
+		
+		//result
+		JSONObject result = new JSONObject();
+				
 		JSONArray notifications = new JSONArray();
 		while(rs_stmt.next()) {
 			JSONObject notification = new JSONObject();
@@ -135,8 +151,69 @@ public class ProjectNotificationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotifications success"));
-		return buildResponse(OK, notifications);
+		result.put("currentPage", p_currentPage);
+		result.put("pageSize", p_pageSize);
+		result.put("notifications", notifications);
+		
+		return buildResponse(OK, result);
+	}
+	
+	@GET
+	@Path("/number")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getNotificationsNumber(@PathParam("userid") String p_userid) throws Exception
+	{
+		//每次请求都需要校验token的合法性；
+		String token = (String) request.getSession().getAttribute("token");
+		if(!validateToken(p_userid, token)) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotificationsNumber token invalid!"));
+			
+			return buildResponse(TOKEN_INVALID, null);
+		}
+		
+		//check param
+		if((p_userid == null || p_userid.equals(""))) {
+			ERROR_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "getNotificationsNumber parameter invalid!"));
+			
+			return buildResponse(PARAMETER_INVALID, null);
+		}
+		
+		//select notifications
+		String sql = "select " + 
+					 "	T1.isRead as isRead, " + 
+					 "	count(T1.isRead) as num " + 
+					 "from " +
+					 "	ideaworks.notification T1, " + 
+					 "	ideaworks.user T2, " + 
+					 "	ideaworks.user T3, " +
+					 "	ideaworks.project T4 " +
+					 "where " + 
+					 "	T1.userid = ? and " + 
+					 "	T1.userid = T2.id and " + 
+					 "	T1.operator = T3.id and " +
+					 "	T1.projectid = T4.id " +
+					 "group by " + 
+					 "	T1.isRead ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
+		ResultSet rs_stmt = stmt.executeQuery();
+		
+		//retrieve notification number (unread / read)
+		JSONObject result = new JSONObject();
+		int unRead = 0, read = 0;
+		while(rs_stmt.next()) {
+			if(rs_stmt.getInt("isRead") == 0) { //未读
+				unRead = rs_stmt.getInt("num");
+			}else if(rs_stmt.getInt("isRead") == 1) { //已读
+				read = rs_stmt.getInt("num");
+			}
+		}
+		DBUtil.getInstance().closeStatementResource(stmt);
+		
+		result.put("unRead", unRead);
+		result.put("read", read);
+		result.put("total", unRead + read);
+		
+		return buildResponse(OK, result);
 	}
 	
 	@GET
@@ -214,7 +291,7 @@ public class ProjectNotificationService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "notificationid: " + p_notificationid, "getNotificationsById success"));
+//		FLOW_LOGGER.info(Util.logJoin(CURRENT_SERVICE, p_userid, "notificationid: " + p_notificationid, "getNotificationsById success"));
 		return buildResponse(OK, notification);
 	}
 	
