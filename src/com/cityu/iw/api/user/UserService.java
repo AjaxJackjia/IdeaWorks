@@ -52,14 +52,26 @@ public class UserService extends BaseService {
 	@GET
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUsers() throws Exception
+	public Response getUsers(
+			@QueryParam("currentPage") int p_currentPage,
+			@QueryParam("pageSize") int p_pageSize ) throws Exception
 	{
-		String sql = "select * from ideaworks.user";
-		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql);
+		//check pagination param
+		if(p_currentPage < 0) {
+			p_currentPage = 0;
+		}
+		if(p_pageSize <= 0) {
+			p_pageSize = 10; //normal page size is 10
+		}
+				
+		String sql = "select * from ideaworks.user limit ? , ? ";
+		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_currentPage * p_pageSize, p_pageSize);
 		ResultSet rs_stmt = stmt.executeQuery();
 		
+		//result
+		JSONObject result = new JSONObject();
+				
 		JSONArray list = new JSONArray();
-		
 		while(rs_stmt.next()) {
 			JSONObject user = new JSONObject();
 			
@@ -73,7 +85,11 @@ public class UserService extends BaseService {
 		}
 		DBUtil.getInstance().closeStatementResource(stmt);
 		
-		return buildResponse(OK, list);
+		result.put("currentPage", p_currentPage);
+		result.put("pageSize", p_pageSize);
+		result.put("users", list);
+		
+		return buildResponse(OK, result);
 	}
 	
 	@GET

@@ -639,6 +639,7 @@ define({
     			'IM_MSG_TITLE_PLACEHOLDER': 'internal message title...',
     			'IM_MSG_MEMBERS': 'Members: (Double click member in the left container to add members)',
     			'IM_MSG_MEMBERS_SEARCH': 'search member...',
+    			'IM_MSG_MEMBERS_LOAD_MORE': 'Load more...',
     			'IM_MSG_ADD_MEMBERS_TIPS': 'Double click member in the left container to add members',
     			'IM_MSG_EMAIL_TIPS': 'send create notification via email',
     			'IM_MSG_CANCEL': 'Cancel',

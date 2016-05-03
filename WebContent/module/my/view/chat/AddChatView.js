@@ -1,8 +1,10 @@
 define([ 
          'backbone', 'util', 'CheckLib', 'i18n!../../../../nls/translation',
-         'model/chat/MemberCollection'
+         'model/chat/MemberCollection',
+         'model/chat/MemberPaginationCollection',
+         'model/chat/MemberModel'
        ], 
-    function(Backbone, util, CheckLib, i18n, MemberCollection) {
+    function(Backbone, util, CheckLib, i18n, MemberCollection, MemberPaginationCollection, MemberModel) {
 	
 	var AddChatView = Backbone.View.extend({
 		
@@ -34,7 +36,10 @@ define([
 			$(this.el).append($modalDialog);
 			
 			$(this.el).on('show.bs.modal', function (event) {
-				//拉取所有用户
+				//清空左侧分页用户列表 
+				messagesView.members.cleanAllUsers();
+				
+				//拉取用户列表
 				messagesView.fetchMembers();
 			});
 			
@@ -88,11 +93,11 @@ define([
 		
 		initialize: function(){
 			_.bindAll(this, 'render', 'fetchMembers', 'select', 'remove', 'addItem', 'removeItem', 
-					'createMessages', 'search', 'generateMemberItem', 'generateSelectedMemberItem');
+					'createMessages', 'search', 'generateMemberItem', 'generateSelectedMemberItem', 'generateLoadMoreItem');
 			
 			//members
-			this.members = new MemberCollection();
-			this.members.url = '/IdeaWorks/api/users';
+			this.members = new MemberPaginationCollection();
+			this.members.fetchErrorMsg = 'new internal messages add members fetch failed. Please try again later!';
 			
 			//selected members
 			this.selected = new MemberCollection();
@@ -103,7 +108,7 @@ define([
 			this.searchMembers = new MemberCollection();
 		},
 		
-		render: function(){
+		render: function() {
 			var $title = $('<div class="form-group">');
 			$title.append('<label for="message_title" class="control-label">' + i18n.my.chat.AddChatView.IM_MSG_TITLE + '</label>');
 			$title.append('<input type="text" class="form-control" id="message_title" name="message_title" placeholder="' + i18n.my.chat.AddChatView.IM_MSG_TITLE_PLACEHOLDER + '">');
@@ -130,34 +135,36 @@ define([
 			$(this.el).append($membersContent);
 			$(this.el).append($actions);
 			
+			//默认添加当前用户到已选择列表中
+			var currentUserProfile = util.currentUserProfile();
+			var currentMember = new MemberModel({
+				'userid'  : currentUserProfile.userid,
+				'nickname': currentUserProfile.nickname,
+				'logo'    : currentUserProfile.userlogo
+			});
+			this.selected.add(currentMember);
+			
 			return this;
 		},
 		
 		//拉取所有member
 		fetchMembers: function() {
 			var self = this;
-			
-			//如果为空时，则去拉取；
-			if(self.members.length == 0) {
-				self.members.fetch({
-					success: function() {
-						if(self.members.length == 0) {
-							$(self.el).find('.left').html(i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER);
-						}else{
-							_.each(self.members.models, function(member, index) {
-								$(self.el).find('.left').append(self.generateMemberItem(member));
-								//默认添加当前用户到已选择列表中
-								if(member.get('userid') == util.currentUser()) {
-									self.selected.add(member);
-								}
-							});
-						}
-					},
-					error: function(model, response, options) {
-						util.commonErrorHandler(response.responseJSON, 'new internal messages add members fetch failed. Please try again later!');
-					}
+			self.members.nextPage(function() {
+				$(self.el).find('.left .load-more').remove();
+				
+				_.each(self.members.models, function(member, index) {
+					$(self.el).find('.left').append(self.generateMemberItem(member));
 				});
-			}
+				
+				//若没有完全加载则显示“加载更多按钮”
+				if(!self.members.isLoadAll) {
+					$(self.el).find('.left').append(self.generateLoadMoreItem());
+					$(self.el).find('.left .load-more').click(function() {
+						self.fetchMembers();
+					});
+				}
+			});
 		},
 		
 		//选择member
@@ -170,8 +177,14 @@ define([
 			if(this.selected.where({userid: userid}).length > 0) return; //若已经选择，则直接略过
 			if(userid == util.currentUser()) return; //不能选择自己
 			
-			//若没有被选择，则直接加入已选择集合
-			this.selected.add(this.members.where({userid: userid})[0]);
+			//若之前没有被选择，则直接加入已选择集合
+			if(this.searchMembers.models.length > 0) { //若当前正在搜索
+				this.selected.add(this.searchMembers.where({userid: userid})[0]);
+			}else{ //若当前没有搜索
+				this.selected.add($.grep(this.members.userList, function(el,i) {
+					return el.get('userid') == userid;
+				}));
+			}
 		},
 		
 		//移除member
@@ -209,11 +222,6 @@ define([
 					$(element).remove();
 				}
 			});
-			
-			//if list is empty, then add placeholder 
-			if($('.right > div', this.el).length == 0) {
-				$('.right', this.el).append('<div class="empty-place-holder"><h4>' + i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER + '</h4></div>');
-			}
 		},
 		
 		//创建消息群
@@ -257,9 +265,19 @@ define([
 			
 			var value = $('#member_search').val();
 			if(value == '') {
-				_.each(self.members.models, function(member, index) {
+				//还原左侧列表
+				_.each(self.members.userList, function(member, index) {
 					$(self.el).find('.left').append(self.generateMemberItem(member));
 				});
+				
+				if(!self.members.isLoadAll) {
+					$(self.el).find('.left').append(self.generateLoadMoreItem());
+					$(self.el).find('.left .load-more').click(function() {
+						self.fetchMembers();
+					});
+				}
+				//清空search result
+				self.searchMembers.reset();
 			}else{
 				//check param, 需要是字母或者数字
 				var patten = new RegExp(/^\w+$/g);
@@ -270,7 +288,7 @@ define([
 				this.searchMembers.fetch({
 					success: function() {
 						if(self.searchMembers.length == 0) {
-							$(self.el).find('.left').html(i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER);
+							$(self.el).find('.left').html('<div class="no-member">' + i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER + '</div>');
 						}else{
 							_.each(self.searchMembers.models, function(member, index) {
 								$(self.el).find('.left').append(self.generateMemberItem(member));
@@ -318,6 +336,11 @@ define([
 			    '    </div> ' +
 			    '    <div class="remove"><i class="fa fa-times"></i></div> ' +
 			    '</div>';
+			return tpl;
+		},
+		
+		generateLoadMoreItem: function() {
+			var tpl = '<div class="load-more">' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS_LOAD_MORE + '</div>';
 			return tpl;
 		}
 	});

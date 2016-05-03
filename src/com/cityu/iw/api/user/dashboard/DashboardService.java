@@ -199,7 +199,8 @@ public class DashboardService extends BaseService {
 				"	limit 5 ) T5 " +
 				"where " + 
 				"	T3.id = T4.projectid and " + 
-				"	T4.id = T5.topic_id ";
+				"	T4.id = T5.topic_id " + 
+				"limit 30 ";
 				
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();
@@ -268,7 +269,7 @@ public class DashboardService extends BaseService {
 				"	T2.projectid in (select distinct projectid from ideaworks.project_member where userid = ?) " + 
 				"order by " + 
 				"	T2.time desc " + 
-				"limit 60 ";
+				"limit 30 ";
 				
 		PreparedStatement stmt = DBUtil.getInstance().createSqlStatement(sql, p_userid);
 		ResultSet rs_stmt = stmt.executeQuery();

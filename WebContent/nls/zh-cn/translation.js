@@ -636,6 +636,7 @@ define({
     			'IM_MSG_TITLE_PLACEHOLDER': '群组标题...',
     			'IM_MSG_MEMBERS': '成员: (双击左侧成员列表来添加用户)',
     			'IM_MSG_MEMBERS_SEARCH': '查找成员...',
+    			'IM_MSG_MEMBERS_LOAD_MORE': '加载更多...',
     			'IM_MSG_ADD_MEMBERS_TIPS': '双击左侧成员列表来添加用户',
     			'IM_MSG_EMAIL_TIPS': '同时通过邮件发送创建通知',
     			'IM_MSG_CANCEL': '取消',

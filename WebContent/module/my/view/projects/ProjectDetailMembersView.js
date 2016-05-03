@@ -2,9 +2,10 @@ define([
          'backbone', 'util', 'i18n!../../../../nls/translation',
          //model
          'model/project/MemberCollection',
+         'model/project/MemberPaginationCollection',
          'model/search/PersonModel'
        ], 
-    function(Backbone, util, i18n, MemberCollection, PersonModel) {
+    function(Backbone, util, i18n, MemberCollection, MemberPaginationCollection, PersonModel) {
 	var ProjectDetailMembersView = Backbone.View.extend({
 		
 		className: 'project-detail-members-view',
@@ -126,16 +127,29 @@ define([
 		
 		className: 'add-member-sub-view modal fade',
 		
+		events: {
+			'dblclick .left > .candidate': 'select',
+			'click 	  .right > .candidate > .remove': 'remove',
+			'click	  .invite': 'invite',
+			'keyup	  #candidate_search': 'search'
+		},
+		
 		initialize: function(){
 			//确保在正确作用域
-			_.bindAll(this, 'render', 'unrender', 'invite', 'addCandidate');
+			_.bindAll(this, 'render', 'unrender', 'fetchCandidates', 'select', 'remove', 'addItem', 'removeItem', 
+					'invite', 'search', 'generateCandidateItem', 'generateSelectedCandidateItem', 'generateLoadMoreItem');
 			
-			//加载advisor candidates
-			this.candidates = new MemberCollection();
-			this.candidates.url = '/IdeaWorks/api/users';
+			//members
+			this.candidates = new MemberPaginationCollection();
+			this.candidates.fetchErrorMsg = 'project add members fetch failed. Please try again later!';
 			
-			//监听model变化
-			this.candidates.bind('add', this.addCandidate);
+			//selected members
+			this.selected = new MemberCollection();
+			this.selected.bind('add', this.addItem);
+			this.selected.bind('remove', this.removeItem);
+			
+			//search members
+			this.searchCandidates = new MemberCollection();
 		},
 		
 		render: function(){
@@ -156,22 +170,15 @@ define([
 			
 			//confirm self body
 			var self = this;
-			
-			//invite操作
-			$('.invite', $modalDialogContent).on('click', function() {
-				self.invite();
+			//绑定modal显示时触发的事件
+			$(this.el).on('show.bs.modal', function (event) {
+				//清空左侧分页candidate列表 
+				self.candidates.cleanAllUsers();
+				
+				//拉取candidate列表
+				self.fetchCandidates();
 			});
-			
-			//加载candidate
-			this.candidates.fetch({
-				success: function() {
-					$('.candidate-container .candidate').on('click', function(e) {
-						$(e.target).closest('.candidate').toggleClass('active');
-					});
-				}
-			});
-			
-			//绑定modal消失时出发的事件
+			//绑定modal消失时触发的事件
 			$(this.el).on('hide.bs.modal', function (event) {
 				self.unrender();
 			});
@@ -183,34 +190,97 @@ define([
 			$(this.el).remove();
 		},
 		
-		addCandidate: function(candidate) {
+		//拉取所有member
+		fetchCandidates: function() {
+			var self = this;
+			self.candidates.nextPage(function() {
+				$(self.el).find('.left .load-more').remove();
+				
+				_.each(self.candidates.models, function(candidate, index) {
+					$(self.el).find('.left').append(self.generateCandidateItem(candidate));
+				});
+				
+				//若没有完全加载则显示“加载更多按钮”
+				if(!self.candidates.isLoadAll) {
+					$(self.el).find('.left').append(self.generateLoadMoreItem());
+					$(self.el).find('.left .load-more').click(function() {
+						self.fetchCandidates();
+					});
+				}
+			});
+		},
+		
+		//选择candidate
+		select: function(event) {
+			var $item = $(event.target).closest('.candidate');
+			if($item == null) return ;
+			
 			//判断该candidate是否在project的members里
-			if(this.model.where({userid: candidate.get('userid')}).length == 0) {
-				$('.candidate-container', this.el).append($(CandidateItem(candidate)));
+			var userid = $item.attr('userid');
+			if(this.model.where({userid: userid}).length != 0) {
+				alert("Member: " + $item.find('.info').attr('title') + " has already in this project...");
+				return;
 			}
+			
+			//若之前没有被选择，则直接加入已选择集合
+			if(this.searchCandidates.models.length > 0) { //若当前正在搜索
+				this.selected.add(this.searchCandidates.where({userid: userid})[0]);
+			}else{ //若当前没有搜索
+				this.selected.add($.grep(this.candidates.userList, function(el,i) {
+					return el.get('userid') == userid;
+				}));
+			}
+		},
+		
+		//移除member
+		remove: function(event) {
+			var $item = $(event.target).closest('.candidate');
+			if($item == null) return ;
+			
+			var userid = $item.attr('userid');
+			var users = this.selected.where({userid: userid});
+			var self = this;
+			_.each(users, function(user, index) {
+				self.selected.remove(user);
+			});
+		},
+		
+		//向selected集合中添加元素(UI)
+		addItem: function(item) {
+			var $placeholder = $('.right > .empty-place-holder', this.el);
+			if($placeholder.length > 0) {
+				$placeholder.remove();
+			}
+			
+			if(item.get('userid') == util.currentUser()) {
+				$(this.el).find('.right').append(this.generateCandidateItem(item));
+			}else{
+				$(this.el).find('.right').append(this.generateSelectedCandidateItem(item));
+			}
+			
+		},
+		
+		//从selected集合中删除元素(UI)
+		removeItem: function(item) {
+			_.each($('.right > .candidate', this.el), function(element, index, list){ 
+				if($(element).attr('userid') == item.get('userid')) {
+					$(element).remove();
+				}
+			});
 		},
 		
 		invite: function() {
 			//将选中的candidate直接加到project member中,后期再加用户验证环节;
+			var self = this;
 			var projectMembers = this.model;
-			var newAddedMembers = new MemberCollection();
-			newAddedMembers.url = projectMembers.url;
-			
-			//get invited members
-			var $selectedItem = $('.candidate.active', this.el);
-			var candidates = this.candidates;
-			_.each($selectedItem, function(item, index) {
-				var cid = $(item).attr('cid');
-				var candidate = candidates.get(cid);
-				newAddedMembers.add(candidate);
-			});
+			this.selected.url = projectMembers.url;
 			
 			//更新新增的project member
-			newAddedMembers.save({
+			this.selected.save({
 				wait: true,
 				success: function() {
 					//更新成功后,将新增加的member添加到project member中,使其在页面中显示
-					_.each(newAddedMembers.models, function(member, index) {
+					_.each(self.selected.models, function(member, index) {
 						projectMembers.add(member);
 					});
 					//关闭页面
@@ -221,6 +291,94 @@ define([
 					util.commonErrorHandler(response.responseJSON, alertMsg);
 				}
 			});
+		},
+		
+		//查找candidate
+		search: function() {
+			var self = this;
+			//清空左侧container
+			this.cleanLeftContainer();
+			
+			var value = $('#candidate_search').val();
+			if(value == '') {
+				//还原左侧列表
+				console.log(self.candidates.userList);
+				_.each(self.candidates.userList, function(member, index) {
+					$(self.el).find('.left').append(self.generateCandidateItem(member));
+				});
+				
+				if(!self.candidates.isLoadAll) {
+					$(self.el).find('.left').append(self.generateLoadMoreItem());
+					$(self.el).find('.left .load-more').click(function() {
+						self.fetchCandidates();
+					});
+				}
+				//清空search result
+				self.searchCandidates.reset();
+			}else{
+				//check param, 需要是字母或者数字
+				var patten = new RegExp(/^\w+$/g);
+				if(!patten.test(value)) return;
+				
+				this.searchCandidates.url = '/IdeaWorks/api/users/' + util.currentUser() + '/search/persons?key=' + value;
+				this.searchCandidates.reset();
+				this.searchCandidates.fetch({
+					success: function() {
+						if(self.searchCandidates.length == 0) {
+							$(self.el).find('.left').html('<div class="no-member">' + i18n.my.chat.AddChatView.IM_MSG_CREATE_NO_MEMBER + '</div>');
+						}else{
+							_.each(self.searchCandidates.models, function(member, index) {
+								$(self.el).find('.left').append(self.generateCandidateItem(member));
+							});
+						}
+					},
+					error: function(model, response, options) {
+						util.commonErrorHandler(response.responseJSON, 'project add members - search members failed. Please try again later!');
+					}
+				});
+			}
+		},
+		
+		cleanLeftContainer: function() {
+			var $members = $('.left > .candidate', this.el);
+			$.each($members, function(index, value) {
+				value.remove();
+			});
+			
+			$('.left', this.el).html('');
+		},
+		
+		//view
+		generateCandidateItem: function(candidate) {
+			var tpl = 
+				'<div class="candidate" userid="' + candidate.get('userid') + '"> ' + 
+	        	'	<div class="photo"> ' +
+	        	'		<img class="img-circle" src="' + candidate.get('logo') + '"> ' +
+	        	'	</div> ' +
+			    '    <div class="info" title="'+ candidate.get('nickname') + ' (' + candidate.get('userid') + ')' +'"> ' + 
+			    		candidate.get('nickname') + ' (' + candidate.get('userid') + ')' + '</div> ' +
+			    '    </div> ' +
+			    '</div>';
+			return tpl;
+		},
+		
+		generateSelectedCandidateItem: function(candidate) {
+			var tpl = 
+				'<div class="candidate" userid="' + candidate.get('userid') + '"> ' + 
+	        	'	<div class="photo"> ' +
+	        	'		<img class="img-circle" src="' + candidate.get('logo') + '"> ' +
+	        	'	</div> ' +
+			    '    <div class="info" title="'+ candidate.get('nickname') + ' (' + candidate.get('userid') + ')' +'"> ' + 
+			    		candidate.get('nickname') + ' (' + candidate.get('userid') + ')' +
+			    '    </div> ' +
+			    '    <div class="remove"><i class="fa fa-times"></i></div> ' +
+			    '</div>';
+			return tpl;
+		},
+		
+		generateLoadMoreItem: function() {
+			var tpl = '<div class="load-more">' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS_LOAD_MORE + '</div>';
+			return tpl;
 		}
 	});
 	
@@ -243,29 +401,26 @@ define([
 	}
 	
 	var Body = function() {
-		var tpl = 
-			'<div class="modal-body"> ' + 
-			'	<div class="candidate-container well">'
-			'	</div> ' + 
-			'</div> ';
-		return tpl;
+		var $modalBody = $('<div class="modal-body candidate-container">');
+		
+		var $membersTitle = $('<label class="control-label">' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS + '</label>');
+		
+		var $memberSearch = $('<div class="input-group search-group">');
+		$memberSearch.append('<span class="input-group-addon" id="basic-addon1"><i class="fa fa-search"></i></span>');
+		$memberSearch.append('<input type="text" class="form-control" id="candidate_search" name="candidate_search" placeholder="' + i18n.my.chat.AddChatView.IM_MSG_MEMBERS_SEARCH + '" aria-describedby="basic-addon1">');
+		
+		var $membersContent = $('<div class="candidate-members">');
+		$membersContent.append('<div class="left"></div>');
+		$membersContent.append('<div class="middle"><i class="fa fa-arrow-right" title="' + i18n.my.chat.AddChatView.IM_MSG_ADD_MEMBERS_TIPS + '"></i></div>');
+		$membersContent.append('<div class="right"></div>');
+		
+		$modalBody.append($membersTitle);
+		$modalBody.append($memberSearch);
+		$modalBody.append($membersContent);
+		
+		return $modalBody;
 	}
-	
-	var CandidateItem = function(candidate) {
-		var $tpl = 
-			'<a class="candidate" cid="' + candidate.cid + '"> ' + 
-        	'	<div class="candidate-photo"> ' +
-        	'		<img class="img-circle" src="' + candidate.get('logo') + '"> ' +
-        	'	</div> ' +
-		    '    <div class="info"> ' +
-		    '      <h4> ' +
-		    '          <span class="center" title="'+ candidate.get('nickname') +'">' + candidate.get('nickname') + '</span> ' +
-		    '      </h4> ' +
-		    '    </div> ' +
-		    '</a>';
-		return $tpl;
-	};
-	
+
 	
 	/*
 	 * member detail sub view

@@ -2,6 +2,7 @@ define([ 'backbone', 'util', 'model/project/MemberModel' ], function(Backbone, u
 	var MemberList = Backbone.Collection.extend({
 		model: MemberModel,
 		
+		//save
 		save: function(options) {
 			var params = new BulkUpdateModel();
 			params.url = this.url;

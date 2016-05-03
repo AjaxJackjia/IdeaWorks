@@ -3,9 +3,10 @@ define([
          'i18n!../../../../nls/translation',
          //model
  		'model/project/ProjectModel',
- 		'model/project/MemberCollection'
+ 		'model/project/MemberCollection',
+ 		'model/project/MemberPaginationCollection'
        ], 
-    function(Backbone, util, Validator, i18n, ProjectModel, MemberCollection) {
+    function(Backbone, util, Validator, i18n, ProjectModel, MemberCollection, MemberPaginationCollection) {
 	var ProjectDetailModifyView = Backbone.View.extend({
 		
 		id: 'project_detail_modify_view',
@@ -20,10 +21,11 @@ define([
 			_.bindAll(this, 'render', 'addCandidate');
 			
 			//加载advisor candidates
-			this.advisorCandidates = new MemberCollection();
 			if(this.model == null) {
-				this.advisorCandidates.url = '/IdeaWorks/api/users';
+				this.advisorCandidates = new MemberPaginationCollection();
+				this.advisorCandidates.pageSize = 999999; //一次性将所有人取回
 			}else{
+				this.advisorCandidates = new MemberCollection();
 				this.advisorCandidates.url = '/IdeaWorks/api/users/' + util.currentUser() + '/projects/' + this.model.get('projectid') + '/members';
 			}
 			
@@ -117,7 +119,7 @@ define([
 		},
 		
 		addCandidate: function(candidate) {
-			$('#project_advisor').append('<option value="'+ candidate.get('userid') +'">' + candidate.get('nickname') + '</option>');
+			$('#project_advisor').append('<option value="'+ candidate.get('userid') +'">' + candidate.get('nickname') + '   (' + candidate.get('userid') + ')' + '</option>');
 		},
 		
 		saveChanges: function() {

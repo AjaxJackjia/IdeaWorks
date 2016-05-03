@@ -198,7 +198,7 @@ define(['jquery', 'cookie', 'i18n!../../nls/translation' ], function($, cookie, 
 	
 	var deleteActionMapping = function(response) {
 		var originInfo = $.parseJSON(response.title);
-		if(response.entity == entity.PROJECT)
+		if(response.entity == entity.PROJECT || response.entity == entity.PROJECT_TITLE)
 		{
 			return kv.DELETE + ' ' + kv.PROJECT + ' ' + originInfo.title;
 		}

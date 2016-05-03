@@ -679,6 +679,38 @@
 	font-size: 22px;
 }
 
+.im-message-view > .message-members .left > .no-member
+{
+	height: 30px;
+	width: 100%;
+	text-align: center;
+	line-height: 30px;
+	border: none;
+	background-color: #ffffff;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.im-message-view > .message-members .left > .load-more
+{
+	height: 30px;
+	width: 100%;
+	text-align: center;
+	line-height: 30px;
+	border: none;
+	background-color: #ffffff;
+	cursor: pointer;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+}
+
+.im-message-view > .message-members .left > .load-more:hover
+{
+	background-color: #ececec;
+}
+
 .im-message-view > .actions
 {
 	text-align: right;
